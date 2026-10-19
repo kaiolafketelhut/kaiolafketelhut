@@ -1,0 +1,12 @@
+{
+  "service": "oeneyeVNC",
+  "status": "active",
+  "timestamp_utc": "2026-10-08 12:29:48",
+  "resolution": "800x600x16",
+  "identities": [
+    "OMQ",
+    "OQM"
+  ],
+  "fax_line": "FAX by oeneye.c + oeneyepdf.c \u2014 set by oeneye.c + oeneyepdf.c \u2014 FAX by oeneyeFAX \u2014 PL:36883",
+  "axiom": "1 + 0 = 1"
+}

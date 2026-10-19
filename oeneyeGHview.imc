@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -e
+# oeneyeGHview.imc - CANDI OQM auto-pusher with!loop protection
+
+#!loop lock - prevent running twice in 60s
+LOCK=$HOME/.oeneye_lock
+if [ -f "$LOCK" ] && [ $(( $(date +%s) - $(stat -c %Y "$LOCK" 2>/dev/null || stat -f %m "$LOCK" 2>/dev/null) )) -lt 60 ]; then
+  echo "[!]!loop protection - ran <60s ago, skip"
+  exit 0
+fi
+touch "$LOCK"
+
+echo "[*] Running static_own_index.sh..."
+chmod +x./static_own_index.sh 2>/dev/null || true
+./static_own_index.sh
+
+echo "[*] Checking changes..."
+if [ -z "$(git status --porcelain)" ]; then
+  echo "[*] working tree clean - nothing to push"
+  echo "[*] Triggering workflow (pages.yml) anyway..."
+  gh workflow run pages.yml 2>/dev/null || gh api repos/Colegio-San-Caio/demo-repository/actions/workflows/pages.yml/dispatches -f ref=main || true
+  exit 0
+fi
+
+echo "[*] Committing and pushing changes..."
+git add -A
+git commit -m "auto-update $(date -u +%Y-%m-%dT%H:%M:%SZ) - CANDI OQM"
+git push origin main
+
+echo "[*] Triggering workflow (pages.yml)..."
+gh workflow run pages.yml 2>/dev/null || true
+
+# auto-watch like before but only once
+LAST_RUN=$(gh run list --workflow="pages.yml" --limit 1 --json databaseId --jq '.[0].databaseId' 2>/dev/null)
+if [ -n "$LAST_RUN" ]; then
+  echo "[*] Watching run $LAST_RUN (Ctrl+C to stop watching, deploy keeps going)"
+  gh run watch "$LAST_RUN" --exit-status || true
+fi

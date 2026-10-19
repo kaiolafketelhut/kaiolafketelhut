@@ -1,0 +1,21 @@
+name: Proof HTML
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python3 compile_fuzz_report.py && cat fuzz_check.csv
+      - run: rm -rf MOSFETQexchange/output
+      - uses: anishathalye/proof-html@v1.1.0
+        with:
+          directory: ./
+          check_favicon: false
+          check_opengraph: false
+          check_img_http: false
+          check_external_hash: false
+          empty_alt_ignore: true
+          url_ignore_re: ".*zenodo.*|book.pdf"

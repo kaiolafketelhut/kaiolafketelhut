@@ -1,0 +1,48 @@
+<!DOCTYPE html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Colegio San Caio - Discussions as Gists</title>
+<style>
+body{font-family:monospace;max-width:900px;margin:0 auto;padding:16px;background:#0d1117;color:#c9d1d9}
+a{color:#58a6ff;text-decoration:none}
+.box{border:1px solid #30363d;border-radius:12px;padding:12px;margin:12px 0;background:#010409}
+h1{border-bottom:1px solid #30363d;padding-bottom:8px}
+.gist{cursor:pointer}
+.gist:hover{border-color:#58a6ff}
+</style>
+<h1>index.html on own domain — Discussions as Gists</h1>
+<p>ISBN 978-3-00-068463-0 | Namespace: Book:978-3-00-068463-0 | <a href="wiki.txt">wiki.txt</a> | <a href="board.html">board.html</a></p>
+<div id="index">Loading own index...</div>
+<script>
+async function buildIndex(){
+  let res = await fetch('discussions/index.json').catch(()=>null);
+  let files = res && res.ok? await res.json() : [];
+  if(!files.length){
+    // fallback: list what we know + fetch directory listing via GitHub API
+    files = ['discussions/001-welcome.md','discussions/1791356915-wikipedia-namespace.md'];
+    try{
+      let api = await fetch('https://api.github.com/repos/Colegio-San-Caio/demo-repository/contents/discussions').then(r=>r.json());
+      if(Array.isArray(api)) files = api.filter(f=>f.name.endsWith('.md')).map(f=>'discussions/'+f.name);
+    }catch(e){}
+  }
+  let html='';
+  for(let f of files){
+    let t = await fetch(f).then(r=>r.text()).catch(()=>'(gist not deployed yet)');
+    let title = (t.match(/^# (.*)/)||[,'Untitled'])[1];
+    html+=`<div class="box gist" onclick="location.hash='${f}'"><b>${title}</b><br><small>${f}</small><pre style="white-space:pre-wrap;color:#8b949e;margin-top:8px">${t.slice(0,300).replace(/</g,'&lt;')}</pre></div>`;
+  }
+  document.getElementById('index').innerHTML=html;
+}
+buildIndex();
+</script>
+
+<!-- Own domain: add CNAME file -->
+<!-- giscus comments as discussion backend -->
+<div class="box"><h3>Discussion thread</h3>
+<script src="https://giscus.app/client.js"
+ data-repo="Colegio-San-Caio/demo-repository"
+ data-repo-id="R_kgDOP6b4vw"
+ data-category="General"
+ data-category-id="DIC_kwDOP6b4vw4CwXx"
+ data-mapping="pathname"
+ data-theme="dark"
+ crossorigin="anonymous" async></script>
+</div>

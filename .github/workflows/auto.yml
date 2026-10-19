@@ -1,0 +1,9 @@
+name: auto
+on: workflow_dispatch
+permissions: write-all
+jobs:
+  auto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "auto ok - No date solved - manual only"

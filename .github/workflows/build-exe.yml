@@ -1,0 +1,35 @@
+name: Build holla_proxy.exe .oeneye .onion
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pyinstaller
+      - run: pyinstaller --onefile --name holla_proxy --icon=NONE holla_proxy.py
+      - run: |
+          mkdir dist-release
+          cp dist/holla_proxy.exe dist-release/holla_proxy.exe
+          cp ns_HOLLA_Collection.pdf dist-release/ 2>/dev/null || true
+          cp index.html dist-release/
+          echo "ONION=xj2v2uswlygq2nznuwpy4uy76w62uxq6hzh7dy63244we34eg2r23pid.onion" > dist-release/README.txt
+          echo "OENEYE=holla.oeneye:8080" >> dist-release/README.txt
+          echo "ISBN=978-3-00-068463-0 PAY=bunq.me/fieldberry" >> dist-release/README.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: holla_proxy-exe
+          path: dist-release/
+      - uses: softprops/action-gh-release@v1
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v14-exe-${{ github.run_number }}
+          files: dist/holla_proxy.exe
+          body: |
+            .OENEYE .ONION .EXE — tier stays tier
+            Onion: xj2v2uswlygq2nznuwpy4uy76w62uxq6hzh7dy63244we34eg2r23pid.onion
+            OENEYE: holla.oeneye:8080
+            EXE: holla_proxy.exe — runs http server on 8080, serves ns_HOLLA_Collection.pdf
+            PAY: bunq.me/fieldberry ISBN 978-3-00-068463-0 Order 2026-0812-CNNN3-BK01

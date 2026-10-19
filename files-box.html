@@ -1,0 +1,17 @@
+<!DOCTYPE html><meta charset="utf-8"><style>
+body{margin:0;font-family:monospace;background:transparent}
+#box{border:1px solid #30363d;border-radius:12px;background:#0d1117;color:#c9d1d9;max-width:650px}
+.head{background:#010409;padding:8px 12px;border-bottom:1px solid #30363d;border-radius:12px 12px 0 0;display:flex;justify-content:space-between}
+.body{padding:12px;max-height:500px;overflow:auto} a{color:#58a6ff}
+</style>
+<div id="box"><div class="head"><b>📁 Files Box</b><a href="./">/</a></div><div class="body" id="files"></div></div>
+<script>
+async function listFiles(){
+ let api=await fetch('https://api.github.com/repos/Colegio-San-Caio/demo-repository/contents/').then(r=>r.json());
+ let h=''; for(let f of api){ h+=`<div>📄 <a href="${f.name}" target="_blank">${f.name}</a> <small>${f.size}b</small></div>` }
+ document.getElementById('files').innerHTML=h+'<hr><div id="disc"></div>';
+ let d=await fetch('https://api.github.com/repos/Colegio-San-Caio/demo-repository/contents/discussions').then(r=>r.json()).catch(()=>[]);
+ let dh=''; for(let f of d){ dh+=`<div>💬 <a href="discussions/${f.name}" target="_blank">${f.name}</a></div>` }
+ document.getElementById('disc').innerHTML=dh;
+} listFiles();
+</script>

@@ -1,0 +1,20 @@
+<!DOCTYPE html><meta charset="utf-8"><style>
+body{margin:0;font-family:monospace;background:transparent}
+#box{border:1px solid #30363d;border-radius:12px;background:#0d1117;color:#c9d1d9;max-width:600px}
+.head{background:#010409;padding:8px 12px;border-bottom:1px solid #30363d;border-radius:12px 12px 0 0;display:flex;justify-content:space-between}
+.body{padding:12px;max-height:400px;overflow:auto}
+a{color:#58a6ff}
+.item{border:1px solid #21262d;border-radius:8px;padding:8px;margin:8px 0}
+</style>
+<div id="box"><div class="head"><b>Board as Gists - colegio gh</b><a href="board.html" target="_blank">open</a></div><div class="body" id="list">Loading box...</div></div>
+<script>
+fetch('discussions/index.json').then(r=>r.json()).then(async files=>{
+ let h='';
+ for(let f of files){
+  let t=await fetch(f).then(r=>r.text());
+  let title=t.split('\n')[0].replace('#','').trim();
+  h+=`<div class=item><b>${title}</b><br><small>${f}</small><pre style="white-space:pre-wrap">${t.slice(0,200).replace(/</g,'&lt;')}</pre><a href="${f}" target="_blank">open gist</a></div>`;
+ }
+ document.getElementById('list').innerHTML=h;
+});
+</script>

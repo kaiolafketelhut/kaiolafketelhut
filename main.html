@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C4 Clock - Main Interface</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .clock-container {
+            background: #1e293b;
+            padding: 2.5rem 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border: 1px solid #334155;
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: #38bdf8;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        #clock {
+            font-family: monospace;
+            font-size: 4rem;
+            font-weight: bold;
+            color: #e2e8f0;
+            margin: 1rem 0;
+            letter-spacing: 0.05em;
+        }
+        #date {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+        .small {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 2rem;
+            max-width: 400px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="clock-container">
+        <h1>C4 System Clock</h1>
+        <div id="date">Loading date...</div>
+        <div id="clock">00:00:00</div>
+        
+        <!-- View mode notification container -->
+        <p id="viewmode" class="small"></p>
+    </div>
+
+    <script>
+        // C4 Clock Updater
+        function updateClock() {
+            const now = new Date();
+            
+            // Format time: HH:MM:SS
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+
+            // Format date: Day, DD Month YYYY
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('date').textContent = now.toLocaleDateString(undefined, options);
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // View mode checker script
+        (function(){
+            var el = document.getElementById('viewmode'), 
+                l = location, 
+                official = 'colegio-san-caio.github.io', 
+                m, t;
+            
+            if (window.top !== window.self) {
+                t = 'Shown inside another page (embedded or proxied). Official site: https://' + official + '/';
+            } else if (l.protocol === 'file:') {
+                m = /^\/([A-Za-z]):/.exec(l.pathname);
+                t = 'Opened from a local file' + (m ? ' on drive ' + m[1].toUpperCase() + ':' : '') + '. Downloads and the demo need the live site.';
+            } else if (l.hostname === official) {
+                t = 'Viewing the official site directly.';
+            } else if (l.hostname === 'localhost' || l.hostname === '127.0.0.1') {
+                t = 'Local test server.';
+            } else {
+                t = 'Viewing through another address (' + l.hostname + '), such as a mirror or proxy. Official site: https://' + official + '/';
+            }
+            el.textContent = t;
+        })();
+    </script>
+</body>
+</html>

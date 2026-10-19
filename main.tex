@@ -1,0 +1,101 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\definecolor{primarycolor}{RGB}{24, 43, 73}
+\definecolor{accentcolor}{RGB}{0, 120, 212}
+
+\title{\textbf{Colegio San Caio Book Software Manual}\\\large Language Selection, Release Configuration, and Deployment Guide}
+\author{Colegio San Caio Publishing \& Development Team}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This manual details the procedures for deploying, configuring, and executing the Colegio San Caio book software package. It provides precise instructions on selecting interface and publication languages via release assets, configuring local environments in Termux, and maintaining integrity through automated SHA-256 checksum verification.
+\end{abstract}
+
+\section{System Architecture \& Prerequisites}
+The Colegio San Caio book software framework is engineered to run seamlessly across local development nodes and automated CI/CD pipelines. 
+
+\begin{itemize}
+    \item \textbf{Environment:} Termux (Android emulation environment) with Git, GitHub CLI (\texttt{gh}), and core utilities.
+    \item \textbf{Authentication:} HTTPS protocol integrated with GitHub CLI credentials (\texttt{gh auth setup-git}).
+    \item \textbf{Verification Protocol:} SHA-256 checksum verification for all localized releases and repository assets.
+\end{itemize}
+
+\section{Release Management and Asset Structure}
+Releases hosted under the Colegio San Caio organization namespace contain compiled book software binaries and localized manual templates. To retrieve and unpack a release asset:
+
+\begin{verbatim}
+# Clone the target repository or fetch release assets
+gh release download v1.0 --repo Colegio-San-Caio/978-3-00-068463-0
+sha256sum --check checksum.sha256
+\end{verbatim}
+
+\section{Language Selection Workflow}
+The software supports multi-language execution. Language parameters are declared upon initialization of the configuration file or via command-line arguments during release execution.
+
+\subsection{Supported Language Identifiers}
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Language} & \textbf{Identifier} & \textbf{Configuration Flag} \\
+\midrule
+English (Default) & \texttt{en} & \texttt{--lang=en} \\
+Spanish & \texttt{es} & \texttt{--lang=es} \\
+Portuguese & \texttt{pt} & \texttt{--lang=pt} \\
+\bottomrule
+\end{tabular}
+\caption{Supported Language Codes and Execution Flags}
+\label{tab:languages}
+\end{table}
+
+\subsection{Selecting Language via Configuration File}
+To permanently set your preferred language, open the software configuration file (\texttt{config.json}) located in the root release directory:
+
+\begin{verbatim}
+{
+  "edition": "Colegio-San-Caio-Standard",
+  "isbn": "978-3-00-068463-0",
+  "language": "es",
+  "verification": "sha256"
+}
+\end{verbatim}
+
+\section{Automated Deployment and Repository Synchronization}
+For administrators maintaining portfolio repositories across the organization and personal namespaces (\texttt{clevjhon}), the automated pipeline script handles divergence and checksum generation:
+
+\begin{verbatim}
+#!/bin/bash
+cd ~/oeneye/isbn_repo
+git config pull.rebase false
+git pull origin main --allow-unrelated-histories
+sha256sum README.md > checksum.sha256
+git add README.md checksum.sha256
+git commit -m "Automated synchronization and checksum verification"
+git push -u origin main
+\end{verbatim}
+
+\section{Verification and Troubleshooting}
+If merge conflicts arise due to concurrent updates on remote repositories, resolve them by prioritizing local workspace versions:
+
+\begin{verbatim}
+git checkout --ours README.md
+git add README.md checksum.sha256
+git commit -m "Resolve merge conflict with local preference"
+\end{verbatim}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small \textit{Colegio San Caio Document ID: MAN-9783000684630-V1}\hfill Verified SHA-256 Compliant}
+
+\end{document}

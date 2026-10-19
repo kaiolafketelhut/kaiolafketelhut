@@ -1,0 +1,2 @@
+# Wikipedia namespace 978-3-00-068463-0
+NAMESPACE=Book:978-3-00-068463-0

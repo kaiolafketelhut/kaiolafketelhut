@@ -1,0 +1,128 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>oeneye OS X - Combined Modus - FieldberryGruppe</title><style>html,body{margin:0;background:#000;color:#0f8;font-family:monospace;height:100%;overflow:hidden}#top{position:fixed;top:0;left:0;right:0;background:#0f0;color:#000;padding:8px;text-align:center;z-index:99;border-bottom:2px solid #000}.badge{border:1px solid #000;padding:2px 6px;font-size:10px;display:inline-block;background:#0f0;color:#000}.ctrl{margin-top:6px;display:flex;flex-wrap:wrap;justify-content:center;gap:4px}.btn{border:1px solid #000;background:#000;color:#0f0;padding:5px 8px;font-family:monospace;font-size:11px;cursor:pointer}.btn.on{background:#0f8;color:#000}#vp{position:absolute;top:88px;left:0;right:0;bottom:0;overflow:auto;background:#000;cursor:grab}#world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}.content{border:2px solid #0f8;background:#001a0e;padding:14px;width:320px}.box{border:1px solid #0f8;padding:10px;margin:8px 0;font-size:12px}a{color:#0f8}#info{position:fixed;bottom:0;left:0;right:0;background:#001a0e;border-top:1px solid #0f8;padding:4px;text-align:center;font-size:10px;z-index:98}</style></head><body><div id="top"><div class="badge">9.2K • AH 0hE JC 0a (0)b • COMBINED MODUS • ©FieldberryGruppe • v7.2 VERIFIED 7619efe</div><div class="ctrl"><button class="btn" onclick="zoom(0.1)">ZOOM +</button><button class="btn" onclick="zoom(-0.1)">ZOOM -</button><button class="btn" onclick="rotate(-15)">ROT -15</button><button class="btn" onclick="rotate(15)">ROT +15</button><button class="btn" onclick="reset()">RESET ALL</button><button class="btn on" id="stat">100% | 0° | 0,0</button></div></div><div id="vp"><div id="world"><div class="content"><div class="box"><h2 style="margin:0">oeneye OS X - COMBINED</h2>Boot: AH 0hE JC 0a (0)b<br>©FieldberryGruppe<br>Evergreen: Yes • No Date Solved<br>Base: v7.2 Genuine</div><div class="box">CONTROLS:<br>• Drag = PAN<br>• Pinch / Wheel+Ctrl = ZOOM<br>• Slider drag L/R = ROTATE<br>• Buttons on top<br>• Scroll = inside viewport scroll</div><div class="box">QR: 7619efe420a29fbf0ba8f44f973b71d35bfa0d3769579381ae521d3b9b2a0026<br><br>Dummy long content to test SCROLL:<br>Line1<br>Line2<br>Line3<br>Line4<br>Line5<br>Line6<br>Line7<br>Line8<br>Line9<br>Line10<br>Line11<br>Line12</div><div class="box"><a href="index.html">OS</a> | <a href="clock.html">Clock</a> | <a href="copyright.html">©</a> | <a href="scroll.html">Scroll</a> | <a href="zoom.html">Zoom</a> | <a href="pan.html">Pan</a> | <a href="rotate.html">Rotate</a> | <a href="oeneye.html">COMBINED</a><br><br>Built on Termux • JP DEV READY • Colegio San Caio • ns_HOLLA</div></div></div></div><div id="info">AH 0hE JC 0a (0)b • EVERGREEN • ©FieldberryGruppe • GPG VERIFIED • 1% BATTERY MODE</div><script>var x=20,y=20,scale=1,deg=0,sx=0,sy=0,sd=0,drag=false,mode='pan';var world=document.getElementById('world');var stat=document.getElementById('stat');function apply(){world.style.transform='translate('+x+'px,'+y+'px) scale('+scale+') rotate('+deg+'deg)';stat.textContent=Math.round(scale*100)+'% | '+deg+'° | '+Math.round(x)+','+Math.round(y);}function zoom(d){scale=Math.max(0.2,Math.min(5,scale+d));apply();}function rotate(d){deg+=d;if(deg>180)deg<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>oeneyeOS</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="oeneyeOS - Floppy Max 2.88MB">
+<meta property="og:description" content="oeneyeOS disk images, EULA, and the book MOSFETQ by Kai Olaf Ketelhut.">
+<meta property="og:url" content="https://colegio-san-caio.github.io/demo-repository/">
+<meta property="og:image" content="https://colegio-san-caio.github.io/demo-repository/assets/og-preview.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Cover of MOSFETQ, Technologie als Gesellschaftstreiber">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+body{font-family:Georgia,serif;max-width:720px;margin:0 auto;padding:16px;line-height:1.5;color:#111;background:#fff}
+@media(prefers-color-scheme:dark){body{color:#eee;background:#111}a{color:#8ab4f8}}
+h1{font-size:1.5rem}h2{font-size:1.2rem;margin-top:2rem;border-top:1px solid #8884;padding-top:1rem}
+code{display:block;font-size:.8rem;overflow-x:auto;padding:8px;background:#8882}
+img{max-width:260px;width:100%;height:auto;display:block;margin:12px 0}
+.small{font-size:.85rem;opacity:.8}
+</style>
+</head>
+<body>
+<h1>oeneyeOS - Floppy Max 2.88MB + VHD</h1>
+<p class="small"><a href="index.html">C4 Clock</a></p>
+<style>
+.search{display:flex;gap:6px;margin:12px 0}
+.search input{flex:1;padding:8px;font-size:1rem}
+.demoout{background:#000;color:#0f0;padding:10px;min-height:120px;overflow:auto;white-space:pre-wrap;font-size:.8rem}
+#demoin{width:100%;box-sizing:border-box}
+</style>
+<form class="search" action="https://www.google.com/search" method="get" target="_blank" rel="noopener">
+<input type="search" name="q" placeholder="Search Google" aria-label="Search Google">
+<button type="submit">Search</button>
+</form>
+<p>A: oeneyeOS.img | B: data.img (2.88M) | B: oeneyeB.vhd</p>
+<p><a href="oeneyeOS.img">Download A</a> | <a href="data.img">Download B</a></p>
+<code>qemu-system-i386 -fda oeneyeOS.img -fdb data.img</code>
+<p class="small">Back up important data before using the disk-image tools. A defect in disk-writing code can damage data.</p>
+
+<h2>License (EULA)</h2>
+<p>Free to use, modify and share. Don't present a modified version as the official release. The original oeneye code is MIT-licensed, the software is provided as is, and it is not security-certified.</p>
+<p><a href="assets/OENEYE_EULA.pdf">oeneye OS EULA, version 1.0 (PDF)</a><br>
+<span class="small">DOI: <a href="https://doi.org/10.5281/zenodo.22978006">10.5281/zenodo.22978006</a></span></p>
+
+<h2>Book</h2>
+<img src="assets/mosfetq-cover.jpeg" alt="Cover of MOSFETQ, Technologie als Gesellschaftstreiber, by Kai Olaf Ketelhut">
+<p><strong>MOSFETQ &ndash; Technologie als Gesellschaftstreiber</strong><br>
+Kai Olaf Ketelhut<br>
+Fieldberry Group, Berlin<br>
+ISBN 978-3-00-068463-0 | PDF | 21,00 &euro; (+ tax)</p>
+<p><a href="tex.html">Book source (TeX)</a> | <a href="book.pdf">Book (PDF)</a> | <a href="assets/mosfetq-record.pdf">Bibliographic record (PDF)</a> |
+<a href="https://bunq.me/fieldberry">Order / pay</a></p>
+<h2>Verify your download</h2>
+<p>SHA-256 checksums for the disk images. Put both images and the checksum file in one folder, then run the check.</p>
+<code>8a292e7d831e45f4bae09718a15a6b9cd101b13951bbd453f05ea3f177485807  oeneyeOS.img
+1b7b350b66f56a4646573de32f7fea22a050cdf99672d8751c49043abc82ebab  data.img</code>
+<code>sha256sum --check checksum.sha256</code>
+<p><a href="assets/checksum.sha256">checksum.sha256</a></p>
+<p class="small">A matching checksum shows the file is the one published here. It doesn't prove the contents are safe.</p>
+<style>
+.pybox{border:1px solid #8886;border-radius:6px;overflow:hidden;margin:12px 0}
+.pyhead{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#8882;font-size:.85rem}
+.pyhead a,.pyhead button{margin-left:6px;font-size:.8rem}
+#pysrc{margin:0;padding:12px;overflow:auto;max-height:50vh;font-size:.75rem;white-space:pre}
+</style>
+<h2>Demo: python3 emu_dos.py</h2>
+<p class="small">Runs in your browser with Pyodide (Python compiled to WebAssembly). Your input stays in your browser; Python itself is loaded from the jsDelivr CDN.</p>
+<div class="pybox">
+<div class="pyhead"><span>emu_dos.py</span><span><a href="emu_dos.py" target="_blank">Raw</a><button id="demorun" type="button">Run</button><button id="demostop" type="button" disabled>Stop</button></span></div>
+<pre id="pysrc">Loading emu_dos.py...</pre>
+</div>
+<textarea id="demoin" rows="3" placeholder="Input lines for the program, one per line (optional)"></textarea>
+<pre id="demoout" class="demoout">$ python3 emu_dos.py
+(press Run)</pre>
+<script src="demo.js"></script>
+<!--REPOS-->
+</body>
+<!-- UNIX-LIKE BOX - Wikipedia namespace + TODO -->
+<div style="font-family:monospace;background:#0d1117;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;max-width:700px;margin:16px 0">
+<div style="background:#010409;padding:8px 12px;border-bottom:1px solid #30363d">~/wiki$ cat NAMESPACE.def --todo</div>
+<pre style="margin:0;padding:12px;white-space:pre-wrap;line-height:1.5">
+# PLAN ONLY, not created yet: Wikipedia entry for Colegio-San-Caio/978-3-00-068463-0
+NAMESPACE=Book:978-3-00-068463-0
+TITLE="Colegio San Caio - Book Software Manual"
+LANG=de, en, pt
+
+[TODO]
+[ ] Create [[Book:978-3-00-068463-0]] page
+[ ] Add {{Infobox book | isbn=978-3-00-068463-0 | cover=cover.jpg}}
+[ ] Link to TeX source: [https://colegio-san-caio.github.io/demo-repository/tex.html TeX Gist]
+[ ] Link to PDF: [https://colegio-san-caio.github.io/demo-repository/book.pdf Book (PDF)]
+[ ] Add category: [[Category:Open educational resources]]
+[ ] Add wikidata: Q... (create if needed)
+
+</pre>
+</div>
+
+<!-- UNIX-LIKE BOX - Google search bar for TeX gists -->
+<div style="font-family:monospace;background:#0d1117;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;max-width:700px;margin:16px 0">
+<div style="background:#010409;padding:8px 12px;border-bottom:1px solid #30363d">~/demo-repository$ ./google-tex-gist.sh --help</div>
+<div style="padding:12px">
+<!-- Google-like search bar -->
+<form action="https://www.google.com/search" method="GET" target="_blank" style="display:flex;gap:8px">
+<input type="text" name="q" value="site:colegio-san-caio.github.io/demo-repository tex" 
+ style="flex:1;background:#010409;border:1px solid #30363d;color:#c9d1d9;padding:10px 14px;border-radius:24px;font-family:monospace"
+ placeholder="Search TeX gists...">
+<button style="background:#238636;color:#fff;border:0;padding:8px 16px;border-radius:20px;cursor:pointer;font-family:monospace">Google Search</button>
+</form>
+<pre style="margin:12px 0 0 0;white-space:pre-wrap;color:#8b949e;font-size:12px">
+# how to use TeX link as gists - like GitHub Gist but TeX
+$ curl -s https://colegio-san-caio.github.io/demo-repository/main.tex | head
+
+# embed as gist in any page:
+&lt;iframe src="https://colegio-san-caio.github.io/demo-repository/tex.html" width="100%" height="600"&gt;&lt;/iframe&gt;
+
+# google search operator for your TeX repo:
+site:colegio-san-caio.github.io/demo-repository filetype:tex OR filetype:pdf
+
+# unix one-liner to convert TeX to MediaWiki markup (posting is manual):
+pandoc main.tex -t mediawiki -o wiki.txt && cat wiki.txt
+</pre>
+</div>
+</div>
+</html>
+<p><a href="wiki-google-box.html">Wiki Namespace + Google TeX Gist Box</a></p>
