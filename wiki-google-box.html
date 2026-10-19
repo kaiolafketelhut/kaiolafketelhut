@@ -1,0 +1,46 @@
+<!-- UNIX-LIKE BOX - Wikipedia namespace + TODO -->
+<div style="font-family:monospace;background:#0d1117;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;max-width:700px;margin:16px 0">
+<div style="background:#010409;padding:8px 12px;border-bottom:1px solid #30363d">~/wiki$ cat NAMESPACE.def --todo</div>
+<pre style="margin:0;padding:12px;white-space:pre-wrap;line-height:1.5">
+# PLAN ONLY, not created yet: Wikipedia entry for Colegio-San-Caio/978-3-00-068463-0
+NAMESPACE=Book:978-3-00-068463-0
+TITLE="Colegio San Caio - Book Software Manual"
+LANG=de, en, pt
+
+[TODO]
+[ ] Create [[Book:978-3-00-068463-0]] page
+[ ] Add {{Infobox book | isbn=978-3-00-068463-0 | cover=cover.jpg}}
+[ ] Link to TeX source: [https://colegio-san-caio.github.io/demo-repository/tex.html TeX Gist]
+[ ] Link to PDF: [https://colegio-san-caio.github.io/demo-repository/book.pdf Book (PDF)]
+[ ] Add category: [[Category:Open educational resources]]
+[ ] Add wikidata: Q... (create if needed)
+
+</pre>
+</div>
+
+<!-- UNIX-LIKE BOX - Google search bar for TeX gists -->
+<div style="font-family:monospace;background:#0d1117;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;max-width:700px;margin:16px 0">
+<div style="background:#010409;padding:8px 12px;border-bottom:1px solid #30363d">~/demo-repository$ ./google-tex-gist.sh --help</div>
+<div style="padding:12px">
+<!-- Google-like search bar -->
+<form action="https://www.google.com/search" method="GET" target="_blank" style="display:flex;gap:8px">
+<input type="text" name="q" value="site:colegio-san-caio.github.io/demo-repository tex" 
+ style="flex:1;background:#010409;border:1px solid #30363d;color:#c9d1d9;padding:10px 14px;border-radius:24px;font-family:monospace"
+ placeholder="Search TeX gists...">
+<button style="background:#238636;color:#fff;border:0;padding:8px 16px;border-radius:20px;cursor:pointer;font-family:monospace">Google Search</button>
+</form>
+<pre style="margin:12px 0 0 0;white-space:pre-wrap;color:#8b949e;font-size:12px">
+# how to use TeX link as gists - like GitHub Gist but TeX
+$ curl -s https://colegio-san-caio.github.io/demo-repository/main.tex | head
+
+# embed as gist in any page:
+&lt;iframe src="https://colegio-san-caio.github.io/demo-repository/tex.html" width="100%" height="600"&gt;&lt;/iframe&gt;
+
+# google search operator for your TeX repo:
+site:colegio-san-caio.github.io/demo-repository filetype:tex OR filetype:pdf
+
+# unix one-liner to convert TeX to MediaWiki markup (posting is manual):
+pandoc main.tex -t mediawiki -o wiki.txt && cat wiki.txt
+</pre>
+</div>
+</div>

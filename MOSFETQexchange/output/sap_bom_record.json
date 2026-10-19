@@ -1,0 +1,17 @@
+{
+    "system": "SAP R/3 Enterprise Integration Pipeline",
+    "item_number": "BOM-NN-2026-001",
+    "nomenclature": "NASTRAN Structural Core & Telemetry Assembly",
+    "namespace": "NN",
+    "author": "Kai Olaf Ketelhut",
+    "orcid": "0000-0001-6049-8873",
+    "station_coordinates": "52.5200\u00b0 N, 13.4050\u00b0 E (Berlin)",
+    "protocols": [
+        "MIL-STD-1 Proxy Oeneye",
+        "MIL-STD-8C",
+        "CNNN3"
+    ],
+    "axiom_constraint": "1 + 0 = 1",
+    "pl_code": "36883",
+    "signature": "FAX by oeneye.c + oeneyepdf.c \u2014 set by oeneye.c + oeneyepdf.c \u2014 FAX by oeneyeFAX \u2014 PL:36883"
+}

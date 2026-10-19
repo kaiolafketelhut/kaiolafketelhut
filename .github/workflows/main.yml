@@ -1,0 +1,11 @@
+name: Evergreen (0)b Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get install -y nasm octave
+          cd santberk && nasm -f bin hexdiff_DBoqm.asm -o hexdiff_DBoqm.com
+          octave --quiet --eval "cd santberk; hexdiff_DBoqm()"

@@ -1,0 +1,7 @@
+ID,Invoice_Date,ISBN,Item_Description,Runtime_Status,Payment_Gateway,Net_Amount_EUR,VAT_Amount_EUR,Total_Amount_EUR,Channel,Entity,N_CAGE
+1,2026-09-13,978-3-00-068463-0,"Reference Publication (Sachbuch & Wissen, Fieldberry Group)",INTERCEPTED,https://bunq.me,21.0,1.47,22.47,WHOLESALE_INSTITUTIONAL,SIETEHR FOUNDATION,CNNN3
+2,2026-10-08,SYSTEM_BACKUP,Snapshot compiled: telemetry_snapshot_20261008_151021.db,AUTOMATED_SYNC,Git Subprocess Loop,0.0,0.0,0.0,SYSTEM_LEADER,Git Automation Node,
+3,2026-10-08,SYSTEM_BACKUP,Snapshot compiled: telemetry_snapshot_20261008_151105.db,AUTOMATED_SYNC,Git Subprocess Loop,0.0,0.0,0.0,SYSTEM_LEADER,Git Automation Node,
+4,2026-10-08,SYSTEM_BACKUP,Snapshot compiled: telemetry_snapshot_20261008_151222.db,AUTOMATED_SYNC,Git Subprocess Loop,0.0,0.0,0.0,SYSTEM_LEADER,Git Automation Node,
+5,2026-10-08,SYSTEM_BACKUP,Snapshot compiled: telemetry_snapshot_20261008_151408.db,AUTOMATED_SYNC,Git Subprocess Loop,0.0,0.0,0.0,SYSTEM_LEADER,Git Automation Node,
+6,2026-10-08,SYSTEM_BACKUP,Snapshot compiled: telemetry_snapshot_20261008_151512.db,AUTOMATED_SYNC,Git Subprocess Loop,0.0,0.0,0.0,SYSTEM_LEADER,Git Automation Node,

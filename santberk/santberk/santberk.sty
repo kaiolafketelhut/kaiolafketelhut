@@ -1,0 +1,59 @@
+% santberk.sty — ZUSE FREE DEV EDITION — v15
+% LaTeX distro for Fieldberry Group — MOSFETQ ISBN 978-3-00-068463-0
+% Auto-watermark: Konrad Zuse Z3 (1941 Berlin) — met when alive — Tier -1 origin
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{santberk}[2026/05/13 ZUSE Free Dev Edition — Tier stays tier]
+
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+\RequirePackage{background}
+\RequirePackage{hyperref}
+\RequirePackage{fancyhdr}
+\RequirePackage{xcolor}
+\definecolor{santberkGold}{HTML}{D4AF37}
+\definecolor{santberkTor}{HTML}{7D4698}
+\definecolor{santberkOeneye}{HTML}{00FF00}
+
+% --- ZUSE Z3 BACKGROUND — auto for every page ---
+\backgroundsetup{
+ scale=1,
+ opacity=0.12,
+ angle=0,
+ contents={
+  \begin{tikzpicture}[remember picture,overlay]
+   \node[opacity=0.12] at (current page.center) {\includegraphics[width=1.1\paperwidth,height=1.1\paperheight,keepaspectratio]{zuse_z3.jpg}};
+   % faint grid M=R×C — Zuse grid systemics
+   \draw[step=0.5cm,gray,very thin,opacity=0.08] (current page.south west) grid (current page.north east);
+  \end{tikzpicture}
+ }
+}
+
+% --- FOOTER — real backup — tier stays tier ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=south,fill=black,text=white,font=\tiny\ttfamily,inner sep=3pt] at (current page.south) {
+\textbf{ZUSE} 1910-1995 Free Dev |
+\textcolor{santberkOeneye}{.OENEYE holla.oeneye:8080} |
+\textcolor{santberkTor}{.ONION xj2v2uswlygq2nznuwpy4uy76w62uxq6hzh7dy63244we34eg2r23pid.onion} |
+.EXE holla\_proxy.exe |
+\textcolor{santberkGold}{PAY bunq.me/fieldberry ISBN 978-3-00-068463-0 Order 2026-0812-CNNN3-BK01} |
+SANTBERK truthsocial.com/group/santberk | Evergreen by JP (0)b
+};
+\end{tikzpicture}
+}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% --- TITLE MACRO with ZUSE ---
+\newcommand{\zusetitle}[1]{
+\begin{center}
+{\Large \textbf{KONRAD ZUSE — FREE DEV}}\\[0.2cm]
+{\small Der Computer ist aus der Idee entstanden, die geistige Arbeit zu mechanisieren.}\\[0.4cm]
+{\Huge #1}
+\end{center}
+}
+
+% auto enable background
+\AtBeginDocument{\BgThispage}

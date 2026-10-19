@@ -1,0 +1,67 @@
+{{Infobox book
+| name           = Colegio San Caio - Book Software Manual
+| image          = cover.jpg
+| caption        = Cover scan preview - 978-3-00-068463-0
+| author         = Colegio San Caio
+| isbn           = 978-3-00-068463-0
+| publisher      = Colegio-San-Caio
+| language       = German / English / Portuguese
+| subject        = Educational software manual
+| genre          = Open educational resources
+| release_date   = 2021
+| media_type     = PDF + TeX source
+| pages          = 
+| website        = https://colegio-san-caio.github.io/demo-repository/
+}}
+
+'''Colegio San Caio - Book Software Manual''' (ISBN '''978-3-00-068463-0''') is an open educational resource providing software manual and livebook material.
+
+== Overview ==
+The project is hosted on GitHub under organization [[Colegio-San-Caio]] and published via GitHub Pages as a TeX Gist.
+
+* TeX source: [https://colegio-san-caio.github.io/demo-repository/main.tex main.tex]
+* HTML view: [https://colegio-san-caio.github.io/demo-repository/tex.html TeX Gist Viewer]
+* PDF: [https://colegio-san-caio.github.io/demo-repository/book.pdf book.pdf]
+* Cover: [https://colegio-san-caio.github.io/demo-repository/cover.jpg cover.jpg]
+
+== Namespace definition ==
+<pre>
+NAMESPACE=Book:978-3-00-068463-0
+REPO=Colegio-San-Caio/demo-repository
+RELEASE=v1.0
+ASSETS=main.tex, book.pdf, cover.jpg
+VERIFY=gh release verify-asset --repo Colegio-San-Caio/978-3-00-068463-0
+</pre>
+
+== Content ==
+Content is authored in LaTeX (''main.tex'') and rendered to:
+* PDF via LaTeX
+* HTML via KaTeX
+* MediaWiki via pandoc: <code>pandoc main.tex -t mediawiki</code>
+
+== How to use TeX link as Gist ==
+<pre>
+# embed like GitHub Gist
+<iframe src="https://colegio-san-caio.github.io/demo-repository/tex.html" width="100%" height="600"></iframe>
+
+# direct TeX
+https://colegio-san-caio.github.io/demo-repository/main.tex
+
+# Google search
+site:colegio-san-caio.github.io/demo-repository filetype:tex OR filetype:pdf
+</pre>
+
+== Verification ==
+{{Verify your download}}
+<pre>
+gh release download v1.0 -R Colegio-San-Caio/978-3-00-068463-0 --clobber
+sha256sum book.pdf main.tex
+</pre>
+
+== Categories ==
+[[Category:Open educational resources]]
+[[Category:LaTeX]]
+[[Category:Books with ISBN 978-3-00-068463-0]]
+[[Category:Educational software]]
+
+{{ISBN|978-3-00-068463-0}}

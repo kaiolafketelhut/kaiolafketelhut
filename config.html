@@ -1,0 +1,27 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CONFIG.SYS - oeneye OS X - FieldberryGruppe</title><style>body{margin:0;background:#000;color:#0f8;font-family:monospace;padding:12px;font-size:13px}#head{background:#0f0;color:#000;padding:8px;text-align:center;font-weight:bold;border:2px solid #000}.box{border:1px solid #0f8;padding:12px;margin:10px 0;background:#001a0e}.opt{border:1px solid #0f8;padding:8px;margin:6px 0;cursor:pointer;display:flex;justify-content:space-between}.opt:hover,.opt.sel{background:#0f8;color:#000}.btn{border:1px solid #0f8;background:#000;color:#0f8;padding:6px 10px;font-family:monospace;margin:4px;cursor:pointer}.btn.on{background:#0f8;color:#000}a{color:#0f8;text-decoration:none}pre{margin:0;white-space:pre-wrap;font-size:11px}</style></head><body><div id="head">CONFIG.SYS - oeneye OS X v7.2 - ©FieldberryGruppe - AH 0hE JC 0a (0)b</div><div class="box"><pre>; oeneye OS X CONFIG.SYS
+; ©FieldberryGruppe - Evergreen - No Date Solved
+; Boot: AH 0hE JC 0a (0)b
+; GPG: 7619efe420a29fbf0ba8f44f973b71d35bfa0d3769579381ae521d3b9b2a0026
+
+[MENU]
+MENUITEM=COMBINED, Combined Modus - Zoom+Pan+Rotate+Scroll
+MENUITEM=CLOCK, Clock Proxy - Green Clock
+MENUITEM=SCROLL, Scroll Modus - overflow:auto
+MENUITEM=ZOOM, Zoom Modus - scale
+MENUITEM=PAN, Pan Modus - drag
+MENUITEM=ROTATE, Rotate Modus - rotate
+MENUITEM=COPYRIGHT, Copyright - ©FieldberryGruppe
+MENUDEFAULT=COMBINED, 5
+MENUCOLOR=10,0
+
+[COMMON]
+DEVICE=oeneye.sys /V /E:7619efe
+SHELL=command.com /P /E:1024
+STACKS=9,256
+BUFFERS=20
+FILES=40
+LASTDRIVE=Z
+
+; Evergreen = Never expires
+; Built on Termux - Colegio San Caio - JP DEV READY - ns_HOLLA
+</pre></div><div class="box"><div style="text-align:center;margin-bottom:8px">SELECT BOOT MODUS - Use keys 1-7 or click:</div><div class="opt sel" id="o1" onclick="sel(1)"><span>1. COMBINED - Zoom+Pan+Rotate+Scroll (DEFAULT)</span><span>[oeneye.html]</span></div><div class="opt" id="o2" onclick="sel(2)"><span>2. CLOCK PROXY - Green 00:00:00</span><span>[clock.html]</span></div><div class="opt" id="o3" onclick="sel(3)"><span>3. SCROLL MODUS - Scroll ON/OFF</span><span>[scroll.html]</span></div><div class="opt" id="o4" onclick="sel(4)"><span>4. ZOOM MODUS - Pinch + Buttons</span><span>[zoom.html]</span></div><div class="opt" id="o5" onclick="sel(5)"><span>5. PAN MODUS - Drag anywhere</span><span>[pan.html]</span></div><div class="opt" id="o6" onclick="sel(6)"><span>6. ROTATE MODUS - Spin box</span><span>[rotate.html]</span></div><div class="opt" id="o7" onclick="sel(7)"><span>8. COMMAND - COMMAND.COM Terminal - ©FieldberryGruppe</span><span>[copyright.html]</span></div><div style="text-align:center;margin-top:12px"><button class="btn on" onclick="boot()">BOOT SELECTED (ENTER)</button><button class="btn" onclick="window.location.href='index.html'">AUTOEXEC.BAT</button><div style="font-size:10px;margin-top:8px">Press 1-7 to select, ENTER to boot • Default boots in <span id="cd">5</span>s</div></div></div><div class="box" style="font-size:10px;text-align:center">©FieldberryGruppe • EVERGREEN • Boot: AH 0hE JC 0a (0)b • v7.2 VERIFIED • Built on Termux • <a href="index.html">AUTOEXEC</a> | <a href="oeneye.html">COMBINED</a></div><script>

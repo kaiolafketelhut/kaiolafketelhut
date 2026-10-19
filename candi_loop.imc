@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+# CANDI OQM fruit.sh style -!loop safe
+echo "[CANDI OQM] fruit.sh start"
+
+./static_own_index.sh
+
+# run oeneyeGHview only if you pass --push
+if [[ "$1" == "--push" ]]; then
+ ./oeneyeGHview.imc
+else
+  echo "[*] skip push (use./fruit.sh --push to push)"
+fi
+echo "[*] done"
