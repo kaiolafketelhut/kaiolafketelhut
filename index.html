@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colegio San Caio</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f6f8;
+            color: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .top-banner {
+            width: 100%;
+            background-color: #0b1d3a;
+            color: #ffffff;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 6px 0;
+            font-weight: 500;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 16px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #0b1d3a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .badge {
+            background-color: #ff3b30;
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .nav-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .nav-btn {
+            background-color: #ffffff;
+            border: 2px solid #0b1d3a;
+            color: #0b1d3a;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            text-align: center;
+        }
+        .nav-btn.active {
+            background-color: #0b1d3a;
+            color: #ffffff;
+        }
+        .hero-card {
+            background: linear-gradient(135deg, #e6f4f1 0%, #f0f7ef 100%);
+            border-radius: 24px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border: 1px solid #d5e5e1;
+        }
+        .hero-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #0b1d3a;
+            line-height: 1.1;
+            margin: 0;
+        }
+        .hero-subtitle {
+            font-size: 0.85rem;
+            color: #4a5568;
+            margin: 0;
+        }
+        .action-row {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-primary {
+            background-color: #0b1d3a;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            text-align: center;
+            flex: 1;
+        }
+        .btn-secondary {
+            background-color: #ffc107;
+            color: #1a1a1a;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            text-align: center;
+        }
+        .campus-box {
+            background-color: #ffffff;
+            border: 2px solid #0b1d3a;
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
+        }
+        .campus-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0b1d3a;
+            margin: 0;
+        }
+        .campus-footer {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 4px;
+        }
+        .bottom-btn {
+            background-color: #d1c4e9;
+            color: #311b92;
+            padding: 12px;
+            border-radius: 16px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            border: 1px solid #b39ddb;
+        }
+        .site-footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 10px;
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-banner">
+        Official: www.colegio-san-caio.org.int - NGO Education - Mirror github.io
+    </div>
+
+    <div class="container">
+        <div class="header-title">
+            Colegio San Caio <span class="badge">org.int</span>
+        </div>
+
+        <div class="nav-grid">
+            <a href="#" class="nav-btn active">org.int</a>
+            <a href="#" class="nav-btn">Macro</a>
+            <a href="#" class="nav-btn">Wiki Box</a>
+            <a href="#" class="nav-btn">Google Wiki</a>
+            <a href="#" class="nav-btn">Galeria</a>
+            <a href="#" class="nav-btn">Repo</a>
+        </div>
+
+        <div class="hero-card">
+            <h1 class="hero-title">Aprende.<br>Crea.<br>Crece.</h1>
+            <p class="hero-subtitle">Macro Lab + Galeria SRT + Mirror oficial www.org.int</p>
+            
+            <div class="action-row">
+                <a href="#" class="btn-primary">Abrir Macro Lab</a>
+                <a href="#" class="btn-secondary">Ver srt.png</a>
+            </div>
+        </div>
+
+        <div class="campus-box">
+            <div class="campus-title">Campus</div>
+            <div class="campus-footer">org.int</div>
+        </div>
+
+        <a href="#" class="bottom-btn">Cursos Interactivos</a>
+
+        <div class="site-footer">
+            Colegio San Caio v2.0
+        </div>
+    </div>
+
+</body>
+</html>
