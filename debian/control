@@ -3,7 +3,7 @@ Section: misc
 Priority: optional
 Maintainer: Kai Ketelhut <your_email@example.com>
 Build-Depends: debhelper-compat (= 13)
-Standards-Version: 4.6.2
+Standards-Version: 1.05~rc1
 Rules-Requires-Root: no
 
 Package: oeneyeos
