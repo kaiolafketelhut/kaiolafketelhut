@@ -1,0 +1,10 @@
+build-deb:
+  image: debian:stable
+  script:
+    - apt-get update
+    - apt-get install -y build-essential debhelper devscripts
+    - dpkg-buildpackage -us -uc -b
+    - mkdir -p out && cp ../*.deb out/
+  artifacts:
+    paths:
+      - out/*.deb

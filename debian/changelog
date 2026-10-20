@@ -1,0 +1,5 @@
+oeneyeos (1.04-1) unstable; urgency=medium
+
+  * Add Debian packaging, CHANGELOG and Salsa CI.
+
+ -- Kai Ketelhut <your_email@example.com>  Tue, 20 Oct 2026 09:44:41 +0200
