@@ -1,32 +1,51 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>oeneyeOS - Floppy Max 2.88MB + VHD</title>
-<style>body{font-family:system-ui,Arial;margin:20px;max-width:900px} a{color:#06c} pre{background:#f5f5f5;padding:10px} h1{font-size:22px}</style>
+<style>
+body{font-family:-apple-system,system-ui,Segoe UI,Roboto,Arial;margin:16px;line-height:1.5;max-width:920px;color:#111}
+a{color:#0a66c2;text-decoration:none} a:hover{text-decoration:underline}
+h1{font-size:20px;margin:8px 0}
+.badge{display:inline-block;background:#e6ffed;color:#0a7a28;border:1px solid #a3d9b1;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600}
+code{word-break:break-all;font-size:12px;background:#f6f8fa;padding:2px 4px;border-radius:4px}
+pre{background:#f6f8fa;padding:12px;overflow-x:auto;border-radius:8px;font-size:12px}
+.grid{display:grid;gap:8px}
+.card{border:1px solid #e5e7eb;border-radius:12px;padding:12px}
+small{color:#555}
+.center{text-align:center;padding:24px 0}
+</style>
 </head><body>
 <h1>oeneyeOS - Floppy Max 2.88MB + VHD</h1>
+<span class="badge">v1.05 FINAL - VERIFIED</span>
+
 <p>Debian package: <a href="./oeneyeos_1.05_all.deb"><b>oeneyeos_1.05_all.deb</b></a> | <a href="./index-v105.html">v1.05 page</a></p>
-<p>A: oeneyeOS.img (2.88M) | B: data.img (2.88M) | C: date.img (2.88M)</p>
-<p>D: GNUoeneyeALPINEunix.img (357 MB) | SHA-256:<br><small>a91847bc04d43ab5ca543b9769ebfd17d05c37f718bedeb3d9e5f628c49188</small></p>
-<p>X: <a href="./workshop.img">workshop.img</a> (1.4 MB) | <a href="./fily.img">fily.img</a> (360 KB)</p>
-<p>workshop.img SHA-256:<br><small>8653aa17d60521d2409548e197e3e8a6a5295552a1b75aac895ab5b00b67fda</small><br>
-fily.img SHA-256:<br><small>00accd5190267b717738df1eb96151c853ba907fdccb807d093c780786a14a</small></p>
-<p><a href="./oeneyeOS.img">Download A</a> | <a href="./data.img">Download B</a> | <a href="./date.img">Download C</a></p>
-<pre>qemu-system-i386 -fda oeneyeOS.img -fdb data.img -hda date.img</pre>
-<p>Back up important data before using the disk-image tools. A defect in disk-writing code can damage data.</p>
 
-<h3>License (EULA)</h3>
-<p>Free to use, modify and share. Don't present a modified version as the official release. The original oeneye code is MIT-licensed, the software is provided as is, and it is not security-certified.</p>
-<p><a href="./oeneye_OS_EULA_version_1.0.pdf">oeneye OS EULA version 1.0 (PDF)</a><br>
-DOI: <a href="https://doi.org/10.5281/zenodo.22978006">10.5281/zenodo.22978006</a></p>
-
-<h3>Book</h3>
-<div style="text-align:center;margin-top:30px">
-<p style="font-family:serif;font-size:28px;margin:0">MOSFETQ</p>
-<p style="font-family:serif;font-size:18px">Technologie als Gesellschaftstreiber</p>
-<p style="font-size:80px;margin:20px 0">∞<br><span style="font-size:20px">◉‿◉</span></p>
+<div class="card grid">
+<div><b>A:</b> oeneyeOS.img (2.88M) | <b>B:</b> data.img (2.88M) | <b>C:</b> date.img (2.88M)</div>
+<div><b>D:</b> GNUoeneyeALPINEunix.img (357 MB) | SHA-256:<br><code>a91847bc04d43ab5ca543b9769ebfd17d05c37f718bedeb3d9e5f628c49188</code></div>
+<div><b>X:</b> <a href="./workshop.img">workshop.img</a> (1.4 MB) | <a href="./fily.img">fily.img</a> (360 KB)</div>
+<div>workshop.img SHA-256:<br><code>8653aa17d60521d2409548e197e3e8a6a5295552a1b75aac895ab5b00b67fda</code><br>
+fily.img SHA-256:<br><code>00accd5190267b717738df1eb96151c853ba907fdccb807d093c780786a14a</code></div>
 </div>
 
-<hr>
-<p style="color:green"><b>oeneyeOS v1.05 FINAL - VERIFIED</b> - running on 127.0.0.1:8080 in Debian proot-distro. Clean: No NXDOMAIN, No colegio, No .github, No .img residues. Build final-clean | 1 bunq, 1 cover, 1 Verified</p>
-<p>Debian package verified: <code>proot-distro login debian -- dpkg -i oeneyeos_1.05_all.deb && cat /usr/share/oeneyeos/index.html</code></p>
+<p><a href="./oeneyeOS.img">Download A</a> | <a href="./data.img">Download B</a> | <a href="./date.img">Download C</a></p>
+
+<pre>qemu-system-i386 -fda oeneyeOS.img -fdb data.img -hda date.img</pre>
+
+<p><small>Back up important data before using the disk-image tools. A defect in disk-writing code can damage data.</small></p>
+
+<h3>License (EULA)</h3>
+<p><small>Free to use, modify and share. Don't present a modified version as the official release. The original oeneye code is MIT-licensed, the software is provided as is, and it is not security-certified.</small></p>
+<p><a href="./oeneye_OS_EULA_version_1.0.pdf">oeneye OS EULA version 1.0 (PDF)</a><br>DOI: <a href="https://doi.org/10.5281/zenodo.22978006">10.5281/zenodo.22978006</a></p>
+
+<div class="center card">
+<div style="font-family:serif;font-size:26px">MOSFETQ</div>
+<div><small>Technologie als Gesellschaftstreiber</small></div>
+<div style="font-size:64px;line-height:1;margin:16px 0">∞</div>
+<div>◉‿◉</div>
+</div>
+
+<p style="color:#0a7a28;font-size:13px;border-top:1px solid #e5e7eb;padding-top:12px">
+<b>oeneyeOS v1.05 FINAL - VERIFIED</b> - running on 127.0.0.1:8080 in Debian proot-distro. Clean: No NXDOMAIN, No colegio, No .github, No .img residues. Build final-clean | 1 bunq, 1 cover, 1 Verified<br>
+<small style="color:#666">Debian verified: <code>proot-distro login debian -- dpkg -i oeneyeos_1.05_all.deb && cat /usr/share/oeneyeos/index.html</code></small>
+</p>
 </body></html>
