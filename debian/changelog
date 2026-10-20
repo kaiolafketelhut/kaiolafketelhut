@@ -1,4 +1,4 @@
-oeneyeos (1.04-1) unstable; urgency=medium
+oeneyeos (1.04) unstable; urgency=medium
 
   * Add Debian packaging, CHANGELOG and Salsa CI.
 
