@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TeX Gist - demo-repository</title>
+removed@example.com
+<style>
+body{margin:0;background:#0d1117;color:#c9d1d9;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial}
+.header{background:#010409;border-bottom:1px solid #30363d;padding:14px 24px;font-weight:600}
+.wrap{max-width:950px;margin:0 auto;padding:16px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{padding:6px 14px;border:1px solid #30363d;border-radius:6px;background:#21262d;color:#c9d1d9;cursor:pointer;font-size:13px}
+.tab.active{background:#1f6feb;color:#fff;border-color:#1f6feb}
+.box{background:#0d1117;border:1px solid #30363d;border-radius:6px;overflow:hidden}
+.box-head{padding:10px 14px;background:#010409;border-bottom:1px solid #30363d;display:flex;justify-content:space-between;font-size:13px}
+.btn{border:1px solid #30363d;background:#21262d;color:#c9d1d9;padding:3px 10px;border-radius:6px;font-size:12px;text-decoration:none;margin-left:6px}
+pre{margin:0;padding:16px;overflow:auto;white-space:pre-wrap;font-size:13px}
+.render{padding:24px;background:#fff;color:#000;min-height:200px}
+.render h1,.render h2{color:#000}
+#htmlView{display:none}
+</style>
+</head>
+<body>
+<div class="header">Colegio-San-Caio / demo-repository — TeX Gist (v1.0 of 978-3-00-068463-0)</div>
+<div class="wrap">
+<div class="tabs">
+<button class="tab active" onclick="showTab('tex')">TeX Source</button>
+<button class="tab" onclick="showTab('html')">HTML View</button>
+</div>
+<div class="box">
+<div class="box-head"><span id="fname">main.tex</span><span><a class="btn" href="main.tex" target="_blank">Raw</a> <a class="btn" href="https://github.com/Colegio-San-Caio/978-3-00-068463-0/releases/tag/v1.0" target="_blank">Release</a></span></div>
+<pre id="texView">Loading main.tex...</pre>
+<div id="htmlView" class="render"></div>
+<iframe id="pdfView" style="width:100%;height:80vh;border:0;display:none"></iframe>
+</div>
+</div>
+removed@example.com
+removed@example.com
+<script>
+let texContent='';
+function showTab(t){
+ document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+ event.target.classList.add('active');
+ document.getElementById('texView').style.display = t==='tex'?'block':'none';
+ document.getElementById('htmlView').style.display = t==='html'?'block':'none';
+ document.getElementById('pdfView').style.display = t==='pdf'?'block':'none';
+ if(t==='html') renderHTML();
+ if(t==='pdf') document.getElementById('pdfView').src='book.pdf';
+}
+function renderHTML(){
+ const div=document.getElementById('htmlView');
+ div.innerHTML = '<h1>TeX source, math rendered</h1><div style="white-space:pre-wrap;line-height:1.7">'removed-phone
+ renderMathInElement(div,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+}
+fetch('main.tex?v='removed-phone
+ if(t.includes('Page not found') || t.includes('<!DOCTYPE html>')){
+   document.getElementById('texView').textContent='ERROR: main.tex not found on Pages. Push it:\n\ncp /tmp/book/*.tex main.tex\n git add main.tex\n git push';
+   return;
+ }
+ texContent=t;
+ document.getElementById('texView').textContent=t;
+ document.getElementById('htmlView').innerHTML='';
+}).catch(e=>{document.getElementById('texView').textContent='main.tex missing - add your ISBN TeX file';});
+</script>
+</body>
+</html>

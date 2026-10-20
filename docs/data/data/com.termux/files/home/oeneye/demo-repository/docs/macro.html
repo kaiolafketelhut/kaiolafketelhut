@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Macro - Colegio San Caio</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;padding:16px;max-width:900px;margin:auto}
+.r{margin:10px 0;padding:8px;border:1px solid #8884;border-radius:6px}
+a{color:#06c}
+</style></head><body>
+<p><a href="index.html">&larr; Home</a></p>
+<h1>Macro: repos and releases</h1>
+<div id="list">Loading...</div>
+<script>
+var S=['https://api.github.com/orgs/Colegio-San-Caio/repos?per_page=100&sort=updated',
+       'https://api.github.com/users/clevjhon/repos?per_page=100&sort=updated'];
+Promise.all(S.map(function(u){return fetch(u).then(function(r){return r.json()}).catch(function(){return []})}))
+.then(function(a){
+ var L=[].concat(a[0]||[],a[1]||[]).filter(function(r){return r&&r.full_name});
+ var box=document.getElementById('list');box.innerHTML='';
+ if(!L.length){box.textContent='No repos loaded (GitHub API limit?). Try again later.';return;}
+ L.forEach(function(r){
+  var d=document.createElement('div');d.className='r';
+  var a1=document.createElement('a');a1.href=r.html_url;a1.textContent=r.full_name;
+  var a2=document.createElement('a');a2.href=r.html_url+'/releases';a2.textContent='releases';
+  d.appendChild(a1);d.appendChild(document.createTextNode(' - '));d.appendChild(a2);
+  if(r.description){var p=document.createElement('div');p.textContent=r.description;d.appendChild(p);}
+  box.appendChild(d);
+ });
+});
+</script>
+</body></html>

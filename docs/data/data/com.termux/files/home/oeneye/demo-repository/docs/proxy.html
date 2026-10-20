@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proxy - Colegio San Caio</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;padding:16px;max-width:900px;margin:auto}
+pre{border:1px solid #8884;border-radius:6px;padding:10px;overflow-x:auto}
+a{color:#06c}
+</style></head><body>
+<p><a href="index.html">&larr; Home</a></p>
+<h1>Proxy: holla_proxy</h1>
+<p>holla_proxy.py is a small static file server (Python http.server). It serves its own folder on port 8080 and listens on 127.0.0.1 only. It does not forward requests to other servers.</p>
+<pre>python3 holla_proxy.py
+# then open http://127.0.0.1:8080</pre>
+<p><a href="holla_proxy.py">Raw</a> | <a href="https://github.com/Colegio-San-Caio/demo-repository/blob/main/holla_proxy.py">GitHub</a></p>
+<pre id="src">Loading...</pre>
+<script>
+fetch('holla_proxy.py').then(function(r){return r.text()}).then(function(t){document.getElementById('src').textContent=t}).catch(function(){document.getElementById('src').textContent='Could not load source.'});
+</script>
+</body></html>
