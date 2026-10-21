@@ -9,7 +9,18 @@ jobs:
         run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android
       - name: Build in Fedora container
         run: docker run --rm --privileged -v "$PWD:/w" -w /w fedora:latest bash BlackHat.sh
-      - uses: actions/upload-artifact@v4
-        with:
-          name: oeneye-redhat-iso
-          path: out/lmc/*.iso
+- name: Find ISO
+  run: |
+    echo "Searching for ISO..."
+    find . -type f -name "*.iso" -ls
+    ls -R out || true
+    ls -R /var/tmp || true
+
+- uses: actions/upload-artifact@v4
+  with:
+    name: oeneye-iso
+    path: |
+      **/*.iso
+      out/**/*.iso
+      /var/tmp/**/*.iso
+    if-no-files-found: warn
