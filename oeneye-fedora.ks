@@ -1,4 +1,3 @@
-%include fedora-live-base.ks
 %include fedora-live-xfce.ks
 %packages
 neovim
