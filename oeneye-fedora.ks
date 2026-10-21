@@ -1,19 +1,20 @@
-%include fedora-live-xfce.ks
+%include /usr/share/spin-kickstarts/fedora-live-base.ks
+%include /usr/share/spin-kickstarts/fedora-live-desktop.ks
 
 %packages
 neovim
 git
-# add your oeneye tools here, NOT as shell commands
+xfce-desktop
+lightdm
 %end
 
 %post
 cat > /etc/os-release <<'OS'
 NAME="oeneye"
 ID=oeneye
-ID_LIKE=fedora
+ID_LIKE="fedora rhel"
 VERSION="1.05 rc"
 VERSION_ID="1.05-rc"
-PRETTY_NAME="oeneye 1.05 rc (Fedora 44 base) - MOSFETQ infinity-eye"
+PRETTY_NAME="oeneye 1.05 rc (Fedora base) MOSFETQ infinity-eye"
 OS
-# wallpaper / MOSFETQ theme would go here
 %end
