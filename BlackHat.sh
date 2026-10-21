@@ -6,25 +6,23 @@ OUT="$WORKDIR/out"
 mkdir -p "$OUT"
 rm -rf "$OUT/lmc"
 
-echo "=== install host tools ==="
+echo "=== install tools ==="
 dnf install -y lorax lorax-lmc-novirt pykickstart git anaconda-tui xorriso
 
 if ! dnf install -y spin-kickstarts --setopt=install_weak_deps=True 2>&1; then
-  echo "spin-kickstarts not in repo, cloning"
   rm -rf /usr/share/spin-kickstarts
   git clone https://pagure.io/fedora-kickstarts.git /usr/share/spin-kickstarts
 fi
 
-echo "=== flatten ==="
-# your ks is in repo root, not in /usr/share/spin-kickstarts
-if [ -f "$WORKDIR/oeneye-fedora.ks" ]; then
-  KSFROM="$WORKDIR/oeneye-fedora.ks"
-else
-  KSFROM="/usr/share/spin-kickstarts/fedora-live-xfce.ks"
-fi
+echo "=== locate kickstart ==="
+ls -l "$WORKDIR"/*.ks /usr/share/spin-kickstarts/*.ks | head -n 30
+# your file - pick first .ks in repo or fallback
+KSFILE=$(ls "$WORKDIR"/oeneye*.ks "$WORKDIR"/*.ks 2>/dev/null | head -n1 || echo "/usr/share/spin-kickstarts/fedora-live-xfce.ks")
+echo "Using KSFILE=$KSFILE"
+cp -v "$KSFILE" /usr/share/spin-kickstarts/oeneye-tmp.ks
 
 cd /usr/share/spin-kickstarts
-ksflatten -c "$KSFROM" -o "$WORKDIR/flat.ks"
+ksflatten -c oeneye-tmp.ks -o "$WORKDIR/flat.ks"
 
 cat >> "$WORKDIR/flat.ks" <<'POST'
 %post
