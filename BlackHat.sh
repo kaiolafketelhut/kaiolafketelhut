@@ -6,7 +6,7 @@ REL="${RELEASEVER:-44}"
 OUT="${OUT:-$PWD/out}"
 mkdir -p "$OUT" work && cd work
 dnf install -y lorax lorax-lmc-novirt pykickstart git anaconda-tui xorriso
-dnf install -y spin-kickstarts fedora-kickstarts --setopt=install_weak_deps=True || (dnf install -y git dnf install -y fedora-kickstartsdnf install -y fedora-kickstarts git clone https://pagure.io/fedora-kickstarts.git /usr/share/spin-kickstarts)
+dnf install -y pykickstart spin-kickstarts lorax libvirt fedora-kickstarts --setopt=install_weak_deps=True || (dnf install -y git dnf install -y fedora-kickstartsdnf install -y fedora-kickstarts git clone https://pagure.io/fedora-kickstarts.git /usr/share/spin-kickstarts)
 (cd /usr/share/spin-kickstarts && ksflatten -c oeneye-fedora.ks -o "$OLDPWD/flat.ks")
 cat >> flat.ks <<'POST'
 %post
