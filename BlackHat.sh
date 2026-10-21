@@ -24,6 +24,12 @@ services --enabled=NetworkManager
 kernel
 dracut-live
 livesys-scripts
+grub2-pc
+grub2-pc-modules
+grub2-efi-x64
+grub2-efi-x64-cdboot
+shim-x64
+syslinux
 %end
 %post
 echo 'oeneye 1.05 rc' > /etc/oeneye-release
