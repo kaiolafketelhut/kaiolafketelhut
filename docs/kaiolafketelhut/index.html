@@ -21,35 +21,3 @@
 <p>Kai Olaf Ketelhut - Fieldberry Group</p>
 </body>
 </html>
-<!-- CANARY THREADS DEV - till buy -->
-<div id="canary-threads">
-<h3>Canary Build: Kapitel-Diskussion</h3>
-<div id="likes">0 Likes</div>
-<button onclick="like()">❤️ Like this Canary</button>
-<div id="threads"></div>
-<input id="comment" placeholder="Dev thread comment...">
-<button onclick="postThread()">Post to Canary</button>
-<a href="https://fieldberry.com/mosfetq-buy" id="buy-cta" style="display:none">Buy full book - unlock all threads</a>
-</div>
-
-<script>
-let likes = localStorage.getItem('mosfetq-likes')||0;
-document.getElementById('likes').innerText = likes+' Likes';
-function like(){
-  likes++;
-  localStorage.setItem('mosfetq-likes',likes);
-  document.getElementById('likes').innerText = likes+' Likes';
-  if(likes>5) document.getElementById('buy-cta').style.display='block';
-}
-function postThread(){
-  let c = document.getElementById('comment').value;
-  if(!c) return;
-  let div = document.createElement('div');
-  div.innerText = '🐤 Canary: '+c;
-  document.getElementById('threads').appendChild(div);
-  document.getElementById('comment').value='';
-  // after 3 comments, show buy
-  if(document.getElementById('threads').children.length>2)
-    document.getElementById('buy-cta').style.display='block';
-}
-</script>
