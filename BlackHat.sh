@@ -7,7 +7,7 @@ OUT="${OUT:-$PWD/out}"
 mkdir -p "$OUT" work && cd work
 dnf install -y lorax lorax-lmc-novirt pykickstart git anaconda-tui xorriso
 dnf install -y fedora-kickstarts
-(cd /usr/share/spin-kickstarts && ksflatten -c fedora-live-xfce.ks -o "$OLDPWD/flat.ks")
+(cd /usr/share/spin-kickstarts && ksflatten -c oeneye-fedora.ks -o "$OLDPWD/flat.ks")
 cat >> flat.ks <<'POST'
 %post
 cat > /etc/os-release <<'OS'
