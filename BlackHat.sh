@@ -33,3 +33,7 @@ KS
 ksflatten --config /tmp/oeneye-standalone.ks -o flat.ks
 livemedia-creator --make-iso --no-virt --ks flat.ks --project oeneye --releasever "$REL" --volid oeneye --iso-name oeneye-redhat.iso --resultdir "$OUT/lmc" --nomacboot 2>&1 | tee /tmp/lmc.log
 ls -lh "$OUT/lmc/"
+echo "=== RESULTS ==="
+ls -lh "$OUT/lmc/" || true
+ls -lh out/ || true
+find . -maxdepth 3 -name "*.iso" -exec cp -v {} out/ \; 2>/dev/null || true
