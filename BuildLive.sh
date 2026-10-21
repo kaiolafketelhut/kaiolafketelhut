@@ -5,7 +5,7 @@ apt-get update && apt-get install -y live-build debootstrap ubuntu-keyring debia
 mkdir /live && cd /live
 if [ "${FLAVOR:-lxqt}" = lubuntu ]; then
   lb config --mode ubuntu --distribution noble \
-    --archive-areas "main restricted universe multiverse" \
+    --archive-areas "main restricted universe multiverse" --security false --updates false --mirror-bootstrap http://archive.ubuntu.com/ubuntu/ --mirror-chroot http://archive.ubuntu.com/ubuntu/ --mirror-binary http://archive.ubuntu.com/ubuntu/ --parent-mirror-bootstrap http://archive.ubuntu.com/ubuntu/ --parent-mirror-chroot http://archive.ubuntu.com/ubuntu/ --parent-mirror-binary http://archive.ubuntu.com/ubuntu/ \
     --debootstrap-options "--keyring=/usr/share/keyrings/ubuntu-archive-keyring.gpg" \
     --binary-images iso-hybrid --iso-application oeneye --iso-volume oeneye
   PKGS="lubuntu-desktop"; LIKE=ubuntu; NAME="Lubuntu base"
