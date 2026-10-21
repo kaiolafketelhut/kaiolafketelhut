@@ -1,13 +1,9 @@
-%include /usr/share/spin-kickstarts/fedora-live-base.ks
-%include /usr/share/spin-kickstarts/fedora-live-desktop.ks
-
+%include fedora-live-base.ks
+%include fedora-live-xfce.ks
 %packages
 neovim
 git
-xfce-desktop
-lightdm
 %end
-
 %post
 cat > /etc/os-release <<'OS'
 NAME="oeneye"
