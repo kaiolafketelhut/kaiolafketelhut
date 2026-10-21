@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-set -e
+set -ex
 REL="${1:-44}"
 WORKDIR="$(pwd)"
 OUT="$WORKDIR/out"
 mkdir -p "$OUT"
 rm -rf "$OUT/lmc"
 
-echo "=== install tools ==="
 dnf install -y lorax lorax-lmc-novirt pykickstart git anaconda-tui xorriso
 
 if ! dnf install -y spin-kickstarts --setopt=install_weak_deps=True 2>&1; then
@@ -14,14 +13,21 @@ if ! dnf install -y spin-kickstarts --setopt=install_weak_deps=True 2>&1; then
   git clone https://pagure.io/fedora-kickstarts.git /usr/share/spin-kickstarts
 fi
 
-echo "=== locate ks ==="
+echo "=== LS ==="
+ls -l /usr/share/spin-kickstarts/fedora-live*.ks | head -n 20
 ls -l "$WORKDIR"/*.ks
+
 KSFILE="$WORKDIR/oeneye-fedora.ks"
 cp -v "$KSFILE" /usr/share/spin-kickstarts/oeneye-tmp.ks
+cat /usr/share/spin-kickstarts/oeneye-tmp.ks
 
 cd /usr/share/spin-kickstarts
-echo "=== flatten ==="
+echo "=== TRY FLATTEN ==="
+ksflatten -c oeneye-tmp.ks -o "$WORKDIR/flat.ks" --version "$REL" || \
 ksflatten -c oeneye-tmp.ks -o "$WORKDIR/flat.ks"
+
+echo "=== FLAT OK ==="
+head -n 100 "$WORKDIR/flat.ks"
 
 cat >> "$WORKDIR/flat.ks" <<'POST'
 %post
@@ -36,11 +42,7 @@ OS
 %end
 POST
 
-echo "=== build ==="
 rm -rf "$OUT/lmc"
-livemedia-creator --make-iso --no-virt --ks "$WORKDIR/flat.ks" \
-  --project oeneye --releasever "$REL" --volid oeneye \
-  --iso-name oeneye-redhat.iso --resultdir "$OUT/lmc"
-
+livemedia-creator --make-iso --no-virt --ks "$WORKDIR/flat.ks" --project oeneye --releasever "$REL" --volid oeneye --iso-name oeneye-redhat.iso --resultdir "$OUT/lmc"
 cp "$OUT"/lmc/*.iso "$OUT"/ || true
 ls -lh "$OUT"/*.iso
