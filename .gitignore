@@ -4,3 +4,11 @@
 tmp/
 system_manifest.html
 *.deb
+*.img
+*.deb
+build-oeneyeos_1.05/
+_assets/
+_include/
+_debian/
+debian/
+docs/
