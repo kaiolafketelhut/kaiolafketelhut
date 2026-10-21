@@ -6,12 +6,7 @@ neovim
 git
 %end
 %post
-cat > /etc/os-release <<'OS'
-NAME="oeneye"
-ID=oeneye
-ID_LIKE="fedora rhel"
-VERSION="1.05 rc"
-VERSION_ID="1.05-rc"
-PRETTY_NAME="oeneye 1.05 rc (Fedora base) MOSFETQ infinity-eye"
-OS
+echo 'NAME="oeneye"' > /etc/os-release
+echo 'ID=oeneye' >> /etc/os-release
+echo 'PRETTY_NAME="oeneye 1.05 rc MOSFETQ infinity-eye"' >> /etc/os-release
 %end
