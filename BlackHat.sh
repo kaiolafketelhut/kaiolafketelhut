@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-set -ex
+set -exo pipefail
 REL="44"
 OUT="$(pwd)/out"
 mkdir -p "$OUT" && rm -rf "$OUT/lmc"
 dnf install -y lorax lorax-lmc-novirt pykickstart anaconda-tui xorriso isomd5sum curl
 
 cat > /tmp/oeneye-standalone.ks <<'KS'
-url --url=https://dl.fedoraproject.org/pub/fedora/linux/releases/44/Everything/aarch64/os/
-repo --name=fedora --baseurl=https://dl.fedoraproject.org/pub/fedora/linux/releases/44/Everything/aarch64/os/
-repo --name=updates --baseurl=https://dl.fedoraproject.org/pub/fedora/linux/updates/44/Everything/aarch64/
+url --url=https://dl.fedoraproject.org/pub/fedora/linux/releases/44/Everything/x86_64/os/
+repo --name=fedora --baseurl=https://dl.fedoraproject.org/pub/fedora/linux/releases/44/Everything/x86_64/os/
+repo --name=updates --baseurl=https://dl.fedoraproject.org/pub/fedora/linux/updates/44/Everything/x86_64/
 lang en_US.UTF-8
 keyboard us
 timezone UTC

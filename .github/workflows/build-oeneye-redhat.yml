@@ -25,7 +25,5 @@ jobs:
         with:
           name: oeneye-iso
           path: |
-            **/*.iso
             out/**/*.iso
-            /var/tmp/**/*.iso
           if-no-files-found: warn
