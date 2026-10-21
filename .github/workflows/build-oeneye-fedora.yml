@@ -20,7 +20,7 @@ jobs:
           KS: ${{ inputs.ks }}
         run: |
           mkdir -p out
-          docker run --rm -e HASH -e KS -v "$PWD:/w" -v "$PWD/out:/out" -w /tmp fedora:latest bash /w/BuildFedoraISO.sh
+          docker run --rm --privileged -e HASH -e KS -v "$PWD:/w" -v "$PWD/out:/out" -w /tmp fedora:latest bash /w/BuildFedoraISO.sh
       - uses: actions/upload-artifact@v4
         with:
           name: oeneye-fedora-iso
