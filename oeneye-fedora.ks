@@ -1,13 +1,10 @@
 %include fedora-live-base.ks
 %include fedora-live-xfce.ks
-
 %packages
 @xfce-desktop
 neovim
 git
-vim
 %end
-
 %post
 cat > /etc/os-release <<'OS'
 NAME="oeneye"
