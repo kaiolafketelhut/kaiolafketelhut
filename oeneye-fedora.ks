@@ -3,7 +3,6 @@ lang en_US.UTF-8
 keyboard us
 timezone Europe/Berlin --utc
 rootpw --iscrypted $6$REPLACE
-authselect --enableshadow --passalgo=sha512
 selinux --enforcing
 firewall --enabled --service=ssh
 bootloader --location=mbr
