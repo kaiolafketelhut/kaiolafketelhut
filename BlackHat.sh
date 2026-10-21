@@ -1,13 +1,25 @@
 #!/usr/bin/env bash
-# BlackHat.sh - build the oeneye Red Hat-style (Fedora base) ISO
-# Runs as root inside a Fedora container (see build-oeneye-redhat.yml)
 set -euo pipefail
-REL="${RELEASEVER:-44}"
-OUT="${OUT:-$PWD/out}"
-mkdir -p "$OUT" work && cd work
+REL="${1:-44}"
+OUT="$PWD/out"
+mkdir -p "$OUT"
+rm -rf "$OUT/lmc"
+
+# 1. install tools - f44 names
 dnf install -y lorax lorax-lmc-novirt pykickstart git anaconda-tui xorriso
-dnf install -y pykickstart spin-kickstarts lorax libvirt fedora-kickstarts --setopt=install_weak_deps=True || (dnf install -y git dnf install -y fedora-kickstartsdnf install -y fedora-kickstarts git clone https://pagure.io/fedora-kickstarts.git /usr/share/spin-kickstarts)
-(cd /usr/share/spin-kickstarts && ksflatten -c oeneye-fedora.ks -o "$OLDPWD/flat.ks")
+
+# try packages, if not found clone
+if ! dnf install -y spin-kickstarts --setopt=install_weak_deps=True; then
+  dnf install -y git
+  rm -rf /usr/share/spin-kickstarts
+  git clone https://pagure.io/fedora-kickstarts.git /usr/share/spin-kickstarts
+fi
+
+# 2. flatten your OWN ks
+cd /usr/share/spin-kickstarts
+ksflatten -c oeneye-fedora.ks -o "$OLDPWD/flat.ks" || ksflatten -c fedora-live-xfce.ks -o "$OLDPWD/flat.ks"
+
+# 3. add oeneye branding
 cat >> flat.ks <<'POST'
 %post
 cat > /etc/os-release <<'OS'
@@ -20,7 +32,12 @@ PRETTY_NAME="oeneye 1.05 rc (Fedora base)"
 OS
 %end
 POST
+
+# 4. build
 rm -rf "$OUT/lmc"
 livemedia-creator --make-iso --no-virt --ks flat.ks \
   --project oeneye --releasever "$REL" --volid oeneye \
   --iso-name oeneye-redhat.iso --resultdir "$OUT/lmc"
+
+cp "$OUT"/lmc/*.iso "$OUT"/ || true
+ls -lh "$OUT"/*.iso
