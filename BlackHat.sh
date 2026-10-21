@@ -5,66 +5,37 @@ WORKDIR="$(pwd)"
 OUT="$WORKDIR/out"
 mkdir -p "$OUT" && rm -rf "$OUT/lmc"
 
-dnf install -y lorax lorax-lmc-novirt pykickstart git anaconda-tui xorriso glibc-langpack-en wget curl
+dnf install -y lorax lorax-lmc-novirt pykickstart git anaconda-tui xorriso glibc-langpack-en wget curl isomd5sum
 
 rm -rf /tmp/kickstarts
 mkdir -p /usr/share/spin-kickstarts /tmp/kickstarts
 cd /usr/share/spin-kickstarts
 
-# Download directly via raw - pagure + github mirror
-BASE_URLS=(
-  "https://pagure.io/fedora-kickstarts/raw/f44/f"
-  "https://pagure.io/fedora-kickstarts/raw/main/f"
-  "https://pagure.io/fedora-kickstarts/raw/rawhide/f"
-  "https://raw.githubusercontent.com/fedoraproject/fedora-kickstarts/f44"
-  "https://raw.githubusercontent.com/fedoraproject/fedora-kickstarts/main"
-)
+# clean old shims
+rm -f fedora-live*.ks fedora-common.ks fedora-repo*.ks
 
-FILES=(
-  fedora-live-base.ks
-  fedora-live-xfce.ks
-  fedora-live-common.ks
-  fedora-repo.ks
-  fedora-repo-not-rawhide.ks
-  fedora-repo-rawhide.ks
-  fedora-common.ks
-  fedora-common-ostree.ks
-  fedora-xfce-common.ks
-  fedora-xfce-packages.ks
-)
+# download real files from pagure raw
+curl -L --fail -s https://pagure.io/fedora-kickstarts/raw/f44/f/fedora-live-base.ks -o fedora-live-base.ks || true
+curl -L --fail -s https://pagure.io/fedora-kickstarts/raw/f44/f/fedora-live-xfce.ks -o fedora-live-xfce.ks || true
+curl -L --fail -s https://pagure.io/fedora-kickstarts/raw/f44/f/fedora-common.ks -o fedora-common.ks || true
+curl -L --fail -s https://pagure.io/fedora-kickstarts/raw/f44/f/fedora-live-common.ks -o fedora-live-common.ks || true
+curl -L --fail -s https://pagure.io/fedora-kickstarts/raw/f44/f/fedora-repo-not-rawhide.ks -o fedora-repo-not-rawhide.ks || true
+curl -L --fail -s https://pagure.io/fedora-kickstarts/raw/f44/f/fedora-repo.ks -o fedora-repo.ks || true
 
-for f in "${FILES[@]}"; do
-  if [ -f "$f" ]; then continue; fi
-  for base in "${BASE_URLS[@]}"; do
-    echo "TRY $base/$f"
-    if curl -L --fail -s "$base/$f" -o "$f.tmp" 2>&1 | head; then
-      if grep -q "%packages\|%include\|repo" "$f.tmp" 2>/dev/null; then
-        mv "$f.tmp" "$f"
-        echo "GOT $f from $base"
-        break
-      fi
-    fi
-    rm -f "$f.tmp"
-  done
-done
+ls -lh
 
-# if pagure blocked, create minimal working base so ksflatten succeeds
-if [ ! -f fedora-repo-not-rawhide.ks ]; then
+# ensure repo files exist
+if [ ! -s fedora-repo-not-rawhide.ks ]; then
 cat > fedora-repo-not-rawhide.ks <<'REPO'
+url --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=fedora-44&arch=$basearch
 repo --name=fedora --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=fedora-44&arch=$basearch
 repo --name=updates --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=updates-released-f44&arch=$basearch
 REPO
 fi
-if [ ! -f fedora-repo.ks ]; then
-cat > fedora-repo.ks <<'REPO2'
-%include fedora-repo-not-rawhide.ks
-REPO2
-fi
-if [ ! -f fedora-common.ks ]; then echo "%packages" > fedora-common.ks; echo "%end" >> fedora-common.ks; fi
-if [ ! -f fedora-live-common.ks ]; then echo "%include fedora-common.ks" > fedora-live-common.ks; fi
-if [ ! -f fedora-live-base.ks ]; then
+
+if [ ! -s fedora-live-base.ks ]; then
 cat > fedora-live-base.ks <<'BASE'
-%include fedora-repo.ks
+%include fedora-repo-not-rawhide.ks
 %include fedora-common.ks
 %packages
 @core
@@ -74,7 +45,8 @@ livesys-scripts
 %end
 BASE
 fi
-if [ ! -f fedora-live-xfce.ks ]; then
+
+if [ ! -s fedora-live-xfce.ks ]; then
 cat > fedora-live-xfce.ks <<'XFCE'
 %include fedora-live-base.ks
 %packages
@@ -83,20 +55,42 @@ cat > fedora-live-xfce.ks <<'XFCE'
 XFCE
 fi
 
-ls -lh
-cat fedora-live-base.ks
-cat fedora-live-xfce.ks
+# OUR KICKSTART - with URL already!
+cat > oeneye-tmp.ks <<'KS'
+url --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=fedora-44&arch=$basearch
+%include fedora-live-xfce.ks
+%packages
+@xfce-desktop
+neovim
+git
+%end
+%post
+echo 'NAME="oeneye"' > /etc/os-release
+echo 'ID=oeneye' >> /etc/os-release
+echo 'PRETTY_NAME="oeneye 1.05 rc MOSFETQ infinity-eye"' >> /etc/os-release
+%end
+KS
 
-cp -v "$WORKDIR/oeneye-fedora.ks" oeneye-tmp.ks
-echo "=== OUR KS ==="
 cat oeneye-tmp.ks
-
+echo "=== KSFLATTEN ==="
 ksflatten --config oeneye-tmp.ks -o "$WORKDIR/flat.ks"
 echo "FLAT OK"
-head -n 100 "$WORKDIR/flat.ks"
 
+# FIX DUPLICATE REPO - keep only first url and unique repos
+awk '!seen[$0]++' "$WORKDIR/flat.ks" > "$WORKDIR/flat2.ks"
+mv "$WORKDIR/flat2.ks" "$WORKDIR/flat.ks"
+
+# ensure url is first line
+if ! head -n1 "$WORKDIR/flat.ks" | grep -q "^url"; then
+  # add url if missing
+  sed -i '1i url --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=fedora-44&arch=$basearch' "$WORKDIR/flat.ks"
+fi
+
+head -n 30 "$WORKDIR/flat.ks"
+
+echo "=== LIVEMEDIA ==="
 rm -rf "$OUT/lmc"
-livemedia-creator --make-iso --no-virt --ks "$WORKDIR/flat.ks" --project oeneye --releasever "$REL" --volid oeneye --iso-name oeneye-redhat.iso --resultdir "$OUT/lmc"
+livemedia-creator --make-iso --no-virt --ks "$WORKDIR/flat.ks" --project oeneye --releasever "$REL" --volid oeneye --iso-name oeneye-redhat.iso --resultdir "$OUT/lmc" 2>&1 | tee /tmp/lmc.log
 ls -lh "$OUT/lmc/" 
 cp "$OUT/lmc/"*.iso "$OUT"/ || true
 ls -lh "$OUT"/*.iso
