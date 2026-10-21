@@ -14,14 +14,13 @@ if ! dnf install -y spin-kickstarts --setopt=install_weak_deps=True 2>&1; then
   git clone https://pagure.io/fedora-kickstarts.git /usr/share/spin-kickstarts
 fi
 
-echo "=== locate kickstart ==="
-ls -l "$WORKDIR"/*.ks /usr/share/spin-kickstarts/*.ks | head -n 30
-# your file - pick first .ks in repo or fallback
-KSFILE=$(ls "$WORKDIR"/oeneye*.ks "$WORKDIR"/*.ks 2>/dev/null | head -n1 || echo "/usr/share/spin-kickstarts/fedora-live-xfce.ks")
-echo "Using KSFILE=$KSFILE"
+echo "=== locate ks ==="
+ls -l "$WORKDIR"/*.ks
+KSFILE="$WORKDIR/oeneye-fedora.ks"
 cp -v "$KSFILE" /usr/share/spin-kickstarts/oeneye-tmp.ks
 
 cd /usr/share/spin-kickstarts
+echo "=== flatten ==="
 ksflatten -c oeneye-tmp.ks -o "$WORKDIR/flat.ks"
 
 cat >> "$WORKDIR/flat.ks" <<'POST'
@@ -37,7 +36,7 @@ OS
 %end
 POST
 
-echo "=== build ISO ==="
+echo "=== build ==="
 rm -rf "$OUT/lmc"
 livemedia-creator --make-iso --no-virt --ks "$WORKDIR/flat.ks" \
   --project oeneye --releasever "$REL" --volid oeneye \
