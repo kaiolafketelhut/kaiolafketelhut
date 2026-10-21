@@ -1,0 +1,27 @@
+name: build-oeneye-fedora
+on:
+  workflow_dispatch:
+    inputs:
+      ks:
+        description: Kickstart file
+        type: choice
+        default: oeneye-fedora.ks
+        options: [oeneye-fedora.ks, oeneye-standalone.ks]
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android
+      - name: Build in Fedora container
+        env:
+          HASH: ${{ secrets.OENEYE_ROOT_HASH }}
+          KS: ${{ inputs.ks }}
+        run: |
+          mkdir -p out
+          docker run --rm -e HASH -e KS -v "$PWD:/w" -v "$PWD/out:/out" -w /tmp fedora:latest bash /w/BuildFedoraISO.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: oeneye-fedora-iso
+          path: out/*.iso
