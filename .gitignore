@@ -1,22 +1,10 @@
-# delete the 2 lines Tex.sh and holla_proxy.py
-# CTRL+O, Enter, CTRL+X
-
-git add -f Tex.sh holla_proxy.py
-git commit -m "feat: add Tex.sh + holla_proxy"
-git push origin main
-
-cat Tex.sh  # show me what's inside if you want me to check it*.img
 *.bin
 *.tmp
 tmp/
 system_manifest.html
 *.deb
 *.img
-*.deb
 build-oeneyeos_1.05/
 _assets/
 _include/
 _debian/
-debian/
-docs/
-MongoDB
