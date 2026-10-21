@@ -1,0 +1,15 @@
+name: build-oeneye-redhat
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android
+      - name: Build in Fedora container
+        run: docker run --rm --privileged -v "$PWD:/w" -w /w fedora:latest bash BlackHat.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: oeneye-redhat-iso
+          path: out/lmc/*.iso
