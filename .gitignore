@@ -8,3 +8,9 @@ build-oeneyeos_1.05/
 _assets/
 _include/
 _debian/
+*.ximg
+*.sha256
+myapp/
+holla.log
+__pycache__/
+
