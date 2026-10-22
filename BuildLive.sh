@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 apt-get update && apt-get install -y live-build debootstrap cpio gzip
 mkdir -p /live && cd /live
