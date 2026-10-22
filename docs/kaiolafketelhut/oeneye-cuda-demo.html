@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>oeneye CUDA-style demo</title>
+<style>
+:root{--bg:#fff;--fg:#111;--mut:#555;--card:#f3f3f3;--bd:#bbb}
+@media(prefers-color-scheme:dark){:root{--bg:#111;--fg:#eee;--mut:#aaa;--card:#1e1e1e;--bd:#444}}
+body{margin:0;padding:12px;background:var(--bg);color:var(--fg);font:15px system-ui,sans-serif}
+label{display:inline-block;margin:4px 10px 4px 0;color:var(--mut)}
+select,input,button,textarea{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:6px}
+input{width:5.5em}
+textarea{width:100%;box-sizing:border-box;height:9em;font-family:ui-monospace,monospace;font-size:13px}
+button{cursor:pointer;font-weight:600}
+pre{background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:8px;white-space:pre-wrap;min-height:3em}
+p{color:var(--mut);margin:6px 0}
+</style></head><body>
+<h3 style="margin:0 0 8px">oeneye CUDA-style demo (CPU, in your browser)</h3>
+<label>Example <select id="ex"><option value="vecadd">vector add</option><option value="matmul">matrix multiply</option></select></label>
+<label>Size N <input id="n" type="number" min="1"></label>
+<label>Block x <input id="bx" type="number" min="1" max="1024"></label>
+<label>Block y <input id="by" type="number" min="1" max="32"></label>
+<p>Kernel body (JavaScript). Available: threadIdx, blockIdx, blockDim, gridDim, and the arrays a, b, c and the number n.</p>
+<textarea id="src" spellcheck="false"></textarea>
+<p><button id="run">Run kernel</button></p>
+<pre id="out">Press Run.</pre>
+<script>
+var P={
+ vecadd:{n:65536,bx:256,by:1,max:4194304,src:[
+  "const i = blockIdx.x * blockDim.x + threadIdx.x;",
+  "if (i < n) c[i] = a[i] + b[i];"].join("\n")},
+ matmul:{n:64,bx:16,by:16,max:256,src:[
+  "const row = blockIdx.y * blockDim.y + threadIdx.y;",
+  "const col = blockIdx.x * blockDim.x + threadIdx.x;",
+  "if (row < n && col < n) {",
+  "  let s = 0;",
+  "  for (let k = 0; k < n; k++) s += a[row * n + k] * b[k * n + col];",
+  "  c[row * n + col] = s;",
+  "}"].join("\n")}
+};
+function $(id){return document.getElementById(id);}
+function load(){var p=P[$("ex").value];$("n").value=p.n;$("bx").value=p.bx;$("by").value=p.by;$("src").value=p.src;}
+$("ex").onchange=load;load();
+function launch(grid,block,kernel,a,b,c,n){
+ var t={x:0,y:0,z:0},k={x:0,y:0,z:0};
+ for(k.z=0;k.z<grid.z;k.z++)for(k.y=0;k.y<grid.y;k.y++)for(k.x=0;k.x<grid.x;k.x++)
+  for(t.z=0;t.z<block.z;t.z++)for(t.y=0;t.y<block.y;t.y++)for(t.x=0;t.x<block.x;t.x++)
+   kernel(t,k,block,grid,a,b,c,n);
+}
+$("run").onclick=function(){
+ var out=$("out");out.textContent="Running...";
+ setTimeout(function(){
+  try{
+   var ex=$("ex").value,p=P[ex];
+   var n=Math.max(1,Math.min(p.max,parseInt($("n").value)||1));
+   var bx=Math.max(1,Math.min(1024,parseInt($("bx").value)||1));
+   var by=Math.max(1,Math.min(32,parseInt($("by").value)||1));
+   if(ex==="matmul"&&bx*by>1024)throw new Error("block x * block y must be at most 1024");
+   var kernel=new Function("threadIdx","blockIdx","blockDim","gridDim","a","b","c","n",$("src").value);
+   var a,b,c,grid,block,check,i;
+   if(ex==="vecadd"){
+    a=new Float32Array(n);b=new Float32Array(n);c=new Float32Array(n);
+    for(i=0;i<n;i++){a[i]=i%1000;b[i]=2*(i%1000);}
+    block={x:bx,y:1,z:1};grid={x:Math.ceil(n/bx),y:1,z:1};
+    check=function(){var bad=0,j;for(j=0;j<n;j++)if(c[j]!==3*(j%1000))bad++;return bad;};
+   }else{
+    a=new Float32Array(n*n);b=new Float32Array(n*n);c=new Float32Array(n*n);
+    for(i=0;i<n*n;i++){a[i]=i%7;b[i]=i%5;}
+    block={x:bx,y:by,z:1};grid={x:Math.ceil(n/bx),y:Math.ceil(n/by),z:1};
+    check=function(){var bad=0,r,q,s,m;for(r=0;r<n;r++)for(q=0;q<n;q++){s=0;for(m=0;m<n;m++)s+=a[r*n+m]*b[m*n+q];if(c[r*n+q]!==s)bad++;}return bad;};
+   }
+   var t0=performance.now();
+   launch(grid,block,kernel,a,b,c,n);
+   var ms=performance.now()-t0;
+   var bad=check();
+   out.textContent=(bad?"FAIL":"OK")+": "+(grid.x*grid.y*block.x*block.y)+" threads, grid "+grid.x+"x"+grid.y+", block "+block.x+"x"+block.y+", "+bad+" wrong, "+ms.toFixed(1)+" ms";
+  }catch(e){out.textContent="Error: "+e.message;}
+ },20);
+};
+</script></body></html>
