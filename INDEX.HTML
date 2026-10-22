@@ -1,45 +1,81 @@
 <!doctype html>
 <html lang="de"><head>
 <meta charset="utf-8"><title>kai - oeneye // BLUH.XKTS</title>
-<style>body{background:#000;color:#0f0;font-family:monospace;max-width:720px;margin:3rem auto;padding:1rem;line-height:1.5}a{color:#0f0}.box{border:1px solid #0f0;padding:1rem;margin:1.5rem 0}</style>
+<style>body{background:#000;color:#0f0;font-family:monospace;max-width:780px;margin:2rem auto;padding:1rem;line-height:1.5}a{color:#0f0}.box{border:1px solid #0f0;padding:1rem;margin:1.2rem 0}img{max-width:100%;border:1px solid #0f0}</style>
 </head><body>
 <h1>HOCHSCHULPRÜFUNGSARBEIT DNB NETZPUBLIKATION</h1>
 <h2>MOSFETQ – Technologie als Gesellschaftstreiber</h2>
 <p><i>Interdisziplinäre Untersuchung an der Schnittstelle von digitaler Hardware, Waffentechnologie und Verwaltungskirchenpolitik</i></p>
 
 <div class="box">
-<b>Bibliographic Record:</b><br>
-- Autor: Lic. Kai Olaf Ketelhut sic<br>
-- Verlag: Fieldberry Group, Berlin (14. Auflage, 2021)<br>
-- Standardnummer (ISBN): 978-3-00-068463-0<br>
-- Format: PDF (Netzpublikation inkl. DIY-Software-Framework)<br>
-- Preis: 21,00 € (+TAX) pro Einheit<br>
-- Katalog: Fieldberry Group Monographienreihe Livro-Katalog Umschlagseite
+<b>[BOOK COVER] DNB Netzpublikation:</b><br>
+<img src="cover.png" alt="MOSFETQ cover"><br>
+• Autor: Lic. Kai Olaf Ketelhut sic<br>
+• Verlag: Fieldberry Group, Berlin (14. Auflage, 2021)<br>
+• ISBN: 978-3-00-068463-0<br>
+• Format: PDF (Netzpublikation inkl. DIY-Software-Framework)<br>
+• Preis: 21,00 € (+TAX) pro Einheit<br>
 </div>
 
 <div class="box">
-<b>Institutional Distribution & Fulfillment:</b><br>
+<b>[PAYLINK] Institutional Distribution & Fulfillment:</b><br>
 - Entity: SIETEHR FOUNDATION (NCAGE: CNNN3)<br>
-- Bestellnummer (Order No.): 2026-0812-CNNN3-BK01<br>
+- Order No.: 2026-0812-CNNN3-BK01<br>
 - Direktbestellung / Zahlung: <a href="https://bunq.me/fieldberry">https://bunq.me/fieldberry</a>
 </div>
 
-<a href="https://bunq.me/fieldberry" style="display:block;text-align:center;padding:1.2rem;border:2px solid #0f0;font-size:1.2rem;text-decoration:none;margin:2rem 0">PAY -> BLUH.XKTS // 21,00€ +TAX [oeneye]</a>
+<a href="https://bunq.me/fieldberry" style="display:block;text-align:center;padding:1.2rem;border:2px solid #0f0;font-size:1.2rem;text-decoration:none;margin:1.5rem 0">PAY -> BLUH.XKTS // 21,00€ +TAX [oeneye]</a>
 
 <div class="box">
-<b>CLOCK / CHECKSUM / SIZE by book:</b><br>
-- CLOCK_UTC: 2026-10-22T10:20Z<br>
-- CLOCK_BERLIN: 2026-10-22T12:20:15 CEST<br>
-- FILE: INDEX.HTML + index.html<br>
-- SHA256: 736f07561a2e706558c0fc9b85a21e0e6fe21cd3b41826670aa596b37212db1c<br>
-- MD5: 7a3b80defda0a27ca0cf85c3f355621a<br>
-- SIZE: 2186 bytes<br>
-- SOURCE_PDF: MOSFETQ DNB Netzpublikation Page 1<br>
-- ISBN: 978-3-00-068463-0<br>
-- Verified: SIETEHR FOUNDATION CNNN3
+<b>[CLOCK / CHECKSUM / SIZE] by book:</b><br>
+- CLOCK_UTC: <span id="clock"></span><br>
+- FILE: INDEX.HTML / index.html / cover.png<br>
+- SHA256_INDEX: 0180cba65b0b17be4ebb015d03f3d3e575a19e29487f889ca5b2369676f25c5b<br>
+- SHA256_PDF: from DNB record<br>
+- SIZE: auto via wc -c<br>
+- ISBN: 978-3-00-068463-0
+<script>document.getElementById('clock').innerText=new Date().toISOString()</script>
+</div>
+
+<div class="box">
+<b>[DRIVES] by book:</b><br>
+- C: /mnt/c - Windows host<br>
+- D: /mnt/d - Fieldberry Group Data<br>
+- E: /mnt/e - SIETEHR FOUNDATION Archive<br>
+- /drive/myDrive - Google Drive mount<br>
+- /emu/dos - DOS emulator fs<br>
+- /bluh/xkts - BLUH.XKTS namespace<br>
+</div>
+
+<div class="box">
+<b>[EMU DOS] py namespace:</b><br>
+- emu: DOSBox / js-dos / dosemu2<br>
+- py: python3 oecc wrapper<br>
+- namespace: oeneye.bluh.xkts<br>
+- entry: python3 -m oeneye.bluh.xkts --grid 16,16 --block 16,16<br>
+- .cu -> .py transpiler: oecc<br>
+- cmd: <code>python3 grid,block wrapper</code>
+</div>
+
+<div class="box">
+<b>[PY NAMESPACE BOX]:</b><br>
+<code>
+import oeneye.bluh.xkts as bluh<br>
+bluh.init(grid=(16,16), block=(16,16))<br>
+bluh.load("MOSFETQ")<br>
+bluh.exec("TECHNOLOGIE ALS GESELLSCHAFTSTREIBER")<br>
+</code>
+</div>
+
+<div class="box">
+<b>[GOOGLE] and so on:</b><br>
+- Google Drive: drive.google.com -> Fieldberry Group<br>
+- Google Scholar: MOSFETQ DNB entry<br>
+- Google Books: ISBN 978-3-00-068463-0<br>
+- Search: "Kai Olaf Ketelhut MOSFETQ"<br>
+- Maps: Fieldberry Group, Berlin
 </div>
 
 <p>host: <a href="https://kaiolafketelhut.github.io/kaiolafketelhut/">kaiolafketelhut.github.io/kaiolafketelhut/</a> by my book</p>
-<p>oecc: CUDA-style .cu -> python3 grid,block wrapper</p>
 <p>github: <a href="https://github.com/kaiolafketelhut/kaiolafketelhut">kaiolafketelhut/kaiolafketelhut</a></p>
 </body></html>

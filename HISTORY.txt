@@ -1,0 +1,142 @@
+09775f7 2026-10-22 auto: INDEX.HTML -> index.html BLUH.XKTS 2026-10-22T10:13Z
+a63666a 2026-10-22 auto: INDEX.HTML -> index.html BLUH.XKTS 2026-10-22T10:12Z
+98ebecb 2026-10-22 track: INDEX.HTML + index.html -> BLUH.XKTS
+3ff4db9 2026-10-22 track: paylink -> BLUH.XKTS
+d242c6f 2026-10-22 track: index.html -> BLUH.XKTS
+a00f2c9 2026-10-22 track: bluh.png -> BLUH.XKTS doctype
+03b0b60 2026-10-22 template: doctype workflow BLUH.XKTS
+6a24fb0 2026-10-22 feat: index.html tracking IS my doctype = BLUH.XKTS
+e5a483e 2026-10-22 fix: bluh.xkts real ximg
+8b8662d 2026-10-22 test: add test.xkts.ximg
+c5e33d4 2026-10-22 feat: bluh as me index.html.ximg
+2991fc8 2026-10-22 fix: real index card not just kai - oeneye
+e084be8 2026-10-22 merge main into bluh - resolve index.html
+ed5767c 2026-10-22 feat: bluh content on main
+6fc7e0b 2026-10-22 feat: add bluh.xkts
+88558e4 2026-10-22 fix: full index in docs
+1020715 2026-10-22 show: fix Pages from docs
+4f4e224 2026-10-22 move site to docs
+8ba53db 2026-10-22 index: remove dead Archives box, limit history to 10
+81a109e 2026-10-22 index: remove empty manifest heading
+603b40a 2026-10-22 checksums: cover all disk images
+e71083a 2026-10-22 fix: perms + own Fortran 0.1
+2b65a79 2026-10-22 fix: clean BuildLive.sh 12 lines
+6a8570d 2026-10-22 fix: build oeneye-cuda deb 2K, BuildLive || true, Termux perms 0755
+9e5a43d 2026-10-22 fix: add oeneye-cuda_0.1_all.deb in repo root + fix BuildLive cp || true
+1260a6a 2026-10-22 fix: Pages index
+7baf991 2026-10-22 build: bake oeneye-cuda deb into LXQt ISO
+db69862 2026-10-22 feat: native oeneye CUDA runtime gets __syncthreads + shared memory; reduce and tiled examples
+f58a704 2026-10-22 feat: demo supports __syncthreads (yield) and shared memory; reduction + tiled matmul
+a25873c 2026-10-22 feat: oeneye CUDA-style demo page + iframe, C++ runtime sources
+6761aa7 2026-10-22 build: LXQt+Calamares, drop lubuntu, Red Hat user password from secret
+13c1dcf 2026-10-22 ci: release-isos workflow (raw ISO backup as GitHub release)
+dd5faa9 2026-10-22 fix: add grub2/shim/syslinux packages to live kickstart
+6c05dd7 2026-10-22 fix: lubuntu mirrors, no security/updates suites
+99335b8 2026-10-22 ci: live ISO builder for Debian LXQt and Ubuntu Lubuntu (in debian container)
+8a50da8 2026-10-22 fix: x86_64 repos, pipefail, upload only out/
+28ad906 2026-10-22 fix: valid yaml indentation + restore BlackHat tail
+8f11cca 2026-10-22 fix: restore workflow_dispatch trigger, fix ISO artifact
+1c28a3f 2026-10-22 fix: workflow artifact path - find ISO anywhere, was out/lmc/*.iso not found
+72944af 2026-10-21 feat: Ada .ximg A+B+C builder, MIME application/vnd.oeneye.ximg+ada + text/x-ada
+13f2917 2026-10-21 ci: fedora build needs --privileged for loop devices
+869ae42 2026-10-21 ci: oeneye Fedora ISO via mkksiso + secret root hash
+f173251 2026-10-21 ks: drop invalid authselect line
+4858591 2026-10-21 update: rebuild PDFs + fix proxy
+18a30e4 2026-10-21 fix: restore real Tex.sh
+80075ca 2026-10-21 fix: add real Tex.sh + holla_proxy.py - no more 0 bytes
+d53032a 2026-10-21 feat: rebuild PDFs from marketplace/main.tex
+0152a96 2026-10-21 fix: unignore docs/ - Pages needs docs/index.html
+67a16d6 2026-10-21 restore: full 47k index.html
+983d74a 2026-10-21 fix: clean .gitignore - unignore docs/ and scripts
+91cc116 2026-10-21 restore: full index.html after accidental overwrite, fix case
+6bcd648 2026-10-21 fix: add index.html for Pages
+f90a3f4 2026-10-21 feat: Termux co-container Postgres+Mongo working, Fedora kickstart fixed
+a4fff54 2026-10-21 fix: remove auth, use authselect for F41+
+ed4ed63 2026-10-21 fix: F44 ks without auth + add co-container stack with termuxDB
+9d79db2 2026-10-21 fix F44: remove auth command, now compatible
+dcc6e9d 2026-10-21 fix: use dl.fedoraproject.org direct + selinux disabled + nomacboot for aarch64
+79d6c84 2026-10-21 fix: fully standalone KS, no includes, fixes fedora-common.ks missing
+f7ecfe9 2026-10-21 fix: add url install method + dedup repo, required for livemedia-creator F44
+77b78da 2026-10-21 fix: use raw curl not git, shim repo ks, fix empty spin-kickstarts
+779e6dc 2026-10-21 fix: try koji rpm + github mirrors, add shim if upstream empty
+7adcc05 2026-10-21 fix: pagure empty + spin-kickstarts missing in F44, use github mirror + fedora-kickstarts rpm + shim
+296f70a 2026-10-21 fix: pagure empty, use spin-kickstarts rpm instead of git clone
+dfc63ec 2026-10-21 fix: pagure layout changed - no fedora/ dir, list all ks, add shim for xfce, clean junk
+e2b6142 2026-10-21 fix exit1: include-path for ksflatten, log flatten+includes
+7fe7089 2026-10-21 fix 128: pagure doesn't support --depth 1, use full clone
+ebfce57 2026-10-21 fix: KS_SRC empty - use /tmp/fk + cp -a fedora/ + robust xfce find
+62bd35e 2026-10-21 fix exit 2: robust find for xfce ks, handle fedora/ subdir
+e368e3f 2026-10-21 fix: rm spin-kickstarts pkg (not in F44), clone pagure + find new ks path
+de01f50 2026-10-21 fix 127: dnf install git+spin-kickstarts BEFORE ls, fixes No such file and git not found
+1abd802 2026-10-21 fix: simplify BlackHat.sh avoid 127, use spin-kickstarts pkg path directly
+e96c0d0 2026-10-21 fix: don't rm spin-kickstarts, auto-find fedora-live-xfce.ks new path - fixes ls No such file
+e40b17f 2026-10-21 fix: avoid double include base+xfce
+7289e16 2026-10-21 fix: remove f44 branch, clone main - branch not found was breaking build
+1ff58bc 2026-10-21 fix oeneyeSDK: clone f44 kickstarts, use base+desktop not xfce rename, fixes No such fedora-live-xfce.ks
+d287095 2026-10-21 debug: set -x and ls ks files, show ksflatten error for oeneyeSDK
+487edc3 2026-10-21 fix: copy oeneye-fedora.ks into spin-kickstarts dir before ksflatten - fixes No such file fedora-live-xfce.ks
+887830a 2026-10-21 fix: copy ks into spin-kickstarts dir so ksflatten finds includes - fixes fedora-live-xfce.ks not found
+45bc6ca 2026-10-21 fix: remove OLDPWD set -u bug, use WORKDIR
+30d4ed4 2026-10-21 fix: rewrite BlackHat clean - fix f44 pykickstart+spin-kickstarts concat bug
+3cb1e92 2026-10-21 fix: f44 needs pykickstart for ksflatten
+a9774b5 2026-10-21 fix: fedora container - spin-kickstarts pkg name f44 fallback to git
+d271e4c 2026-10-21 fix: BlackHat uses own oeneye-fedora.ks
+a5a8509 2026-10-21 feat: own fedora ks - oeneye 1.05 rc f44
+a97da2b 2026-10-21 ci: debian build in debian container; redhat uses fedora-kickstarts pkg, f44
+3cb4a2d 2026-10-21 ci: debian job uses debian mirrors
+9483dd0 2026-10-21 ci: oeneye Red Hat-style ISO (BlackHat.sh), pinned 1.05 rc
+4ea832e 2026-10-21 ci: combined oeneye ISO build (debian, void, lubuntu)
+7932612 2026-10-21 ci: oeneye Lubuntu ISO build
+3187a36 2026-10-21 fix: og:image points to published cover
+139834d 2026-10-21 fix: restore index.html, keep test_dev_cover.html separate
+e130d53 2026-10-20 feat: canary threads dev - likes till buy
+c8d77a8 2026-10-20 fix: index.html with og:image in HEAD - white cover
+70c7e61 2026-10-20 fix: real cover
+32439e3 2026-10-20 fix: og:image use raw.githubusercontent for instant preview
+9efa77e 2026-10-20 feat: use real MOSFETQ cover - eye infinity - VERIFIED
+1e4f76e 2026-10-20 feat: MOSFETQ cover as link preview from demo-repo - VERIFIED
+94e5b19 2026-10-20 feat: footer with MOSFETQ preview
+933fbcb 2026-10-20 Merge pull request #3 from kaiolafketelhut/discussion-board-root
+a6ec178 2026-10-20 fix: footer with discussion board ROOT - VERIFIED - oeneyeOS v1.05
+5f4d535 2026-10-20 fix: footer with discussion board ROOT - VERIFIED - oeneyeOS v1.05
+6283551 2026-10-20 Get ROOT from former site kaiolafketelhut.github.io - bash script - third-party only
+b698e09 2026-10-20 Get ROOT from former site kaiolafketelhut.github.io - third-party examples only
+e8b9bf8 2026-10-20 Add free Pages workflow + ROOT landing page - third-party examples only
+bbdb7a3 2026-10-20 Add GitHub Actions workflow for discussion board deployment
+edf0045 2026-10-20 Merge pull request #2 from kaiolafketelhut/discussion-board-root
+6cace09 2026-10-20 Add ROOT for discussion board - third-party examples only, not author original - fix empty push
+4002388 2026-10-20 Add maintenance reference as third-party example only
+172c383 2026-10-20 RESTORE PURE ORIGINAL - remove all oeneyeOS added blocks - MOSFETQ only
+4a60270 2026-10-20 restore original MOSFETQ cover - remove AI edits - copyright original
+8d0e952 2026-10-20 polish live content: v1.05 FINAL beautiful
+a538ac3 2026-10-20 fix live content /kaiolafketelhut/ to v1.05 FINAL
+9e3013d 2026-10-20 fix live content: v1.05 FINAL - force add deb
+a9ef35b 2026-10-20 add Debian package line
+77bee66 2026-10-20 index-v105 matches root layout
+a48b58a 2026-10-20 site: add deb line, drop dead mind map link
+ffba27c 2026-10-20 root page = Floppy Max layout, v1.05
+7d5182b 2026-10-20 oeneyeos 1.05 pages + hash
+3ad5519 2026-10-20 untrack script
+f7e7457 2026-10-20 oeneyeos 1.05 final
+17fe7a7 2026-10-20 oeneyeos 1.05 final
+4f2554d 2026-10-20 site: add JP/UTC clock and catalog scripts to root page
+af7f63e 2026-10-20 site: add disk images A, B, C
+319fbe7 2026-10-20 site: use floppy layout as root page
+73c3ec5 2026-10-20 site: move restored files to docs root
+1400b94 2026-10-20 site: restore full content (floppy page, catalog, boxes)
+3eb1d66 2026-10-20 site: add pay link
+2655dee 2026-10-20 fix: use correct ids #catalog #cat-list from demo scripts
+e90f4cd 2026-10-20 site: add clock and catalog scripts - bcfc68 base
+ac04a32 2026-10-20 site: add clock and catalog scripts
+0552c34 2026-10-20 site: full index with cover, record, EULA, book links
+6f961bb 2026-10-20 site: add booksrc and mind map
+2f2e460 2026-10-20 site: add book-box.html and book PDF
+40727ff 2026-10-20 site: add docs/ with MOSFETQ cover, record and EULA
+78c733a 2026-10-20 fix: drop debian/compat, use native version 1.04
+bcfc685 2026-10-20 feat: add debian packaging, CHANGELOG and CI
+dd4b5ab 2026-10-20 docs: add README
+076fc2d 2026-10-20 chore: ignore deb binaries, 1.4K deb built
+43c7447 2026-10-19 fix: remove stray } after </head> - clean mySignal
+c7410fc 2026-10-19 feat: mySignal v2 bunq design
+ee4b5cd 2026-10-19 feat: add mySignal v1.0 VERIFIED
+39f5ad2 2026-10-19 final: clean history - only white v1.04
