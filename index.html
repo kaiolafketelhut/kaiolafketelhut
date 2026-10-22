@@ -1,82 +1,68 @@
-<!doctype html>
-<html lang="de"><head>
-<meta charset="utf-8">
-<title>MOSFETQ – Whitepaper – Kai Olaf Ketelhut</title>
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<title>MOSFETQ Whitepaper + Old Mirror Complete</title>
 <style>
-  body{background:#fff;color:#000;font-family:"Times New Roman", Times, serif;max-width:800px;margin:3rem auto;padding:2rem;line-height:1.6;font-size:16px}
-  h1{font-size:22px;text-align:center;text-transform:uppercase;margin-bottom:0}
-  h2{font-size:20px;text-align:center;margin-top:0.5rem}
-  h3{font-size:16px;border-bottom:1px solid #000;padding-bottom:0.3rem;margin-top:2.5rem}
-  .meta{text-align:center;font-style:italic;margin:1rem 0 2rem 0;font-size:14px}
-  .box{border:1px solid #000;padding:1rem;margin:1.5rem 0;background:#fafafa}
-  a{color:#000;text-decoration:underline}
-  img{max-width:100%;border:1px solid #ccc;display:block;margin:1rem auto}
-  code{background:#eee;padding:2px 4px;font-size:13px}
-  .footer{font-size:12px;color:#666;border-top:1px solid #ccc;margin-top:3rem;padding-top:1rem}
-  .paybox{display:block;text-align:center;padding:1rem;border:2px solid #000;font-weight:bold;text-decoration:none;margin:2rem 0}
-</style>
-</head><body>
+body{background:#fff;color:#000;font-family:Times,serif;max-width:900px;margin:2rem auto;padding:2rem;line-height:1.6}
+h1,h2{text-align:center}.box{border:1px solid #000;padding:1rem;margin:1.2rem 0;background:#fafafa}
+a{color:#000}img{max-width:100%;border:1px solid #ccc}
+code{background:#eee;padding:2px 5px;font-family:monospace}
+.qemu{background:#000;color:#0f0;padding:10px;display:block;font-family:monospace;overflow-x:auto;margin:0.5rem 0}
+.pay{display:block;text-align:center;padding:1rem;border:2px solid #000;font-weight:bold;margin:1.5rem 0;text-decoration:none}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+</style></head><body>
 
 <h1>HOCHSCHULPRÜFUNGSARBEIT DNB NETZPUBLIKATION</h1>
 <h2>MOSFETQ – Technologie als Gesellschaftstreiber</h2>
-<div class="meta">Interdisziplinäre Untersuchung an der Schnittstelle von digitaler Hardware, Waffentechnologie und Verwaltungskirchenpolitik<br>Lic. Kai Olaf Ketelhut sic – Fieldberry Group, Berlin (14. Auflage, 2021)</div>
+<p style="text-align:center"><i>Interdisziplinäre Untersuchung – digitale Hardware, Waffentechnologie, Verwaltungskirchenpolitik</i></p>
 
-<h3>Abstract – Whitepaper</h3>
-<p>Diese Netzpublikation untersucht Technologie als Gesellschaftstreiber am Beispiel MOSFETQ. Fokus: digitale Hardware, Waffentechnologie, Verwaltungskirchenpolitik. Inklusive DIY-Software-Framework (oecc: CUDA-style .cu -> python3 grid,block wrapper).</p>
+<div class="box"><b>Book Cover</b><br><img src="cover.png"><br>
+Autor: Lic. Kai Olaf Ketelhut sic | Verlag: Fieldberry Group Berlin 14. Auflage 2021<br>
+ISBN: 978-3-00-068463-0 | Order: 2026-0812-CNNN3-BK01 | Entity: SIETEHR FOUNDATION NCAGE:CNNN3<br>
+Payment: <a href="https://bunq.me/fieldberry">bunq.me/fieldberry</a></div>
+
+<a href="https://bunq.me/fieldberry" class="pay">PAY -> BLUH.XKTS // 21,00€ +TAX [oeneye]</a>
 
 <div class="box">
-<b>Book Cover / Bibliographic Record</b><br>
-<img src="cover.png" alt="MOSFETQ cover">
-<b>Autor:</b> Lic. Kai Olaf Ketelhut sic<br>
-<b>Verlag:</b> Fieldberry Group, Berlin (14. Auflage, 2021)<br>
-<b>ISBN:</b> 978-3-00-068463-0<br>
-<b>Format:</b> PDF (Netzpublikation inkl. DIY-Software-Framework)<br>
-<b>Preis:</b> 21,00 € (+TAX) pro Einheit<br>
-<b>Katalog:</b> Fieldberry Group Monographienreihe Livro-Katalog Umschlagseite
+<b>[OLD MIRROR COMPLETE → NEW] – Floppy Max + Live Catalog</b><br>
+Old mirror source: <a href="https://colegio-san-caio.github.io/LLMM/">colegio-san-caio.github.io/LLMM/</a> + <a href="https://colegio-san-caio.github.io/demo-repository/">demo-repository</a><br>
+New mirror: <a href="https://kaiolafketelhut.github.io/kaiolafketelhut/">kaiolafketelhut.github.io/kaiolafketelhut/</a><br><br>
+
+<b>ALL LIVE FLOPPY / VHD IMAGES – BACK ONLINE:</b>
+<table style="width:100%;font-size:14px;border-collapse:collapse">
+<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>A: oeneyeOS.img – 2.88M Floppy Max</b> – max size floppy<br><span style="font-size:11px">QEMU -fda</span></td><td><a href="https://colegio-san-caio.github.io/demo-repository/oeneyeOS.img">DOWNLOAD</a></td></tr>
+<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>B: data.img – Data Drive</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/data.img">dl</a></td></tr>
+<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>C: date.img – Date Drive</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/date.img">dl</a></td></tr>
+<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>D: GNUoeneyeALPINEunix.img – 357 MB Alpine Linux</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/GNUoeneyeALPINEunix.img">dl</a></td></tr>
+<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>X: workshop.img – 1.4 MB Workshop</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/workshop.img">dl</a></td></tr>
+<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>fily.img – 360 KB</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/fily.img">dl</a></td></tr>
+<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>iframe.frame.html – Macro</b></td><td><a href="https://colegio-san-caio.github.io/LLMM/iframe.frame.html">open</a></td></tr>
+</table>
+
+<span class="qemu">qemu-system-i386 -fda oeneyeOS.img -fdb data.img -hda date.img -hdb GNUoeneyeALPINEunix.img</span>
+<span class="qemu">qemu-system-i386 -fda oeneyeOS.img -fdb data.img -hda date.img</span>
+
+<b>Drives:</b> C:/mnt/c D:Fieldberry E:SIETEHR /drive/myDrive /emu/dos /bluh/xkts<br>
+<b>EMU DOS:</b> DOSBox / js-dos<br>
+<b>Py Namespace:</b> <code>import oeneye.bluh.xkts as bluh; bluh.init(grid=(16,16), block=(16,16))</code><br>
+<b>oecc:</b> CUDA-style .cu -> python3 grid,block wrapper
 </div>
 
 <div class="box">
-<b>Institutional Distribution & Fulfillment (Whitepaper Distribution)</b><br>
-<b>Entity:</b> SIETEHR FOUNDATION (NCAGE: CNNN3)<br>
-<b>Bestellnummer (Order No.):</b> 2026-0812-CNNN3-BK01<br>
-<b>Direktbestellung / Zahlung:</b> https://bunq.me/fieldberry
-</div>
-
-<a href="https://bunq.me/fieldberry" class="paybox">PAY -> BLUH.XKTS // 21,00€ +TAX [oeneye] – Whitepaper Access</a>
-
-<h3>1. Technical Framework – oecc</h3>
-<p>CUDA-style .cu -> python3 grid,block wrapper. Namespace: <code>oeneye.bluh.xkts</code></p>
-<code>
-import oeneye.bluh.xkts as bluh<br>
-bluh.init(grid=(16,16), block=(16,16))<br>
-bluh.load("MOSFETQ")<br>
-</code>
-
-<h3>2. Drives / EMU DOS / Py Namespace</h3>
-<div class="box">
-- Drives: C: /mnt/c, D: Fieldberry Data, E: SIETEHR Archive, /drive/myDrive (Google), /emu/dos, /bluh/xkts<br>
-- EMU DOS: DOSBox / js-dos<br>
-- Py Namespace: <code>python3 -m oeneye.bluh.xkts --grid 16,16 --block 16,16</code><br>
-- Google: Drive, Scholar, Books (ISBN 978-3-00-068463-0)
-</div>
-
-<h3>3. Clock / Checksum / Verification</h3>
-<div class="box">
-- CLOCK_UTC: <span id="clock"></span><br>
-- FILE: INDEX.HTML / index.html / cover.png / MOSFETQ.pdf<br>
-- SHA256_INDEX: 3101fc00d5fe1c0d003463fd5fb7192e0ad2b441b3a15469c89254a256780e56<br>
-- Verified: SIETEHR FOUNDATION CNNN3<br>
-- Order: 2026-0812-CNNN3-BK01
+<b>[CLOCK / CHECKSUM / GOOGLE] by book</b><br>
+CLOCK_UTC: <span id="clock"></span><br>
+SHA256_INDEX: 1c42ce16f78e60a30ad23934d88718b26ddf6d9d9625b012c0c365d5ec0ba35b<br>
+ISBN: 978-3-00-068463-0 – Order: 2026-0812-CNNN3-BK01<br>
+Google: Drive, Scholar, Books (ISBN search), Maps Berlin<br>
 <script>document.getElementById('clock').innerText=new Date().toISOString()</script>
 </div>
 
-<h3>4. Distribution</h3>
-<p>Host: <a href="https://kaiolafketelhut.github.io/kaiolafketelhut/">kaiolafketelhut.github.io/kaiolafketelhut/</a><br>
-GitHub: <a href="https://github.com/kaiolafketelhut/kaiolafketelhut">kaiolafketelhut/kaiolafketelhut</a><br>
-Payment: <a href="https://bunq.me/fieldberry">bunq.me/fieldberry</a></p>
-
-<div class="footer">
-Whitepaper version by my book – Hochschulprüfungsarbeit DNB Netzpublikation – MOSFETQ – 14. Auflage 2021 – Fieldberry Group Berlin – CC-like DNB record – no delete, only ADD.
+<div class="box">
+<b>Mirrors</b><br>
+- <a href="https://colegio-san-caio.github.io/LLMM/">Old: colegio-san-caio.github.io/LLMM/</a><br>
+- <a href="https://colegio-san-caio.github.io/demo-repository/">Old: demo-repository/index.html - oeneyeOS lab</a><br>
+- <a href="https://kaiolafketelhut.github.io/kaiolafketelhut/">New: kaiolafketelhut.github.io/kaiolafketelhut/</a><br>
+- <a href="https://github.com/kaiolafketelhut/kaiolafketelhut">GitHub new</a><br>
+- <a href="https://github.com/Colegio-San-Caio/LLMM">GitHub old LLMM</a>
 </div>
 
 </body></html>
