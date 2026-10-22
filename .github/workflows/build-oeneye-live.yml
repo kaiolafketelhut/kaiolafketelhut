@@ -6,7 +6,7 @@ on:
         description: Flavor
         type: choice
         default: lxqt
-        options: [lxqt, lubuntu]
+        options: [lxqt]
 jobs:
   build:
     runs-on: ubuntu-24.04

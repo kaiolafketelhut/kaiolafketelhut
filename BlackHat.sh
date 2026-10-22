@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -exo pipefail
+: "${HASH:?HASH secret missing}"
 REL="44"
 OUT="$(pwd)/out"
 mkdir -p "$OUT" && rm -rf "$OUT/lmc"
@@ -13,7 +14,7 @@ lang en_US.UTF-8
 keyboard us
 timezone UTC
 rootpw --lock
-user --name=oeneye --groups=wheel --password=oeneye
+user --name=oeneye --groups=wheel --iscrypted --password=REPLACE_HASH
 part / --size=10000 --fstype=ext4
 bootloader --location=mbr
 network --bootproto=dhcp
@@ -35,6 +36,7 @@ syslinux
 echo 'oeneye 1.05 rc' > /etc/oeneye-release
 %end
 KS
+sed -i "s|REPLACE_HASH|$HASH|" /tmp/oeneye-standalone.ks
 
 ksflatten --config /tmp/oeneye-standalone.ks -o flat.ks
 livemedia-creator --make-iso --no-virt --ks flat.ks --project oeneye --releasever "$REL" --volid oeneye --iso-name oeneye-redhat.iso --resultdir "$OUT/lmc" --nomacboot 2>&1 | tee /tmp/lmc.log
