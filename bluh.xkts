@@ -1,2 +1,4 @@
 name=bluh
 version=0.1
+type=ximg
+entry=docs/index.html
