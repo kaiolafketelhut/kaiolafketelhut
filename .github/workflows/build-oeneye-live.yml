@@ -1,0 +1,26 @@
+name: build-oeneye-live
+on:
+  workflow_dispatch:
+    inputs:
+      flavor:
+        description: Flavor
+        type: choice
+        default: lxqt
+        options: [lxqt]
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android
+      - name: Build in Debian container
+        env:
+          FLAVOR: ${{ inputs.flavor }}
+        run: |
+          mkdir -p out
+          docker run --rm --privileged -e FLAVOR -v "$PWD:/w" -v "$PWD/out:/out" debian:trixie bash /w/BuildLive.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: oeneye-${{ inputs.flavor }}-iso
+          path: out/*.iso

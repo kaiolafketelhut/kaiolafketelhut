@@ -1,0 +1,17 @@
+name: build-oeneye-debian
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android
+      - name: Build in Debian container
+        run: |
+          mkdir -p out
+          docker run --rm --privileged -v "$PWD:/w" -v "$PWD/out:/out" debian:trixie bash /w/BuildDebian.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: oeneye-debian-iso
+          path: out/*.iso

@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+# oecc - compile CUDA-style .cu files for the oeneye CPU runtime (original code)
+import os, re, shutil, subprocess, sys
+
+PREAMBLE = r'''#include "oeneye_cuda.h"
+#include <cstdio>
+enum { cudaMemcpyHostToHost = 0, cudaMemcpyHostToDevice = 1, cudaMemcpyDeviceToHost = 2, cudaMemcpyDeviceToDevice = 3 };
+static inline int cudaMalloc(void** p, size_t n) { return oeMalloc(p, n); }
+template <class T> static inline int cudaMalloc(T** p, size_t n) { return oeMalloc((void**)p, n); }
+static inline int cudaFree(void* p) { return oeFree(p); }
+static inline int cudaMemcpy(void* d, const void* s, size_t n, int) { return oeMemcpy(d, s, n); }
+static inline int cudaMemset(void* p, int v, size_t n) { return oeMemset(p, v, n); }
+static inline int cudaDeviceSynchronize() { return 0; }
+#line 1
+'''
+
+def split_top(s):
+    parts, depth, cur = [], 0, ''
+    for ch in s:
+        if ch in '([{': depth += 1
+        elif ch in ')]}': depth -= 1
+        if ch == ',' and depth == 0:
+            parts.append(cur.strip()); cur = ''
+        else:
+            cur += ch
+    if cur.strip(): parts.append(cur.strip())
+    return parts
+
+def rewrite(src):
+    fn = 'oeLaunchSync' if '__syncthreads' in src else 'oeLaunch'
+    pat = re.compile(r'([A-Za-z_]\w*)\s*<<<')
+    out, i = '', 0
+    while True:
+        m = pat.search(src, i)
+        if not m:
+            out += src[i:]
+            return out
+        out += src[i:m.start()]
+        j = m.end()
+        k = src.find('>>>', j)
+        if k < 0: sys.exit('oecc: unmatched <<<')
+        cfg = split_top(src[j:k])
+        if len(cfg) < 2: sys.exit('oecc: launch needs <<<grid, block>>>')
+        p = src.find('(', k)
+        if p < 0: sys.exit('oecc: launch has no argument list')
+        depth, q = 0, p
+        while q < len(src):
+            if src[q] == '(': depth += 1
+            elif src[q] == ')':
+                depth -= 1
+                if depth == 0: break
+            q += 1
+        args = split_top(src[p + 1:q])
+        out += '%s(%s, %s, %s%s)' % (fn, cfg[0], cfg[1], m.group(1), ''.join(', ' + a for a in args))
+        i = q + 1
+
+def main():
+    if len(sys.argv) < 2:
+        sys.exit('usage: oecc file.cu [-o out] [extra compiler flags]')
+    path, rest = sys.argv[1], sys.argv[2:]
+    here = os.path.dirname(os.path.realpath(__file__))
+    inc = [d for d in (here, '/usr/include/oeneye') if os.path.exists(os.path.join(d, 'oeneye_cuda.h'))]
+    if not inc: sys.exit('oecc: oeneye_cuda.h not found')
+    tmp = os.path.splitext(path)[0] + '.oecc.cpp'
+    with open(path) as f: body = rewrite(f.read())
+    with open(tmp, 'w') as f: f.write(PREAMBLE + body)
+    cxx = os.environ.get('CXX') or ('clang++' if shutil.which('clang++') else 'g++')
+    rc = subprocess.call([cxx, '-std=c++17', '-O2', '-pthread', '-I' + inc[0], '-x', 'c++', tmp] + rest)
+    os.remove(tmp)
+    sys.exit(rc)
+
+main()
