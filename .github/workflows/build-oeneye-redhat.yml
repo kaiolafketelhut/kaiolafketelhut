@@ -1,0 +1,20 @@
+name: build-oeneye-redhat
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android
+      - name: Build in Fedora container
+        env:
+          HASH: ${{ secrets.OENEYE_ROOT_HASH }}
+        run: |
+          mkdir -p out
+          docker run --rm --privileged -e HASH -v "$PWD:/w" -w /w fedora:latest bash BlackHat.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: oeneye-iso
+          path: out/**/*.iso
+          if-no-files-found: error

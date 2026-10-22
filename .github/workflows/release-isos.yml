@@ -1,0 +1,41 @@
+name: release-isos
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag
+        default: iso-backup-1.05rc
+      runs:
+        description: "artifact=runid pairs, space separated"
+        default: "oeneye-lxqt-iso=39689738784"
+permissions:
+  contents: write
+  actions: read
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch artifacts and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUNS: ${{ inputs.runs }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          mkdir iso && cd iso
+          for p in $RUNS; do
+            n="${p%%=*}"; id="${p##*=}"
+            gh run download "$id" -R "$GITHUB_REPOSITORY" -n "$n" -D "dl-$n"
+            find "dl-$n" -name '*.iso' -exec mv {} "$n.iso" \;
+            rm -rf "dl-$n"
+          done
+          for f in *.iso; do
+            sha256sum "$f" >> SHA256SUMS.txt
+            if [ "$(stat -c%s "$f")" -gt 2000000000 ]; then
+              split -b 1800M -d "$f" "$f.part"
+              rm "$f"
+            fi
+          done
+          gh release create "$TAG" -R "$GITHUB_REPOSITORY" \
+            --title "oeneye ISO backup $TAG" \
+            --notes "Raw ISO images. Files ending .partNN: join with  cat NAME.part* > NAME  then check SHA256SUMS.txt" \
+            ./*
