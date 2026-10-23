@@ -1,0 +1,56 @@
+name: build-tinyoeneye
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build TINYoeneye
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eux
+          sudo apt-get update
+          sudo apt-get install -y p7zip-full cpio
+          B=17.x/x86_64/release/TinyCorePure64-17.0.iso
+          curl -fL -o tc.iso http://www.tinycorelinux.net/$B || curl -fL -o tc.iso https://ftp.nluug.nl/os/Linux/distr/tinycorelinux/$B
+          7z x -y tc.iso -oiso
+          K=$(find iso -name vmlinuz64 | head -1)
+          R=$(find iso -name 'corepure64.gz' | head -1)
+          mkdir -p ov/opt ov/etc ov/usr/local/bin ov/usr/share/mosfetq
+          cp docs/mosfetq.html ov/usr/share/mosfetq/index.html
+          cat > ov/opt/bootlocal.sh <<'BEOF'
+          #!/bin/sh
+          echo tinyoeneye > /etc/hostname
+          hostname tinyoeneye
+          BEOF
+          cat > ov/etc/motd <<'MEOF'
+          TINYoeneye - Tiny Core + MOSFETQ
+          Type: mosfetq    (opens the MOSFETQ desktop; installs a browser if needed)
+          MEOF
+          cat > ov/usr/local/bin/mosfetq <<'SEOF'
+          #!/bin/sh
+          for b in firefox_ESR firefox netsurf-gtk; do command -v $b >/dev/null && exec $b file:///usr/share/mosfetq/index.html; done
+          for p in firefox_ESR firefox-esr firefox; do tce-load -wi $p && break; done
+          for b in firefox_ESR firefox netsurf-gtk; do command -v $b >/dev/null && exec $b file:///usr/share/mosfetq/index.html; done
+          echo "No browser installed. Open the Apps icon and install one, then run mosfetq again."
+          SEOF
+          chmod 755 ov/opt/bootlocal.sh ov/usr/local/bin/mosfetq
+          (cd ov && find . | cpio -o -H newc -R 0:0 | gzip -9) > ov.gz
+          mkdir -p out
+          cp $K out/vmlinuz64
+          cat $R ov.gz > out/tinyoeneye.gz
+          cat > out/tinyoeneye <<'LEOF'
+          #!/bin/sh
+          D=$(dirname "$0")
+          echo "TINYoeneye: connect a VNC viewer to 127.0.0.1:5901 (no password). Ctrl+C stops it."
+          exec qemu-system-x86_64 -m ${MEM:-768} -smp 2 -cpu qemu64 -kernel "$D/vmlinuz64" -initrd "$D/tinyoeneye.gz" -append "quiet vga=791" -nic user -vnc 127.0.0.1:1 "$@"
+          LEOF
+          chmod 755 out/tinyoeneye
+          tar -C out -cf tinyoeneye.tar vmlinuz64 tinyoeneye.gz tinyoeneye
+          ls -lh out tinyoeneye.tar
+          gh release delete tinyoeneye-latest -y --cleanup-tag || true
+          gh release create tinyoeneye-latest tinyoeneye.tar --title "TINYoeneye" --notes "Tiny Core 17 + MOSFETQ. Run: tar xf tinyoeneye.tar && sh tinyoeneye"
