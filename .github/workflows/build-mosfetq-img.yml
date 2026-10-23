@@ -1,0 +1,80 @@
+name: build-mosfetq-img
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y debootstrap parted dosfstools e2fsprogs grub-pc-bin grub-efi-amd64-bin grub-common xz-utils
+      - name: Build image
+        run: |
+          set -eux
+          truncate -s 3G mosfetq.img
+          LOOP=$(sudo losetup -Pf --show mosfetq.img)
+          echo "LOOP=$LOOP" >> $GITHUB_ENV
+          sudo parted -s $LOOP mklabel gpt \
+            mkpart bios 1MiB 3MiB set 1 bios_grub on \
+            mkpart ESP fat32 3MiB 203MiB set 2 esp on \
+            mkpart root ext4 203MiB 100%
+          sudo partprobe $LOOP; sleep 2
+          sudo mkfs.vfat -F32 ${LOOP}p2
+          sudo mkfs.ext4 -F -L mosfetq ${LOOP}p3
+          sudo mkdir -p /mnt/img
+          sudo mount ${LOOP}p3 /mnt/img
+          sudo mkdir -p /mnt/img/boot/efi
+          sudo mount ${LOOP}p2 /mnt/img/boot/efi
+          sudo debootstrap --arch=amd64 \
+            --include=linux-image-amd64,chromium,xserver-xorg,xserver-xorg-legacy,xinit,dbus,libpam-systemd,network-manager,fonts-dejavu-core,sudo \
+            bookworm /mnt/img http://deb.debian.org/debian
+          ROOTUUID=$(sudo blkid -s UUID -o value ${LOOP}p3)
+          EFIUUID=$(sudo blkid -s UUID -o value ${LOOP}p2)
+          sudo tee /mnt/img/etc/fstab >/dev/null <<FEOF
+          UUID=$ROOTUUID / ext4 defaults 0 1
+          UUID=$EFIUUID /boot/efi vfat umask=0077 0 2
+          FEOF
+          echo mosfetq | sudo tee /mnt/img/etc/hostname
+          sudo chroot /mnt/img bash -c 'echo root:mosfetq | chpasswd; useradd -m -s /bin/bash -G sudo,video,input,audio kiosk; echo kiosk:mosfetq | chpasswd'
+          sudo mkdir -p /mnt/img/usr/share/mosfetq /mnt/img/etc/systemd/system/getty@tty1.service.d
+          sudo cp docs/mosfetq.html /mnt/img/usr/share/mosfetq/index.html
+          [ -d docs/oeneye-cuda-demo ] && sudo cp -r docs/oeneye-cuda-demo /mnt/img/usr/share/mosfetq/ || true
+          sudo tee /mnt/img/etc/systemd/system/getty@tty1.service.d/autologin.conf >/dev/null <<AEOF
+          [Service]
+          ExecStart=
+          ExecStart=-/sbin/agetty --autologin kiosk --noclear %I \$TERM
+          AEOF
+          sudo tee /mnt/img/etc/X11/Xwrapper.config >/dev/null <<XEOF
+          allowed_users=anybody
+          needs_root_rights=yes
+          XEOF
+          sudo tee /mnt/img/home/kiosk/.bash_profile >/dev/null <<'BEOF'
+          [ -z "$DISPLAY" ] && [ "$(tty)" = /dev/tty1 ] && exec startx
+          BEOF
+          sudo tee /mnt/img/home/kiosk/.xinitrc >/dev/null <<'IEOF'
+          xset s off -dpms
+          exec chromium --kiosk --no-first-run --disable-infobars --user-data-dir=/tmp/chrome file:///usr/share/mosfetq/index.html
+          IEOF
+          sudo chroot /mnt/img chown kiosk:kiosk /home/kiosk/.bash_profile /home/kiosk/.xinitrc
+          K=$(basename $(ls /mnt/img/boot/vmlinuz-* | head -1))
+          I=$(basename $(ls /mnt/img/boot/initrd.img-* | head -1))
+          sudo mkdir -p /mnt/img/boot/grub
+          sudo tee /mnt/img/boot/grub/grub.cfg >/dev/null <<GEOF
+          set timeout=1
+          menuentry "MOSFETQ" {
+            search --no-floppy --fs-uuid --set=root $ROOTUUID
+            linux /boot/$K root=UUID=$ROOTUUID ro quiet
+            initrd /boot/$I
+          }
+          GEOF
+          sudo grub-install --target=i386-pc --boot-directory=/mnt/img/boot $LOOP
+          sudo grub-install --target=x86_64-efi --efi-directory=/mnt/img/boot/efi --boot-directory=/mnt/img/boot --removable --no-nvram
+          sudo umount /mnt/img/boot/efi /mnt/img
+          sudo losetup -d $LOOP
+          xz -T0 -3 mosfetq.img
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mosfetq-img
+          path: mosfetq.img.xz
