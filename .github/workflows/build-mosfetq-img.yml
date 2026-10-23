@@ -9,7 +9,7 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y debootstrap parted dosfstools e2fsprogs grub-pc-bin grub-efi-amd64-bin grub-common xz-utils
+          sudo apt-get install -y qemu-utils debootstrap parted dosfstools e2fsprogs grub-pc-bin grub-efi-amd64-bin grub-common xz-utils
       - name: Build image
         run: |
           set -eux
@@ -73,11 +73,17 @@ jobs:
           GEOF
           sudo grub-install --target=i386-pc --boot-directory=/mnt/img/boot $LOOP
           sudo grub-install --target=x86_64-efi --efi-directory=/mnt/img/boot/efi --boot-directory=/mnt/img/boot --removable --no-nvram
+          sudo chroot /mnt/img apt-get clean
           sudo rm -f /mnt/img/usr/sbin/policy-rc.d
           sudo umount -R /mnt/img
           sudo losetup -d $LOOP
+          qemu-img convert -c -O qcow2 mosfetq.img mosfetq.qcow2
           xz -T0 -3 mosfetq.img
       - uses: actions/upload-artifact@v4
         with:
           name: mosfetq-img
           path: mosfetq.img.xz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mosfetq-qcow2
+          path: mosfetq.qcow2
