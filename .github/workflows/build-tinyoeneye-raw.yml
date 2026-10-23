@@ -39,4 +39,4 @@ jobs:
           sudo losetup -d $LOOP
           xz -T0 -k tinyoeneye.raw
           ls -lh tinyoeneye.raw*
-          gh release upload tinyoeneye-latest tinyoeneye.raw tinyoeneye.raw.xz -R ${{ github.repository }} --clobber
+          gh release create tinyoeneye-raw-${{ github.run_number }} tinyoeneye.raw tinyoeneye.raw.xz -R ${{ github.repository }} --title "TINYoeneye raw" --notes "128 MB raw disk image (BIOS boot)"
