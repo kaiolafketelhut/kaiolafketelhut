@@ -1,0 +1,6 @@
+Package: oeneye-fortran
+Version: 0.1
+Architecture: all
+Maintainer: kai
+Depends: gfortran, libgfortran5
+Description: oeneye Fortran own version

@@ -1,0 +1,5 @@
+Package: oeneye-cuda
+Version: 0.1
+Architecture: all
+Maintainer: kai
+Description: oecc grid,block wrapper + saxpy, reduce, tiled, vecadd

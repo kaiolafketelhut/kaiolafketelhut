@@ -1,3 +1,11 @@
+# inside file add, NOT in bash:
+# import mimetypes
+# mimetypes.add_type('text/x-ada', '.adb')
+# mimetypes.add_type('text/x-ada', '.ads')
+# mimetypes.add_type('application/vnd.oeneye.ximg+ada', '.ximg')
+# mimetypes.add_type('application/x-ximg+ada', '.ximg')
+
+# commit BuildXimg.sh fix
 import http.server, socketserver, os
 PORT=8080
 os.chdir(os.path.dirname(__file__) if os.path.dirname(__file__) else ".")
