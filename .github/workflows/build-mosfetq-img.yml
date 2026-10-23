@@ -13,7 +13,7 @@ jobs:
       - name: Build image
         run: |
           set -eux
-          truncate -s 3G mosfetq.img
+          truncate -s 6G mosfetq.img
           LOOP=$(sudo losetup -Pf --show mosfetq.img)
           echo "LOOP=$LOOP" >> $GITHUB_ENV
           sudo parted -s $LOOP mklabel gpt \
@@ -29,7 +29,7 @@ jobs:
           sudo mount ${LOOP}p2 /mnt/img/boot/efi
           sudo debootstrap --arch=amd64 \
             --include=linux-image-amd64,chromium,xserver-xorg,xserver-xorg-legacy,xinit,dbus,libpam-systemd,network-manager,fonts-dejavu-core,sudo \
-            bookworm /mnt/img http://deb.debian.org/debian
+            bookworm /mnt/img http://deb.debian.org/debian || { df -h /mnt/img; sudo tail -n 40 /mnt/img/debootstrap/debootstrap.log; exit 1; }
           ROOTUUID=$(sudo blkid -s UUID -o value ${LOOP}p3)
           EFIUUID=$(sudo blkid -s UUID -o value ${LOOP}p2)
           sudo tee /mnt/img/etc/fstab >/dev/null <<FEOF
