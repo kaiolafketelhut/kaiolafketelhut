@@ -1,0 +1,42 @@
+name: build-tinyoeneye-raw
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build raw image
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eux
+          sudo apt-get update
+          sudo apt-get install -y grub-pc-bin grub-common parted e2fsprogs xz-utils
+          gh release download tinyoeneye-latest -R ${{ github.repository }} -p tinyoeneye.tar
+          tar xf tinyoeneye.tar
+          truncate -s 128M tinyoeneye.raw
+          LOOP=$(sudo losetup -Pf --show tinyoeneye.raw)
+          sudo parted -s $LOOP mklabel msdos mkpart primary ext4 1MiB 100% set 1 boot on
+          sudo partprobe $LOOP; sleep 2
+          sudo mkfs.ext4 -F -L TINYOENEYE ${LOOP}p1
+          sudo mkdir -p /mnt/raw
+          sudo mount ${LOOP}p1 /mnt/raw
+          sudo mkdir -p /mnt/raw/boot/grub
+          sudo cp vmlinuz64 tinyoeneye.gz /mnt/raw/boot/
+          U=$(sudo blkid -s UUID -o value ${LOOP}p1)
+          sudo tee /mnt/raw/boot/grub/grub.cfg >/dev/null <<GEOF
+          set timeout=1
+          menuentry "TINYoeneye" {
+            search --no-floppy --fs-uuid --set=root $U
+            linux /boot/vmlinuz64 quiet vga=791
+            initrd /boot/tinyoeneye.gz
+          }
+          GEOF
+          sudo grub-install --target=i386-pc --boot-directory=/mnt/raw/boot $LOOP
+          sudo umount /mnt/raw
+          sudo losetup -d $LOOP
+          xz -T0 -k tinyoeneye.raw
+          ls -lh tinyoeneye.raw*
+          gh release upload tinyoeneye-latest tinyoeneye.raw tinyoeneye.raw.xz -R ${{ github.repository }} --clobber
