@@ -1,0 +1,3 @@
+[submodule "qemu-clone"]
+	path = qemu-clone
+	url = https://github.com/qemu/qemu
