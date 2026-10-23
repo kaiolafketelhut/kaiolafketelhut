@@ -27,9 +27,11 @@ jobs:
           sudo mount ${LOOP}p3 /mnt/img
           sudo mkdir -p /mnt/img/boot/efi
           sudo mount ${LOOP}p2 /mnt/img/boot/efi
-          sudo debootstrap --arch=amd64 \
-            --include=linux-image-amd64,chromium,xserver-xorg,xserver-xorg-legacy,xinit,dbus,libpam-systemd,network-manager,fonts-dejavu-core,sudo \
-            bookworm /mnt/img http://deb.debian.org/debian || { df -h /mnt/img; sudo tail -n 40 /mnt/img/debootstrap/debootstrap.log; exit 1; }
+          sudo debootstrap --arch=amd64 bookworm /mnt/img http://deb.debian.org/debian
+          for d in dev dev/pts proc sys; do sudo mount --bind /$d /mnt/img/$d; done
+          printf '#!/bin/sh\nexit 101\n' | sudo tee /mnt/img/usr/sbin/policy-rc.d >/dev/null
+          sudo chmod +x /mnt/img/usr/sbin/policy-rc.d
+          sudo chroot /mnt/img env DEBIAN_FRONTEND=noninteractive bash -c 'apt-get update && apt-get install -y --no-install-recommends linux-image-amd64 chromium xserver-xorg xserver-xorg-legacy xinit dbus libpam-systemd network-manager fonts-dejavu-core sudo' || { sudo tail -n 60 /mnt/img/var/log/apt/term.log; df -h /mnt/img; exit 1; }
           ROOTUUID=$(sudo blkid -s UUID -o value ${LOOP}p3)
           EFIUUID=$(sudo blkid -s UUID -o value ${LOOP}p2)
           sudo tee /mnt/img/etc/fstab >/dev/null <<FEOF
@@ -71,7 +73,8 @@ jobs:
           GEOF
           sudo grub-install --target=i386-pc --boot-directory=/mnt/img/boot $LOOP
           sudo grub-install --target=x86_64-efi --efi-directory=/mnt/img/boot/efi --boot-directory=/mnt/img/boot --removable --no-nvram
-          sudo umount /mnt/img/boot/efi /mnt/img
+          sudo rm -f /mnt/img/usr/sbin/policy-rc.d
+          sudo umount -R /mnt/img
           sudo losetup -d $LOOP
           xz -T0 -3 mosfetq.img
       - uses: actions/upload-artifact@v4
