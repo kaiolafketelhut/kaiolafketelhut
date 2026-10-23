@@ -1,180 +1,98 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8">
-<title>MOSFETQ Whitepaper + Old Mirror Complete</title>
+<title>MOSFETQ – Whitepaper + Floppy Max + QEMU Clone + emu_dos.py</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-body{background:#fff;color:#000;font-family:Times,serif;max-width:900px;margin:2rem auto;padding:2rem;line-height:1.6}
+body{background:#fff;color:#000;font-family:Times,serif;max-width:900px;margin:2rem auto;padding:1.5rem;line-height:1.6}
 h1,h2{text-align:center}.box{border:1px solid #000;padding:1rem;margin:1.2rem 0;background:#fafafa}
 a{color:#000}img{max-width:100%;border:1px solid #ccc}
-code{background:#eee;padding:2px 5px;font-family:monospace}
-.qemu{background:#000;color:#0f0;padding:10px;display:block;font-family:monospace;overflow-x:auto;margin:0.5rem 0}
-.pay{display:block;text-align:center;padding:1rem;border:2px solid #000;font-weight:bold;margin:1.5rem 0;text-decoration:none}
+code{background:#eee;padding:2px 5px;font-family:monospace;font-size:13px;word-break:break-all}
+.qemu{background:#000;color:#0f0;padding:10px;display:block;font-family:monospace;overflow-x:auto;margin:0.5rem 0;white-space:pre-wrap}
+.pay{display:block;text-align:center;padding:1rem;border:2px solid #000;font-weight:bold;margin:1.5rem 0;text-decoration:none;background:#fff}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media(max-width:600px){.grid{grid-template-columns:1fr}}
 </style></head><body>
 
-<div class="box" style="background:#fff;text-align:center;padding:1rem;border:2px solid #000">
+<!-- [GOOGLE SEARCH BAR BOX] by book -->
+<div class="box" style="background:#fff;text-align:center;border:2px solid #000">
 <b>[GOOGLE SEARCH BAR] by book</b><br><br>
 <form action="https://www.google.com/search" method="get" target="_blank" style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap">
-<input type="text" name="q" value="Kai Olaf Ketelhut MOSFETQ ISBN 978-3-00-068463-0" style="flex:1;min-width:240px;max-width:500px;padding:10px;border:2px solid #000;font-size:14px" placeholder="Search...">
+<input type="text" name="q" value="Kai Olaf Ketelhut MOSFETQ ISBN 978-3-00-068463-0" style="flex:1;min-width:240px;max-width:500px;padding:10px;border:2px solid #000;font-size:14px">
 <button type="submit" style="padding:10px 18px;background:#000;color:#fff;border:2px solid #000;cursor:pointer">Google</button>
 </form>
 <form action="https://www.google.com/search" method="get" target="_blank" style="margin-top:0.6rem;display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap">
 <input type="hidden" name="q" value="site:kaiolafketelhut.github.io/kaiolafketelhut/ OR site:colegio-san-caio.github.io/LLMM/ MOSFETQ oeneyeOS floppy max">
-<button type="submit" style="padding:6px 12px;border:1px solid #000;background:#fafafa;cursor:pointer">Search THIS SITE + old mirror (site:kaiolafketelhut...)</button>
+<button type="submit" style="padding:6px 12px;border:1px solid #000;background:#fafafa;cursor:pointer">Search THIS SITE + old mirror</button>
 </form>
 <div style="margin-top:0.6rem;font-size:12px">
-<a href="https://www.google.com/search?q=978-3-00-068463-0">Books ISBN</a> | 
-<a href="https://www.google.com/search?q=site:colegio-san-caio.github.io+oeneyeOS.img">Old Mirror floppy max on Google</a> | 
-<a href="https://drive.google.com">Google Drive</a> | 
-<a href="https://scholar.google.com/scholar?q=MOSFETQ+Kai+Olaf+Ketelhut">Google Scholar</a>
+<a href="https://www.google.com/search?q=978-3-00-068463-0">Books ISBN</a> | <a href="https://drive.google.com">Drive</a> | <a href="https://scholar.google.com/scholar?q=MOSFETQ+Kai+Olaf+Ketelhut">Scholar</a> | <a href="https://www.google.com/search?q=site:colegio-san-caio.github.io+oeneyeOS.img">Old Mirror on Google</a>
 </div>
 </div>
-
 
 <h1>HOCHSCHULPRÜFUNGSARBEIT DNB NETZPUBLIKATION</h1>
 <h2>MOSFETQ – Technologie als Gesellschaftstreiber</h2>
-<p style="text-align:center"><i>Interdisziplinäre Untersuchung – digitale Hardware, Waffentechnologie, Verwaltungskirchenpolitik</i></p>
+<p style="text-align:center"><i>Interdisziplinäre Untersuchung – digitale Hardware, Waffentechnologie, Verwaltungskirchenpolitik</i><br>
+URN: urn:nbn:de:101:1-2610222318593.912002703179 – CAPSTONE notebook and online book software</p>
 
-<div class="box"><b>Book Cover</b><br><img src="cover.png"><br>
+<div class="box"><b>Book Cover / Bibliographic Record</b><br><img src="cover.png" alt="cover"><br>
 Autor: Lic. Kai Olaf Ketelhut sic | Verlag: Fieldberry Group Berlin 14. Auflage 2021<br>
 ISBN: 978-3-00-068463-0 | Order: 2026-0812-CNNN3-BK01 | Entity: SIETEHR FOUNDATION NCAGE:CNNN3<br>
 Payment: <a href="https://bunq.me/fieldberry">bunq.me/fieldberry</a></div>
 
 <a href="https://bunq.me/fieldberry" class="pay">PAY -> BLUH.XKTS // 21,00€ +TAX [oeneye]</a>
 
+<!-- [OLD MIRROR COMPLETE -> NEW] -->
 <div class="box">
-<b>[OLD MIRROR COMPLETE → NEW] – Floppy Max + Live Catalog</b><br>
-Old mirror source: <a href="https://colegio-san-caio.github.io/LLMM/">colegio-san-caio.github.io/LLMM/</a> + <a href="https://colegio-san-caio.github.io/demo-repository/">demo-repository</a><br>
-New mirror: <a href="https://kaiolafketelhut.github.io/kaiolafketelhut/">kaiolafketelhut.github.io/kaiolafketelhut/</a><br><br>
-
-<b>ALL LIVE FLOPPY / VHD IMAGES – BACK ONLINE:</b>
+<b>[OLD MIRROR COMPLETE → NEW] – Floppy Max 2.88MB + Live Catalog</b><br>
+Old: <a href="https://colegio-san-caio.github.io/LLMM/">colegio-san-caio.github.io/LLMM/</a> + <a href="https://colegio-san-caio.github.io/demo-repository/">demo-repository</a><br>
+New: <a href="https://kaiolafketelhut.github.io/kaiolafketelhut/">kaiolafketelhut.github.io/kaiolafketelhut/</a><br><br>
 <table style="width:100%;font-size:14px;border-collapse:collapse">
-<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>A: oeneyeOS.img – 2.88M Floppy Max</b> – max size floppy<br><span style="font-size:11px">QEMU -fda</span></td><td><a href="https://colegio-san-caio.github.io/demo-repository/oeneyeOS.img">DOWNLOAD</a></td></tr>
+<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>A: oeneyeOS.img – 2.88M Floppy Max</b> – max size</td><td><a href="https://colegio-san-caio.github.io/demo-repository/oeneyeOS.img">dl</a></td></tr>
 <tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>B: data.img – Data Drive</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/data.img">dl</a></td></tr>
 <tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>C: date.img – Date Drive</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/date.img">dl</a></td></tr>
-<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>D: GNUoeneyeALPINEunix.img – 357 MB Alpine Linux</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/GNUoeneyeALPINEunix.img">dl</a></td></tr>
-<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>X: workshop.img – 1.4 MB Workshop</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/workshop.img">dl</a></td></tr>
+<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>D: GNUoeneyeALPINEunix.img – 357 MB Alpine</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/GNUoeneyeALPINEunix.img">dl</a></td></tr>
+<tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>X: workshop.img – 1.4 MB</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/workshop.img">dl</a></td></tr>
 <tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>fily.img – 360 KB</b></td><td><a href="https://colegio-san-caio.github.io/demo-repository/fily.img">dl</a></td></tr>
 <tr><td style="border-bottom:1px solid #ccc;padding:6px"><b>iframe.frame.html – Macro</b></td><td><a href="https://colegio-san-caio.github.io/LLMM/iframe.frame.html">open</a></td></tr>
 </table>
-
 <span class="qemu">qemu-system-i386 -fda oeneyeOS.img -fdb data.img -hda date.img -hdb GNUoeneyeALPINEunix.img</span>
-<span class="qemu">qemu-system-i386 -fda oeneyeOS.img -fdb data.img -hda date.img</span>
-
-<b>Drives:</b> C:/mnt/c D:Fieldberry E:SIETEHR /drive/myDrive /emu/dos /bluh/xkts<br>
-<b>EMU DOS:</b> DOSBox / js-dos<br>
-<b>Py Namespace:</b> <code>import oeneye.bluh.xkts as bluh; bluh.init(grid=(16,16), block=(16,16))</code><br>
-<b>oecc:</b> CUDA-style .cu -> python3 grid,block wrapper
 </div>
 
+<!-- [QEMU-CLONE BOX] -->
+<div class="box" style="border:2px solid #000;background:#fff">
+<b>[QEMU-CLONE BOX] by book – tinyurl.com/qemu-clone → new</b><br>
+TinyURL: <a href="https://tinyurl.com/qemu-clone">https://tinyurl.com/qemu-clone</a> → resolved to <a href="https://github.com/qemu/qemu">github.com/qemu/qemu</a><br>
+Local submodule: <a href="./qemu-clone/">./qemu-clone/</a> – 931011 objects, 698 MB – GitHub: <a href="https://github.com/kaiolafketelhut/kaiolafketelhut/tree/main/qemu-clone">kaiolafketelhut/kaiolafketelhut/qemu-clone</a><br><br>
+<b>Clone:</b><br>
+<code>git clone https://github.com/qemu/qemu qemu-clone</code><br>
+<code>git submodule add https://github.com/qemu/qemu qemu-clone</code><br><br>
+<b>Build (old mirror emu):</b><br>
+<span class="qemu">cd qemu-clone
+./configure --target-list=i386-softmmu,x86_64-softmmu
+make -j$(nproc)
+./build/qemu-system-i386 -fda ../oeneyeOS.img -fdb ../data.img -hda ../date.img -hdb ../GNUoeneyeALPINEunix.img</span>
+<b>Drives + BLUH.XKTS:</b> C:/mnt/c D:Fieldberry E:SIETEHR /drive/myDrive /emu/dos /bluh/xkts --grid 16,16 --block 16,16 --floppy-max 2.88MB
+</div>
+
+<!-- [EMU_DOS.PY BOX] -->
 <div class="box">
-<b>[CLOCK / CHECKSUM / GOOGLE] by book</b><br>
+<b>[EMU_DOS.PY BOX] by book – py namespace</b><br>
+File: <a href="./emu_dos.py">emu_dos.py</a> – <code>python3 emu_dos.py</code><br>
+<code>import oeneye.bluh.xkts as bluh; bluh.init(grid=(16,16), block=(16,16)).load("MOSFETQ").exec("TECHNOLOGIE ALS GESELLSCHAFTSTREIBER")</code><br>
+<span class="qemu">oecc: .cu -> python3 grid=16,16 block=16,16
+[BLUH.XKTS] init grid=(16, 16) block=(16, 16) by book
+[EMU_DOS] Mounting from old mirror
+qemu-system-i386 -fda oeneyeOS.img -fdb data.img -hda date.img -hdb GNUoeneyeALPINEunix.img</span>
+Full source in repo: <a href="./emu_dos.py">./emu_dos.py</a>
+</div>
+
+<!-- [KDP + CLOCK] -->
+<div class="box">
+<b>[CLOCK / CHECKSUM / KDP] by book</b><br>
 CLOCK_UTC: <span id="clock"></span><br>
-SHA256_INDEX: 1c42ce16f78e60a30ad23934d88718b26ddf6d9d9625b012c0c365d5ec0ba35b<br>
-ISBN: 978-3-00-068463-0 – Order: 2026-0812-CNNN3-BK01<br>
-Google: Drive, Scholar, Books (ISBN search), Maps Berlin<br>
+SHA256_INDEX: fe94a2adad6d08457eeff0a027ee0efdbbf0873f308d043dfdc11c9c6fd8e45f<br>
+ISBN: 978-3-00-068463-0 – Order: 2026-0812-CNNN3-BK01 – NCAGE: CNNN3<br>
+KDP clean file: <a href="./KDP_DESCRIPTION.html">KDP_DESCRIPTION.html</a> – no body/div, only b/i/u/br/p/ul/li (fixes Amazon red error)<br>
 <script>document.getElementById('clock').innerText=new Date().toISOString()</script>
 </div>
 
-<div class="box">
-<b>Mirrors</b><br>
-- <a href="https://colegio-san-caio.github.io/LLMM/">Old: colegio-san-caio.github.io/LLMM/</a><br>
-- <a href="https://colegio-san-caio.github.io/demo-repository/">Old: demo-repository/index.html - oeneyeOS lab</a><br>
-- <a href="https://kaiolafketelhut.github.io/kaiolafketelhut/">New: kaiolafketelhut.github.io/kaiolafketelhut/</a><br>
-- <a href="https://github.com/kaiolafketelhut/kaiolafketelhut">GitHub new</a><br>
-- <a href="https://github.com/Colegio-San-Caio/LLMM">GitHub old LLMM</a>
-</div>
-
-
-<div class="box">
-<b>[EMU_DOS.PY BOX – SOURCE CODE] by book – old mirror -> new</b><br>
-<code style='white-space:pre-wrap;display:block;background:#000;color:#0f0;padding:1rem;overflow-x:auto'>
-#!/usr/bin/env python3
-"""
-emu_dos.py – by book
-Old mirror -&gt; new : Floppy Max 2.88MB + DOS emu + py namespace
-oeneye.bluh.xkts – OECC CUDA .cu -&gt; python3 grid,block wrapper
-Order: 2026-0812-CNNN3-BK01 Entity: SIETEHR FOUNDATION CNNN3
-ISBN: 978-3-00-068463-0
-"""
-import os, sys
-
-# --- PY NAMESPACE BOX ---
-class BluhXKTS:
-    def __init__(self, grid=(16,16), block=(16,16)):
-        self.grid = grid
-        self.block = block
-        self.drives = {
-            "C": "/mnt/c",
-            "D": "Fieldberry Group Data",
-            "E": "SIETEHR FOUNDATION Archive",
-            "G": "/drive/myDrive - Google Drive",
-            "EMU": "/emu/dos",
-            "BLUH": "/bluh/xkts"
-        }
-        self.floppy_max = "2.88MB"
-
-    def init(self, grid=(16,16), block=(16,16)):
-        self.grid, self.block = grid, block
-        print(f"[BLUH.XKTS] init grid={grid} block={block} by book")
-        return self
-
-    def load(self, name):
-        print(f"[BLUH.XKTS] load {name} – MOSFETQ")
-        return self
-
-    def exec(self, cmd):
-        print(f"[BLUH.XKTS] exec: {cmd}")
-
-# --- EMU DOS BOX ---
-class EmuDOS:
-    """Emulates old mirror QEMU drives"""
-    IMAGES = {
-        "A": ("oeneyeOS.img", "2.88M Floppy Max - floppy max part"),
-        "B": ("data.img", "Data Drive"),
-        "C": ("date.img", "Date Drive"),
-        "D": ("GNUoeneyeALPINEunix.img", "357 MB Alpine"),
-        "X": ("workshop.img", "1.4 MB Workshop"),
-        "F": ("fily.img", "360 KB fily")
-    }
-
-    @staticmethod
-    def qemu_cmd():
-        return "qemu-system-i386 -fda oeneyeOS.img -fdb data.img -hda date.img -hdb GNUoeneyeALPINEunix.img"
-
-    @staticmethod
-    def mount_all(base_url="https://colegio-san-caio.github.io/demo-repository/"):
-        print(f"[EMU_DOS] Mounting from old mirror: {base_url}")
-        for drive, (img, desc) in EmuDOS.IMAGES.items():
-            print(f"  {drive}: {img} – {desc} -&gt; {base_url}{img}")
-
-    @staticmethod
-    def google_box():
-        return {
-            "Drive": "drive.google.com -&gt; Fieldberry Group",
-            "Scholar": "MOSFETQ DNB",
-            "Books": "ISBN 978-3-00-068463-0",
-            "Search": "Kai Olaf Ketelhut MOSFETQ",
-            "Maps": "Fieldberry Group, Berlin"
-        }
-
-# oecc wrapper
-def oecc_grid_block_wrapper(grid=(16,16), block=(16,16)):
-    """CUDA .cu -&gt; python3"""
-    print(f"oecc: .cu -&gt; python3 grid={grid} block={block}")
-    bluh = BluhXKTS().init(grid=grid, block=block)
-    bluh.load("MOSFETQ")
-    bluh.exec("TECHNOLOGIE ALS GESELLSCHAFTSTREIBER")
-    EmuDOS.mount_all()
-    print(EmuDOS.qemu_cmd())
-    return bluh
-
-if __name__ == "__main__":
-    print("emu_dos.py – old mirror -&gt; new – by book")
-    print("ISBN: 978-3-00-068463-0 Order: 2026-0812-CNNN3-BK01")
-    oecc_grid_block_wrapper(grid=(16,16), block=(16,16))
-    print(EmuDOS.google_box())
-
-</code>
-Run: <code>python3 emu_dos.py</code> or <code>python3 -m oeneye.bluh.xkts --grid 16,16 --block 16,16 --floppy-max 2.88MB</code>
-</div>
 </body></html>
