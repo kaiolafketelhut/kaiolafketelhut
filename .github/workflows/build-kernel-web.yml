@@ -24,6 +24,7 @@ jobs:
           make defconfig
           sed -i 's/^# CONFIG_STATIC is not set/CONFIG_STATIC=y/; s/^CONFIG_TC=y/# CONFIG_TC is not set/' .config
           make CC="gcc -m32" -j$(nproc) busybox
+          cp busybox ../rootfs-busybox
       - name: Build latest kernel
         run: |
           set -eux
@@ -32,7 +33,7 @@ jobs:
           curl -fL -o linux.tar.xz https://cdn.kernel.org/pub/linux/kernel/v${V%%.*}.x/linux-$V.tar.xz
           tar xf linux.tar.xz
           mkdir -p rootfs
-          cp busybox-1.36.1/busybox rootfs/busybox
+          cp rootfs-busybox rootfs/busybox
           cat > rootfs/init <<'IEOF'
           #!/bin/busybox sh
           /bin/busybox --install -s /bin
@@ -43,6 +44,7 @@ jobs:
           echo "TINYoeneye web - Linux $(uname -r)"
           exec setsid cttyhack sh
           IEOF
+          chmod +x rootfs/init
           cat > rootfs.list <<LEOF
           dir /dev 0755 0 0
           nod /dev/console 0600 0 0 c 5 1
@@ -52,8 +54,8 @@ jobs:
           dir /sys 0755 0 0
           dir /tmp 1777 0 0
           dir /root 0700 0 0
-          file /bin/busybox $PWD/rootfs/busybox 0755 0 0
-          file /init $PWD/rootfs/init 0755 0 0
+          file /bin/busybox $GITHUB_WORKSPACE/rootfs/busybox 0755 0 0
+          file /init $GITHUB_WORKSPACE/rootfs/init 0755 0 0
           LEOF
           cd linux-$V
           make ARCH=i386 tinyconfig
@@ -66,11 +68,11 @@ jobs:
           mkdir -p web-linux
           cp linux-$KVER/arch/x86/boot/bzImage web-linux/bzImage
           echo "$KVER" > web-linux/VERSION
-          ls -l web-linux
+          ls -lh web-linux
           git config user.name github-actions
           git config user.email actions@github.com
           git add -f web-linux
           git commit -m "Linux $KVER web kernel" || true
           git pull --rebase origin main
           git push origin HEAD:main
-          gh workflow run deploy-pages.yml
+          gh workflow run deploy-pages.yml || true
