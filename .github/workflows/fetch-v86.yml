@@ -1,0 +1,33 @@
+name: fetch-v86
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+jobs:
+  f:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch v86 files
+        run: |
+          set -eux
+          npm pack v86
+          mkdir pk && tar xf v86-*.tgz -C pk
+          mkdir -p docs/v86
+          for n in libv86.js v86.wasm seabios.bin vgabios.bin; do
+            f=$(find pk -name $n | head -1)
+            [ -n "$f" ] || { echo "MISSING $n"; find pk -type f | head -n 60; exit 1; }
+            cp "$f" docs/v86/
+          done
+          ls -l docs/v86
+          sh docs/make-index.sh
+          git config user.name github-actions
+          git config user.email actions@github.com
+          git add -f docs
+          git commit -m "Add v86 files" || true
+          git pull --rebase origin main
+          git push origin HEAD:main
+          gh workflow run deploy-pages.yml
