@@ -3,11 +3,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-  actions: write
 jobs:
   f:
     runs-on: ubuntu-latest
-    env:
     steps:
       - uses: actions/checkout@v4
       - name: Fetch v86 files
@@ -16,14 +14,11 @@ jobs:
           npm pack v86
           mkdir pk && tar xf v86-*.tgz -C pk
           mkdir -p docs/v86
-          cp pk/package/build/libv86.js pk/package/build/v86.wasm docs/v86/
-          git clone --depth 1 https://github.com/copy/v86 v86src
-          for n in seabios.bin vgabios.bin; do
-            f=$(find v86src -name $n -not -path '*/node_modules/*' | head -1)
-            [ -n "$f" ] || { echo "MISSING $n"; find v86src -iname '*bios*' | head -n 30; exit 1; }
+          for n in libv86.js v86.wasm seabios.bin vgabios.bin; do
+            f=$(find pk -name $n | head -1)
+            [ -n "$f" ] || { echo "MISSING $n"; exit 1; }
             cp "$f" docs/v86/
           done
-          ls -l docs/v86
           sh docs/make-index.sh
           git config user.name github-actions
           git config user.email actions@github.com
