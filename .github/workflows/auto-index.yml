@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          cp INDEX.HTML index.html || cp index.html INDEX.HTML
+          cp index.html INDEX.HTML
           git config user.name "kai"
           git config user.email "kai@fieldberry.local"
           git add index.html INDEX.HTML || true
