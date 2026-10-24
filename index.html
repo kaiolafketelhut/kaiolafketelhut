@@ -52,6 +52,21 @@ Payment: <a href="https://bunq.me/fieldberry">bunq.me/fieldberry</a></div>
 <a href="https://bunq.me/fieldberry" class="pay">PAY -> BLUH.XKTS // 21,00€ +TAX [oeneye]</a>
 
 <!-- [OLD MIRROR COMPLETE -> NEW] -->
+<div class="box"><b>Linux Terminal (current kernel, in your browser)</b><br>
+<canvas id="omq" width="1200" height="630" style="width:100%;max-width:600px;background:#14181f"></canvas>
+<div id="omqmsg" style="font-size:12px">OMQpreview.ximg · kernel terminal coming next</div></div>
+<script>
+(async()=>{try{
+const r=await fetch('OMQpreview.ximg');const b=new Uint8Array(await r.arrayBuffer());
+if(String.fromCharCode(...b.slice(0,4))!=='XIMG')throw 'bad magic';
+const dv=new DataView(b.buffer);const w=dv.getUint32(6,true),h=dv.getUint32(10,true),f=b[5];
+let raw=b.slice(14);
+if(f&1){raw=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer())}
+const c=document.getElementById('omq');c.width=w;c.height=h;
+c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(raw.buffer,raw.byteOffset,w*h*4),w,h),0,0);
+}catch(e){document.getElementById('omqmsg').textContent='XIMG error: '+e}})();
+</script>
+
 <div class="box">
 <b>[OLD MIRROR COMPLETE → NEW] – Floppy Max 2.88MB + Live Catalog</b><br>
 Old: <a href="https://colegio-san-caio.github.io/LLMM/">colegio-san-caio.github.io/LLMM/</a> + <a href="https://colegio-san-caio.github.io/demo-repository/">demo-repository</a><br>
