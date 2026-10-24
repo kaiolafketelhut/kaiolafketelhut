@@ -63,13 +63,13 @@ jobs:
       - name: Publish
         run: |
           set -eux
-          S=$(date -u +%Y%m%d-%H%M%S); D=docs/web-linux/$KVER-$S; mkdir -p $D docs/web-linux/latest
-          cp linux-$KVER/arch/x86/boot/bzImage $D/bzImage; cp linux-$KVER/arch/x86/boot/bzImage docs/web-linux/latest/bzImage
-          echo "$KVER" > $D/VERSION; echo "$KVER" > docs/web-linux/latest/VERSION
-          sh docs/make-index.sh; ls -lR docs/web-linux | head -n 20
+          mkdir -p web-linux
+          cp linux-$KVER/arch/x86/boot/bzImage web-linux/bzImage
+          echo "$KVER" > web-linux/VERSION
+          ls -l web-linux
           git config user.name github-actions
           git config user.email actions@github.com
-          git add -f docs
+          git add -f web-linux
           git commit -m "Linux $KVER web kernel" || true
           git pull --rebase origin main
           git push origin HEAD:main
