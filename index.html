@@ -52,9 +52,11 @@ Payment: <a href="https://bunq.me/fieldberry">bunq.me/fieldberry</a></div>
 <a href="https://bunq.me/fieldberry" class="pay">PAY -> BLUH.XKTS // 21,00€ +TAX [oeneye]</a>
 
 <!-- [OLD MIRROR COMPLETE -> NEW] -->
-<div class="box"><b>Linux Terminal (current kernel, in your browser)</b><br>
+<div class="box"><b>Linux Terminal (kernel <span id="kv">?</span>, in your browser)</b><br>
 <canvas id="omq" width="1200" height="630" style="width:100%;max-width:600px;background:#14181f"></canvas>
-<div id="omqmsg" style="font-size:12px">OMQpreview.ximg · kernel terminal coming next</div></div>
+<textarea id="ser" rows="14" spellcheck="false" style="display:none;width:100%;box-sizing:border-box;font:12px monospace;background:#000;color:#0f0"></textarea><br>
+<button id="omqgo" style="padding:8px 14px">Boot Linux</button>
+<div id="omqmsg" style="font-size:12px"></div></div>
 <script>
 (async()=>{try{
 const r=await fetch('OMQpreview.ximg');const b=new Uint8Array(await r.arrayBuffer());
@@ -65,7 +67,18 @@ if(f&1){raw=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrou
 const c=document.getElementById('omq');c.width=w;c.height=h;
 c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(raw.buffer,raw.byteOffset,w*h*4),w,h),0,0);
 }catch(e){document.getElementById('omqmsg').textContent='XIMG error: '+e}})();
+fetch('docs/web-linux/latest/VERSION').then(r=>r.text()).then(t=>document.getElementById('kv').textContent=t.trim()).catch(()=>{});
+document.getElementById('omqgo').onclick=async()=>{
+const m=document.getElementById('omqmsg'),t=document.getElementById('ser');
+try{
+m.textContent='Loading emulator...';
+await new Promise((ok,no)=>{const s=document.createElement('script');s.src='docs/v86/libv86.js';s.onload=ok;s.onerror=()=>no('libv86.js missing');document.head.append(s)});
+t.style.display='block';document.getElementById('omq').style.display='none';
+new V86({wasm_path:'docs/v86/v86.wasm',memory_size:64*1024*1024,vga_memory_size:2*1024*1024,bios:{url:'docs/v86/seabios.bin'},vga_bios:{url:'docs/v86/vgabios.bin'},bzimage:{url:'docs/web-linux/latest/bzImage'},cmdline:'console=ttyS0',serial_container:t,autostart:true});
+m.textContent='Booting... tap the black box to type';
+}catch(e){m.textContent='Error: '+e}};
 </script>
+
 
 <div class="box">
 <b>[OLD MIRROR COMPLETE → NEW] – Floppy Max 2.88MB + Live Catalog</b><br>
