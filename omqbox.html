@@ -1,8 +1,8 @@
-<div class="box"><b>Linux Terminal (kernel <span id="kv">?</span>, in your browser)</b><br>
-<canvas id="omq" width="1200" height="630" style="width:100%;max-width:600px;background:#14181f"></canvas>
-<textarea id="ser" rows="14" spellcheck="false" style="display:none;width:100%;box-sizing:border-box;font:12px monospace;background:#000;color:#0f0"></textarea><br>
+<div class="box"><b>Linux Terminal (kernel <span id="kv">7.3</span>, in your browser)</b><br>
+<canvas id="omq" width="1200" height="630" style="width:100%;max-width:600px;background:#000;color:#0f0;font:12px monospace"></canvas>
+<textarea id="ser" rows="16" spellcheck="false" style="display:none;width:100%;max-width:600px;box-sizing:border-box;font:12px monospace;background:#000;color:#0f0"></textarea><br>
 <button id="omqgo" style="padding:8px 14px">Boot Linux</button>
-<div id="omqmsg" style="font-size:12px"></div></div>
+<div id="omqmsg" style="font:12px monospace">Booting... tap the black box to type</div></div>
 <script>
 (async()=>{try{
 const r=await fetch('OMQpreview.ximg');const b=new Uint8Array(await r.arrayBuffer());
@@ -12,8 +12,7 @@ let raw=b.slice(14);
 if(f&1){raw=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer())}
 const c=document.getElementById('omq');c.width=w;c.height=h;
 c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(raw.buffer,raw.byteOffset,w*h*4),w,h),0,0);
-}catch(e){document.getElementById('omqmsg').textContent='XIMG error: '+e}})();
-fetch('docs/web-linux/latest/VERSION').then(r=>r.text()).then(t=>document.getElementById('kv').textContent=t.trim()).catch(()=>{});
+}catch(e){document.getElementById('omqmsg').textContent='XIMG preview: '+e}})();
 document.getElementById('omqgo').onclick=async()=>{
 const m=document.getElementById('omqmsg'),t=document.getElementById('ser');
 try{
