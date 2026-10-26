@@ -5,3 +5,5 @@ cd libiconv-1.17
 ./configure --host=aarch64-linux-android --prefix=$HOME/sysroot --enable-static --disable-shared CC=$TC/aarch64-linux-android28-clang AR=$TC/llvm-ar RANLIB=$TC/llvm-ranlib
 make -j4
 make install
+mkdir -p $HOME/sysroot/lib/pkgconfig
+printf 'prefix=%s\nlibdir=${prefix}/lib\nincludedir=${prefix}/include\nName: iconv\nDescription: GNU libiconv\nVersion: 1.17\nLibs: -L${libdir} -liconv\nCflags: -I${includedir}\n' "$HOME/sysroot" > $HOME/sysroot/lib/pkgconfig/iconv.pc
