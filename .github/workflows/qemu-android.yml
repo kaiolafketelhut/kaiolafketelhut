@@ -45,7 +45,7 @@ jobs:
           bash $GITHUB_WORKSPACE/.github/rt-stub.sh
           export PKG_CONFIG_PATH=$HOME/sysroot/lib/pkgconfig
           rm -rf qemu-clone && git clone --depth 1 https://github.com/qemu/qemu.git qemu-clone && mkdir -p qemu-clone/build-android && cd qemu-clone/build-android
-          ../configure --cpu=aarch64 --cross-prefix=aarch64-linux-android28- --cc=aarch64-linux-android28-clang --cxx=aarch64-linux-android28-clang++ --host-cc=gcc --disable-system --disable-user --enable-tools --disable-docs --disable-vhost-user --disable-vhost-user-blk-server --disable-vduse-blk-export --disable-werror --extra-ldflags=-L$HOME/sysroot/lib
+          ../configure --cpu=aarch64 --cross-prefix=aarch64-linux-android28- --cc=aarch64-linux-android28-clang --cxx=aarch64-linux-android28-clang++ --host-cc=gcc --disable-system --disable-user --enable-tools --disable-docs --disable-vhost-user --disable-vhost-user-blk-server --disable-vduse-blk-export --disable-werror --extra-ldflags=-L$HOME/sysroot/lib --extra-cflags="-include $HOME/shm-stub.h"
           ninja qemu-img qemu-io qemu-nbd
           mkdir -p ../../out
           for t in qemu-img qemu-io qemu-nbd; do cp $t ../../out/lib$t.so; done
