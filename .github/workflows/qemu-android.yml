@@ -9,7 +9,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build python3-pip pkg-config libglib2.0-dev flex bison gettext
-          pip install meson
+          pip install --break-system-packages meson
       - name: Cross file
         run: |
           TC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
