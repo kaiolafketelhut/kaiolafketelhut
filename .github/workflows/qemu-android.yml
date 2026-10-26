@@ -15,8 +15,8 @@ jobs:
           TC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
           cat > $HOME/android.cross <<X
           [binaries]
-          c = '$TC/aarch64-linux-android28-clang'
-          cpp = '$TC/aarch64-linux-android28-clang++'
+          c = '$TC/aarch64-linux-android30-clang'
+          cpp = '$TC/aarch64-linux-android30-clang++'
           ar = '$TC/llvm-ar'
           strip = '$TC/llvm-strip'
           pkg-config = 'pkg-config'
@@ -38,14 +38,14 @@ jobs:
         run: |
           TC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
           export PATH=$TC:$PATH
-          mkdir -p $HOME/ndkbin; for t in ar ranlib strip nm objcopy objdump; do ln -sf $TC/llvm-$t $HOME/ndkbin/aarch64-linux-android28-$t; done
+          mkdir -p $HOME/ndkbin; for t in ar ranlib strip nm objcopy objdump; do ln -sf $TC/llvm-$t $HOME/ndkbin/aarch64-linux-android30-$t; done
           export PATH=$HOME/ndkbin:$PATH
-          ln -sf /usr/bin/pkg-config $HOME/ndkbin/aarch64-linux-android28-pkg-config
+          ln -sf /usr/bin/pkg-config $HOME/ndkbin/aarch64-linux-android30-pkg-config
           export PKG_CONFIG_LIBDIR=$HOME/sysroot/lib/pkgconfig
           bash $GITHUB_WORKSPACE/.github/rt-stub.sh
           export PKG_CONFIG_PATH=$HOME/sysroot/lib/pkgconfig
           rm -rf qemu-clone && git clone --depth 1 https://github.com/qemu/qemu.git qemu-clone && mkdir -p qemu-clone/build-android && cd qemu-clone/build-android
-          ../configure --cpu=aarch64 --cross-prefix=aarch64-linux-android28- --cc=aarch64-linux-android28-clang --cxx=aarch64-linux-android28-clang++ --host-cc=gcc --disable-system --disable-user --enable-tools --disable-docs --disable-vhost-user --disable-vhost-user-blk-server --disable-vduse-blk-export --disable-werror --extra-ldflags=-L$HOME/sysroot/lib --extra-cflags="-include $HOME/shm-stub.h"
+          ../configure --cpu=aarch64 --cross-prefix=aarch64-linux-android30- --cc=aarch64-linux-android30-clang --cxx=aarch64-linux-android30-clang++ --host-cc=gcc --disable-system --disable-user --enable-tools --disable-docs --disable-vhost-user --disable-vhost-user-blk-server --disable-vduse-blk-export --disable-werror --extra-ldflags=-L$HOME/sysroot/lib --extra-cflags="-include $HOME/shm-stub.h"
           ninja qemu-img qemu-io qemu-nbd
           mkdir -p ../../out
           for t in qemu-img qemu-io qemu-nbd; do cp $t ../../out/lib$t.so; done
