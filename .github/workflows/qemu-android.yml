@@ -40,6 +40,8 @@ jobs:
           export PATH=$TC:$PATH
           mkdir -p $HOME/ndkbin; for t in ar ranlib strip nm objcopy objdump; do ln -sf $TC/llvm-$t $HOME/ndkbin/aarch64-linux-android28-$t; done
           export PATH=$HOME/ndkbin:$PATH
+          ln -sf /usr/bin/pkg-config $HOME/ndkbin/aarch64-linux-android28-pkg-config
+          export PKG_CONFIG_LIBDIR=$HOME/sysroot/lib/pkgconfig
           export PKG_CONFIG_PATH=$HOME/sysroot/lib/pkgconfig
           rm -rf qemu-clone && git clone --depth 1 https://github.com/qemu/qemu.git qemu-clone && mkdir -p qemu-clone/build-android && cd qemu-clone/build-android
           ../configure --cpu=aarch64 --cross-prefix=aarch64-linux-android28- --cc=aarch64-linux-android28-clang --cxx=aarch64-linux-android28-clang++ --host-cc=gcc --disable-system --disable-user --enable-tools --disable-docs --disable-werror
