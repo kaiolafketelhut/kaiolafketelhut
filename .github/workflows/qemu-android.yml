@@ -1,0 +1,49 @@
+name: qemu-android
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Host deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build python3-pip pkg-config libglib2.0-dev flex bison gettext
+          pip install meson
+      - name: Cross file
+        run: |
+          TC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
+          cat > $HOME/android.cross <<X
+          [binaries]
+          c = '$TC/aarch64-linux-android24-clang'
+          cpp = '$TC/aarch64-linux-android24-clang++'
+          ar = '$TC/llvm-ar'
+          strip = '$TC/llvm-strip'
+          pkg-config = 'pkg-config'
+          [built-in options]
+          pkg_config_path = '$HOME/sysroot/lib/pkgconfig'
+          [host_machine]
+          system = 'android'
+          cpu_family = 'aarch64'
+          cpu = 'aarch64'
+          endian = 'little'
+          X
+      - name: glib for Android
+        run: |
+          git clone --depth 1 --branch 2.78.6 https://gitlab.gnome.org/GNOME/glib.git
+          meson setup gbuild glib --cross-file $HOME/android.cross --prefix $HOME/sysroot --default-library static -Dtests=false -Dselinux=disabled -Dlibmount=disabled --force-fallback-for=libffi,pcre2,zlib,proxy-libintl
+          ninja -C gbuild install
+      - name: QEMU tools
+        run: |
+          TC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
+          export PATH=$TC:$PATH
+          export PKG_CONFIG_PATH=$HOME/sysroot/lib/pkgconfig
+          mkdir -p qemu-clone/build-android && cd qemu-clone/build-android
+          ../configure --cpu=aarch64 --cross-prefix=aarch64-linux-android24- --cc=aarch64-linux-android24-clang --cxx=aarch64-linux-android24-clang++ --host-cc=gcc --disable-system --disable-user --enable-tools --disable-docs --disable-werror
+          ninja qemu-img qemu-io qemu-nbd
+          mkdir -p ../../out
+          for t in qemu-img qemu-io qemu-nbd; do cp $t ../../out/lib$t.so; done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qemu-arm64
+          path: out/
