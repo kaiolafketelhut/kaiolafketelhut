@@ -15,8 +15,8 @@ jobs:
           TC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin
           cat > $HOME/android.cross <<X
           [binaries]
-          c = '$TC/aarch64-linux-android24-clang'
-          cpp = '$TC/aarch64-linux-android24-clang++'
+          c = '$TC/aarch64-linux-android28-clang'
+          cpp = '$TC/aarch64-linux-android28-clang++'
           ar = '$TC/llvm-ar'
           strip = '$TC/llvm-strip'
           pkg-config = 'pkg-config'
@@ -31,7 +31,7 @@ jobs:
       - name: glib for Android
         run: |
           git clone --depth 1 --branch 2.78.6 https://gitlab.gnome.org/GNOME/glib.git
-          meson setup gbuild glib --cross-file $HOME/android.cross --prefix $HOME/sysroot --default-library static -Dtests=false -Dselinux=disabled -Dlibmount=disabled --force-fallback-for=libffi,pcre2,zlib,proxy-libintl,iconv
+          meson setup gbuild glib --cross-file $HOME/android.cross --prefix $HOME/sysroot --default-library static -Dtests=false -Dselinux=disabled -Dlibmount=disabled --force-fallback-for=libffi,pcre2,zlib,proxy-libintl
           ninja -C gbuild install
       - name: QEMU tools
         run: |
@@ -39,7 +39,7 @@ jobs:
           export PATH=$TC:$PATH
           export PKG_CONFIG_PATH=$HOME/sysroot/lib/pkgconfig
           mkdir -p qemu-clone/build-android && cd qemu-clone/build-android
-          ../configure --cpu=aarch64 --cross-prefix=aarch64-linux-android24- --cc=aarch64-linux-android24-clang --cxx=aarch64-linux-android24-clang++ --host-cc=gcc --disable-system --disable-user --enable-tools --disable-docs --disable-werror
+          ../configure --cpu=aarch64 --cross-prefix=aarch64-linux-android28- --cc=aarch64-linux-android28-clang --cxx=aarch64-linux-android28-clang++ --host-cc=gcc --disable-system --disable-user --enable-tools --disable-docs --disable-werror
           ninja qemu-img qemu-io qemu-nbd
           mkdir -p ../../out
           for t in qemu-img qemu-io qemu-nbd; do cp $t ../../out/lib$t.so; done
