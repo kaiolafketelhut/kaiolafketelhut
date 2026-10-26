@@ -31,7 +31,7 @@ jobs:
       - name: glib for Android
         run: |
           git clone --depth 1 --branch 2.78.6 https://gitlab.gnome.org/GNOME/glib.git
-          meson setup gbuild glib --cross-file $HOME/android.cross --prefix $HOME/sysroot --default-library static -Dtests=false -Dselinux=disabled -Dlibmount=disabled --force-fallback-for=libffi,pcre2,zlib,proxy-libintl
+          meson setup gbuild glib --cross-file $HOME/android.cross --prefix $HOME/sysroot --default-library static -Dtests=false -Dselinux=disabled -Dlibmount=disabled -Diconv=libc --force-fallback-for=libffi,pcre2,zlib,proxy-libintl
           ninja -C gbuild install
       - name: QEMU tools
         run: |
