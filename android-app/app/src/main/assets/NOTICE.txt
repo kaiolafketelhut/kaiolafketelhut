@@ -7,6 +7,7 @@ This app bundles the qemu-img, qemu-io and qemu-nbd tools from the QEMU project 
 Corresponding source code and the build scripts used to compile the tools for Android:
 https://github.com/kaiolafketelhut/kaiolafketelhut
 Upstream QEMU source: https://github.com/qemu/qemu
+QEMU commit built: b6c4b7e86dec12d07f5cac65265b986d38ee9002
 
 Full license text:
 
