@@ -12,13 +12,13 @@ public class MainActivity extends Activity {
     LinearLayout l = new LinearLayout(this);
     l.setOrientation(LinearLayout.VERTICAL);
     l.setPadding(32, 32, 32, 32);
-    Button pick = btn("Pick disk image"), info = btn("Show info"), chk = btn("Check image"), conv = btn("Convert to qcow2");
+    Button pick = btn("Pick disk image"), info = btn("Show info"), chk = btn("Check image"), conv = btn("Convert to qcow2"), about = btn("About and licenses");
     out = new TextView(this);
     out.setTextIsSelectable(true);
     out.setText("Pick a disk image (raw, qcow2, vmdk, vdi, vhd...).");
     ScrollView s = new ScrollView(this);
     s.addView(out);
-    for (Button x : new Button[]{pick, info, chk, conv}) l.addView(x);
+    for (Button x : new Button[]{pick, info, chk, conv, about}) l.addView(x);
     l.addView(s);
     setContentView(l);
     pick.setOnClickListener(v -> {
@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
     info.setOnClickListener(v -> run("info", img));
     chk.setOnClickListener(v -> run("check", img));
     conv.setOnClickListener(v -> run("convert", img));
+    about.setOnClickListener(v -> { try (InputStream in = getAssets().open("NOTICE.txt"); ByteArrayOutputStream bo = new ByteArrayOutputStream()) { byte[] buf = new byte[8192]; int k; while ((k = in.read(buf)) > 0) bo.write(buf, 0, k); out.setText(bo.toString("UTF-8")); } catch (Exception e) { out.setText("Error: " + e); } });
   }
   Button btn(String t) { Button x = new Button(this); x.setText(t); return x; }
   protected void onActivityResult(int rq, int rs, Intent d) {
