@@ -1,0 +1,31 @@
+name: android-app
+on: workflow_dispatch
+permissions:
+  contents: read
+  actions: read
+jobs:
+  aab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Fetch QEMU tools
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p android-app/app/src/main/jniLibs/arm64-v8a
+          gh run download 40488519455 -R ${{ github.repository }} -n qemu-arm64 -D android-app/app/src/main/jniLibs/arm64-v8a
+          ls -l android-app/app/src/main/jniLibs/arm64-v8a
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Build AAB
+        working-directory: android-app
+        run: gradle bundleRelease
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aab
+          path: android-app/app/build/outputs/bundle/release/*.aab
