@@ -68,7 +68,7 @@ public class MainActivity extends Activity {
         }
         int rc = p.waitFor();
         if (cmd.equals("convert") && rc == 0) sb.append("\nSaved: ").append(res.getPath());
-        String t = sb.toString() + "\n(exit " + rc + ")";
+        String t = (cmd.equals("check") && rc == 63) ? "This image format (for example raw) has no check data, so it cannot be checked. Use Show info instead." : sb.toString() + "\n(exit " + rc + ")";
         runOnUiThread(() -> out.setText(t));
       } catch (Exception e) { runOnUiThread(() -> out.setText("Error: " + e)); }
     }).start();
