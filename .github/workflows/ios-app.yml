@@ -1,0 +1,10 @@
+name: ios-app
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install xcodegen
+      - run: cd ios-app && xcodegen generate
+      - run: cd ios-app && xcodebuild -project OeneyeDOS.xcodeproj -scheme OeneyeDOS -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build

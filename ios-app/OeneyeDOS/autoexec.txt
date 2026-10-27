@@ -1,0 +1,3 @@
+# Oeneye DOS startup script, read by the app before the DOS image boots
+mount a mosfetq.img
+boot a:
