@@ -72,7 +72,7 @@ jobs:
           cd void-mklive && make
           ./mkiso.sh -a x86_64 -b base \
             -r https://repo-default.voidlinux.org/current \
-            -p "xfce4 xorg-minimal git curl" \
+            -- -p "xfce4 xorg-minimal git curl" \
             -I /work/includedir -T oeneye -o /out/oeneye-void.iso
           X
       - name: Build in Void container
