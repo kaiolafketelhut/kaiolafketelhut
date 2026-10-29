@@ -17,7 +17,7 @@ jobs:
           mkdir -p lb && cd lb
           sudo lb config \
             --security false \
-            --mode debian --distribution bookworm \
+            --mode debian --distribution bookworm --firmware-chroot false \
             --archive-areas "main contrib non-free-firmware" \
             --binary-images iso-hybrid --debian-installer none \
             --iso-volume "OENEYE-MINT-1.05rc" \
