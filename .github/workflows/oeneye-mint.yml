@@ -36,6 +36,8 @@ jobs:
           xed
           sudo
           PKG
+      - name: Copy boot-check overlay
+        run: sudo cp -r iso/mint/includes.chroot lb/config/
       - name: Build ISO
         run: |
           cd lb

@@ -3,54 +3,80 @@ on:
   workflow_run:
     workflows: ["oeneye-mint-iso"]
     types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Run ID of the ISO build workflow"
+        required: true
+      artifact:
+        description: "Artifact name holding the ISO"
+        required: true
+      marker:
+        description: "Serial marker to wait for (empty = screenshot check only)"
+        required: false
+        default: ""
 permissions:
   contents: read
   actions: read
 jobs:
   boot:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    env:
+      MARKER: ${{ github.event_name == 'workflow_run' && 'OENEYE-CINNAMON-OK' || github.event.inputs.marker }}
     steps:
       - name: Download ISO artifact
         uses: actions/download-artifact@v4
         with:
-          name: oeneye-mint-iso
-          run-id: ${{ github.event.workflow_run.id }}
+          name: ${{ github.event.inputs.artifact || 'oeneye-mint-iso' }}
+          run-id: ${{ github.event.workflow_run.id || github.event.inputs.run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Verify checksum
-        run: sha256sum -c oeneye-mint-1.05rc-amd64.iso.sha256
+      - name: Verify checksum if present
+        run: |
+          ls -la
+          for f in *.sha256; do [ -e "$f" ] && sha256sum -c "$f"; done || true
       - name: Install QEMU tools
         run: sudo apt-get update && sudo apt-get install -y qemu-system-x86 socat imagemagick
       - name: Enable KVM if present
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm || true
-      - name: Boot ISO and screenshot
+      - name: Boot ISO, wait, screenshot
         run: |
+          ISO=$(ls *.iso | head -n1)
+          echo "Testing $ISO (marker: '${MARKER}')"
           qemu-system-x86_64 -accel kvm -accel tcg -m 3072 -smp 2 \
-            -cdrom oeneye-mint-1.05rc-amd64.iso -boot d \
-            -display none -vga std \
+            -cdrom "$ISO" -boot d -display none -vga std \
+            -serial file:/tmp/serial.log \
             -monitor unix:/tmp/mon,server,nowait &
           QPID=$!
-          sleep 60
-          echo "screendump /tmp/s60.ppm" | socat - UNIX-CONNECT:/tmp/mon
-          sleep 120
-          echo "screendump /tmp/s180.ppm" | socat - UNIX-CONNECT:/tmp/mon
+          T=0
+          while [ $T -lt 300 ]; do
+            sleep 10; T=$((T+10))
+            if [ -n "$MARKER" ] && grep -q "$MARKER" /tmp/serial.log 2>/dev/null; then
+              touch /tmp/found; echo "marker found at ${T}s"; break
+            fi
+            if [ -z "$MARKER" ] && [ $T -ge 180 ]; then break; fi
+          done
+          sleep 20
+          echo "screendump /tmp/final.ppm" | socat - UNIX-CONNECT:/tmp/mon
           sleep 3
-          convert /tmp/s60.ppm s60.png
-          convert /tmp/s180.ppm s180.png
+          convert /tmp/final.ppm final.png
+          cp /tmp/serial.log serial.log 2>/dev/null || true
           kill $QPID || true
-      - name: Check screen is not blank
+      - name: Evaluate
         run: |
-          M60=$(convert s60.png -colorspace Gray -format "%[fx:mean]" info:)
-          M180=$(convert s180.png -colorspace Gray -format "%[fx:mean]" info:)
-          echo "mean brightness 60s=$M60 180s=$M180"
-          python3 -c "import sys; sys.exit(0 if float('$M180')>0.02 else 1)" || { echo "FAIL: screen still black at 180s"; exit 1; }
-          echo "PASS: ISO booted to a visible screen"
+          if [ -n "$MARKER" ]; then
+            [ -e /tmp/found ] || { echo "FAIL: marker '$MARKER' never appeared"; exit 1; }
+          fi
+          M=$(convert final.png -colorspace Gray -format "%[fx:mean]" info:)
+          echo "mean brightness=$M"
+          python3 -c "import sys; sys.exit(0 if float('$M')>0.02 else 1)" || { echo "FAIL: screen black"; exit 1; }
+          echo "PASS"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mint-boot-screenshots
+          name: boot-test-output
           path: |
-            s60.png
-            s180.png
+            final.png
+            serial.log

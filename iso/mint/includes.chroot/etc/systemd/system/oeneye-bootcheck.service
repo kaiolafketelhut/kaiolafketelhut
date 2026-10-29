@@ -1,0 +1,10 @@
+[Unit]
+Description=oeneye boot check (serial marker)
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/oeneye-bootcheck
+
+[Install]
+WantedBy=multi-user.target

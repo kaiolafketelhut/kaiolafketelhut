@@ -1,0 +1,11 @@
+#!/bin/sh
+# Writes a marker to the serial port once Cinnamon is running (used by the CI boot test)
+i=0
+while [ $i -lt 280 ]; do
+  if pgrep -x cinnamon >/dev/null 2>&1; then
+    echo "OENEYE-CINNAMON-OK" > /dev/ttyS0
+    exit 0
+  fi
+  i=$((i+2)); sleep 2
+done
+echo "OENEYE-CINNAMON-MISSING" > /dev/ttyS0
