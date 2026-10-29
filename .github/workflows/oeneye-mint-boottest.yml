@@ -1,0 +1,56 @@
+name: oeneye-mint-boottest
+on:
+  workflow_run:
+    workflows: ["oeneye-mint-iso"]
+    types: [completed]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  boot:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download ISO artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: oeneye-mint-iso
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify checksum
+        run: sha256sum -c oeneye-mint-1.05rc-amd64.iso.sha256
+      - name: Install QEMU tools
+        run: sudo apt-get update && sudo apt-get install -y qemu-system-x86 socat imagemagick
+      - name: Enable KVM if present
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm || true
+      - name: Boot ISO and screenshot
+        run: |
+          qemu-system-x86_64 -accel kvm -accel tcg -m 3072 -smp 2 \
+            -cdrom oeneye-mint-1.05rc-amd64.iso -boot d \
+            -display none -vga std \
+            -monitor unix:/tmp/mon,server,nowait &
+          QPID=$!
+          sleep 60
+          echo "screendump /tmp/s60.ppm" | socat - UNIX-CONNECT:/tmp/mon
+          sleep 120
+          echo "screendump /tmp/s180.ppm" | socat - UNIX-CONNECT:/tmp/mon
+          sleep 3
+          convert /tmp/s60.ppm s60.png
+          convert /tmp/s180.ppm s180.png
+          kill $QPID || true
+      - name: Check screen is not blank
+        run: |
+          M60=$(convert s60.png -colorspace Gray -format "%[fx:mean]" info:)
+          M180=$(convert s180.png -colorspace Gray -format "%[fx:mean]" info:)
+          echo "mean brightness 60s=$M60 180s=$M180"
+          python3 -c "import sys; sys.exit(0 if float('$M180')>0.02 else 1)" || { echo "FAIL: screen still black at 180s"; exit 1; }
+          echo "PASS: ISO booted to a visible screen"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mint-boot-screenshots
+          path: |
+            s60.png
+            s180.png
