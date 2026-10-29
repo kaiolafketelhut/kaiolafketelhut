@@ -24,7 +24,7 @@ jobs:
             --binary-images iso-hybrid \
             --iso-application oeneye --iso-volume oeneye
           mkdir -p config/package-lists config/includes.chroot/etc
-          printf '%s\n' task-xfce-desktop live-task-standard > config/package-lists/base.list.chroot
+          printf '%s\n' task-xfce-desktop live-task-standard isolinux syslinux-common > config/package-lists/base.list.chroot
           printf 'NAME="oeneye"\nID=oeneye\nID_LIKE=debian\nPRETTY_NAME="oeneye (Debian base)"\n' > config/includes.chroot/etc/os-release
       - name: Build
         run: cd live && sudo sed -i "2i exit 0" /usr/lib/live/build/lb_binary_debian-installer && sudo mkdir -p .build && sudo touch .build/binary_debian-installer && sudo lb build
