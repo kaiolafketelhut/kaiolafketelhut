@@ -78,7 +78,7 @@ jobs:
       - name: Build in Void container
         run: |
           docker run --rm --privileged -v "$PWD:/work" -v "$PWD/out:/out" \
-            ghcr.io/void-linux/void-glibc-full:latest bash /work/build-void.sh
+            ghcr.io/void-linux/void-glibc-full:latest sh -c "xbps-install -Syu xbps; xbps-install -Syu bash && bash /work/build-void.sh"
       - uses: actions/upload-artifact@v4
         with:
           name: oeneye-void-iso
