@@ -43,7 +43,7 @@ jobs:
       - name: Configure
         run: |
           mkdir live && cd live
-          lb config --mode ubuntu --debian-installer false --distribution noble \
+          lb config --mode ubuntu --debian-installer false --bootloaders grub-pc,grub-efi --distribution noble \
             --archive-areas "main restricted universe multiverse" \
             --binary-images iso-hybrid \
             --iso-application oeneye --iso-volume oeneye
