@@ -32,10 +32,9 @@ jobs:
           calamares
           calamares-settings-debian
           network-manager-gnome
-          mint-y-icons
           gnome-terminal
           nemo
-          xed
+          gedit
           sudo
           PKG
       - name: Copy boot-check overlay
