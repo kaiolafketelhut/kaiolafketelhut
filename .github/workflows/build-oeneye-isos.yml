@@ -27,7 +27,7 @@ jobs:
           printf '%s\n' task-xfce-desktop live-task-standard > config/package-lists/base.list.chroot
           printf 'NAME="oeneye"\nID=oeneye\nID_LIKE=debian\nPRETTY_NAME="oeneye (Debian base)"\n' > config/includes.chroot/etc/os-release
       - name: Build
-        run: cd live && sudo lb build
+        run: cd live && sudo mkdir -p .build && sudo touch .build/binary_debian-installer && sudo lb build
       - uses: actions/upload-artifact@v4
         with:
           name: oeneye-debian-iso
@@ -51,7 +51,7 @@ jobs:
           printf '%s\n' lubuntu-desktop > config/package-lists/base.list.chroot
           printf 'NAME="oeneye"\nID=oeneye\nID_LIKE=ubuntu\nPRETTY_NAME="oeneye (Lubuntu base)"\n' > config/includes.chroot/etc/os-release
       - name: Build
-        run: cd live && sudo lb build
+        run: cd live && sudo mkdir -p .build && sudo touch .build/binary_debian-installer && sudo lb build
       - uses: actions/upload-artifact@v4
         with:
           name: oeneye-lubuntu-iso
