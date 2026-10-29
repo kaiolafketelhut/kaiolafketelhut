@@ -16,13 +16,15 @@ jobs:
         run: |
           mkdir -p lb && cd lb
           sudo lb config \
+            --security false \
             --mode debian --distribution bookworm \
             --archive-areas "main contrib non-free-firmware" \
             --binary-images iso-hybrid --debian-installer none \
             --iso-volume "OENEYE-MINT-1.05rc" \
             --iso-application "oeneye Mint 1.05 rc" \
             --bootappend-live "boot=live components quiet splash username=oeneye hostname=oeneye-mint"
-          sudo mkdir -p config/package-lists
+          sudo mkdir -p config/archives config/package-lists
+          echo 'deb http://security.debian.org/debian-security bookworm-security main contrib non-free-firmware' | sudo tee config/archives/security.list.chroot
           sudo tee config/package-lists/oeneye.list.chroot >/dev/null <<'PKG'
           task-cinnamon-desktop
           lightdm
