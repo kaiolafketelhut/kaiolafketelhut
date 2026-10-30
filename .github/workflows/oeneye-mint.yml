@@ -42,7 +42,7 @@ jobs:
       - name: Build ISO
         run: |
           cd lb
-          sudo lb build
+          sudo sed -i "2i exit 0" /usr/lib/live/build/lb_binary_debian-installer && sudo mkdir -p .build && sudo touch .build/binary_debian-installer && sudo lb build
           sudo mv live-image-amd64.hybrid.iso ../oeneye-mint-1.05rc-amd64.iso
       - name: Checksums
         run: sha256sum oeneye-mint-1.05rc-amd64.iso > oeneye-mint-1.05rc-amd64.iso.sha256
