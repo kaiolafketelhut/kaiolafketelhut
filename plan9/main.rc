@@ -1,0 +1,14 @@
+#!/bin/rc
+
+id='KDPMember:KL5UQ4f48673352'
+role=Member
+points=1
+
+# The short code after the "KDPMember:" prefix
+code=`{echo $id | sed 's/^KDPMember://'}
+
+echo '=== KDP Forum Profile ==='
+echo 'Nickname : '$id
+echo 'Code     : '$code
+echo 'Role     : '$role
+echo 'Points   : '$points
