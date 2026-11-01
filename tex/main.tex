@@ -1,0 +1,29 @@
+% main.tex - KDP profile in plain TeX
+% run: tex main.tex   (or pdftex main.tex for a PDF)
+\def\id{KDPMember:KL5UQ4f48673352}
+\def\role{Member}
+\def\points{1}
+\def\sp{\space}
+
+% The short code after the "KDPMember:" prefix
+% (works with or without the prefix: the sentinel text makes either case match)
+\def\getcode#1KDPMember:#2KDPMember:#3\relax{\def\code{#1#2}}
+\expandafter\getcode\id KDPMember:KDPMember:\relax
+
+% Terminal / log output, same four lines as the other mains
+\immediate\write16{=== KDP Forum Profile ===}
+\immediate\write16{Nickname : \id}
+\immediate\write16{Code\sp\sp\sp\sp\sp: \code}
+\immediate\write16{Role\sp\sp\sp\sp\sp: \role}
+\immediate\write16{Points\sp\sp\sp: \points}
+
+% Typeset page
+\nopagenumbers
+\centerline{\bf KDP Forum Profile}
+\bigskip
+\halign{\tt#\hfil&\quad\tt#\hfil\cr
+Nickname&\id\cr
+Code&\code\cr
+Role&\role\cr
+Points&\points\cr}
+\bye
