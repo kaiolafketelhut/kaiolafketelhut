@@ -1,0 +1,14 @@
+\ The short code after the "KDPMember:" prefix
+HOW TO RETURN shortcode id:
+    IF id|10 = "KDPMember:": RETURN id@11
+    RETURN id
+
+HOW TO SHOW PROFILE:
+    PUT "KDPMember:KL5UQ4f48673352" IN memberid
+    PUT "Member" IN role
+    PUT 1 IN points
+    WRITE "=== KDP Forum Profile ===" /
+    WRITE "Nickname : ", memberid /
+    WRITE "Code     : ", shortcode memberid /
+    WRITE "Role     : ", role /
+    WRITE "Points   : ", points /
