@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ROOT BOX</title>
+<style>
+:root{--bg:#0b0d12;--panel:#12151c;--line:#232938;--fg:#d7dde8;--dim:#7d8799;--acc:#38bdf8}
+*{box-sizing:border-box}
+body{margin:0;padding:12px;background:var(--bg);color:var(--fg);font:14px/1.5 ui-monospace,Menlo,Consolas,monospace}
+.box{max-width:720px;margin:0 auto;border:1px solid var(--line);border-radius:8px;background:var(--panel);overflow:hidden}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line)}
+.bar b{color:var(--acc);margin-right:auto}
+select,button{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit}
+button:active{border-color:var(--acc)}
+h2{margin:0;padding:6px 10px;font-size:12px;color:var(--dim);font-weight:400;border-bottom:1px solid var(--line)}
+pre{margin:0;padding:10px;overflow-x:auto;white-space:pre;min-height:5em;max-height:45vh;overflow-y:auto}
+#out{color:#86efac}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="bar">
+    <b>ROOT BOX</b>
+    <select id="sel"></select>
+    <button id="show">Show source</button>
+    <button id="qxd">Run QxD</button>
+  </div>
+  <h2>output</h2>
+  <pre id="out"></pre>
+  <h2 id="srcname">source</h2>
+  <pre id="src">Pick a language and tap "Show source".</pre>
+</div>
+<script>
+const BASE = 'https://raw.githubusercontent.com/kaiolafketelhut/kaiolafketelhut/main/';
+const MAINS = [
+  ['Haskell','haskell/Main.hs'],['Perl','perl/main.pl'],['Julia','julia/main.jl'],
+  ['awk','awk/main.awk'],['sed','sed/main.sed'],['ed','ed/main.ed'],
+  ['Plan 9 rc','plan9/main.rc'],['PowerShell','powershell/main.ps1'],
+  ['Raku','raku/main.raku'],['Unix shell','shell/main.sh'],['Groovy','groovy/main.groovy'],
+  ['CoffeeScript','coffeescript/main.coffee'],['JavaScript','javascript/main.js'],
+  ['Java','java/Main.java'],['PHP','php/main.php'],['Python','python/main.py'],
+  ['BASIC','basic/main.bas'],['StarBasic','staroffice/main.bas'],['ABC','abc/main.abc'],
+  ['LPC','lpc/main.c'],['Objective-C','objc/main.m'],['F#','fsharp/main.fsx'],
+  ['C#','csharp/Program.cs'],['MATLAB','matlab/main.m'],['QxD','qxd/main.iQxD']
+];
+const $ = id => document.getElementById(id);
+const sel = $('sel');
+MAINS.forEach(([n, p], i) => sel.add(new Option(n, i)));
+
+// Every main prints the same profile
+function profile() {
+  const id = 'KDPMember:KL5UQ4f48673352', pre = 'KDPMember:';
+  const code = id.startsWith(pre) ? id.slice(pre.length) : id;
+  return ['=== KDP Forum Profile ===', 'Nickname : ' + id,
+          'Code     : ' + code, 'Role     : Member', 'Points   : 1'].join('\n');
+}
+$('out').textContent = profile();
+
+async function get(path) {
+  const r = await fetch(BASE + path);
+  if (!r.ok) throw new Error(path + ' not found (' + r.status + ')');
+  return r.text();
+}
+
+$('show').onclick = async () => {
+  const [name, path] = MAINS[sel.value];
+  $('srcname').textContent = path;
+  $('src').textContent = 'loading...';
+  try { $('src').textContent = await get(path); }
+  catch (e) { $('src').textContent = String(e.message); }
+  $('out').textContent = profile();
+};
+
+// Same rules as qxd.sh / qxd.pl / qxd.awk
+function runQxd(t) {
+  const db = {}; let node = null, inmain = false; const out = [];
+  const unq = s => s.replace(/^"|"$/g, '');
+  const look = r => {
+    const m = r.match(/^Node\[(.*?)\]\.(.+)$/); if (!m) return '';
+    let v = (db[m[1]] || {})[m[2]]; if (v === undefined) return '';
+    return unq(v.replace(/^.* -> /, ''));
+  };
+  for (let l of t.split('\n')) {
+    l = l.trim(); let m;
+    if (!l || l.startsWith('//')) continue;
+    if ((m = l.match(/^Node\[(.*?)\]\s*\{$/))) { node = m[1]; db[node] = db[node] || {}; continue; }
+    if (l === 'main {') { inmain = true; continue; }
+    if (l === '}') { node = null; inmain = false; continue; }
+    if (inmain) {
+      if ((m = l.match(/^print\s+(.*)$/))) {
+        let r = m[1], tx = '', q = r.match(/^"([^"]*)"\s*(.*)$/);
+        if (q) { tx = q[1]; r = q[2]; }
+        out.push(tx + (r ? look(r) : ''));
+      }
+      continue;
+    }
+    if (node && (m = l.match(/^([^:]+?)\s*:\s*(.*)$/))) {
+      db[node][m[1]] = m[2];
+      const b = m[2].match(/^\{(.*:.*)\}$/);
+      if (b) for (const p of b[1].split(',')) {
+        const k = p.match(/^\s*([^:]+?)\s*:\s*(.*?)\s*$/);
+        if (k) db[node][m[1] + '.' + k[1]] = k[2];
+      }
+    }
+  }
+  return out.join('\n');
+}
+
+$('qxd').onclick = async () => {
+  $('srcname').textContent = 'qxd/main.iQxD';
+  try {
+    const t = await get('qxd/main.iQxD');
+    $('src').textContent = t;
+    $('out').textContent = runQxd(t);
+  } catch (e) { $('out').textContent = String(e.message); }
+};
+</script>
+</body>
+</html>
