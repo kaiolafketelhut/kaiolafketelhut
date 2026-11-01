@@ -1,0 +1,16 @@
+a
+KDPMember:KL5UQ4f48673352
+.
+t.
+s/^KDPMember://
+s/^/Code     : /
+1s/^/Nickname : /
+0a
+=== KDP Forum Profile ===
+.
+$a
+Role     : Member
+Points   : 1
+.
+,p
+Q
