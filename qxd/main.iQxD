@@ -1,0 +1,27 @@
+// KDP profile as a QxD node (syntax follows qxd_node_3_4.pdf)
+
+Node[KDP] {
+    Bulk     : { id: "KDPMember:KL5UQ4f48673352", role: "Member", points: 1 }
+    Echo     : id minus prefix "KDPMember:" -> "KL5UQ4f48673352"
+    Noise    : Suppressed (ΔNoise -> 0)
+    Scene    : kdpcommunity.com profile
+    Pattern  : 000;
+    Links    : {Node[3==4]}
+}
+
+Node[3==4] {
+    Bulk     : RWTS ∪ DOS-Shell
+    Echo     : High-confidence lineage from RWTS audit
+    Noise    : Suppressed (ΔNoise -> 0)
+    Scene    : Shared coordinate (Apple II -> NeXT -> macOS)
+    Pattern  : 000;
+    Links    : {IOB-Vector, Binder-IPC, FAT12-Root}
+}
+
+main {
+    print "=== KDP Forum Profile ==="
+    print "Nickname : " Node[KDP].Bulk.id
+    print "Code     : " Node[KDP].Echo
+    print "Role     : " Node[KDP].Bulk.role
+    print "Points   : " Node[KDP].Bulk.points
+}
