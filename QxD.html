@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QxD terminal</title>
+<style>
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:#000;color:#e6e6e6;
+  font:15px/1.45 ui-monospace,Menlo,Consolas,monospace}
+#wrap{display:flex;flex-direction:column;height:100dvh;padding:8px}
+#term{flex:1;overflow-y:auto;white-space:pre-wrap;word-break:break-word}
+.p{color:#4ade80}
+.e{color:#f87171}
+.d{color:#94a3b8}
+#row{display:flex;gap:6px;align-items:center}
+#in{flex:1;background:transparent;border:0;outline:0;color:#e6e6e6;font:inherit;padding:4px 0}
+#keys{display:flex;gap:6px;margin-top:6px}
+#keys button{flex:1;background:#111;color:#e6e6e6;border:1px solid #2a2a2a;border-radius:6px;
+  padding:9px 0;font:inherit}
+#ed{display:none;position:fixed;inset:0;background:#000;padding:8px;flex-direction:column;gap:6px}
+#ed textarea{flex:1;background:#0a0a0a;color:#e6e6e6;border:1px solid #2a2a2a;border-radius:6px;
+  padding:8px;font:inherit;resize:none}
+#ed .b{display:flex;gap:6px}
+#ed button{flex:1;background:#111;color:#e6e6e6;border:1px solid #2a2a2a;border-radius:6px;padding:10px;font:inherit}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="term"></div>
+  <div id="row"><span class="p" id="ps"></span><input id="in" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
+  <div id="keys">
+    <button data-k="tab">TAB</button><button data-k="up">&#8593;</button>
+    <button data-k="down">&#8595;</button><button data-k="/">/</button>
+    <button data-k="clear">CLR</button>
+  </div>
+</div>
+<div id="ed">
+  <div id="edname" class="d"></div>
+  <textarea id="edta" spellcheck="false" autocapitalize="off"></textarea>
+  <div class="b"><button id="edsave">Save</button><button id="edcancel">Cancel</button></div>
+</div>
+<script>
+const BASE = 'https://raw.githubusercontent.com/kaiolafketelhut/kaiolafketelhut/main/';
+const DEFAULT = `// KDP profile as a QxD node (syntax follows qxd_node_3_4.pdf)
+
+Node[KDP] {
+    Bulk     : { id: "KDPMember:KL5UQ4f48673352", role: "Member", points: 1 }
+    Echo     : id minus prefix "KDPMember:" -> "KL5UQ4f48673352"
+    Noise    : Suppressed (ΔNoise -> 0)
+    Scene    : kdpcommunity.com profile
+    Pattern  : 000;
+    Links    : {Node[3==4]}
+}
+
+Node[3==4] {
+    Bulk     : RWTS ∪ DOS-Shell
+    Echo     : High-confidence lineage from RWTS audit
+    Noise    : Suppressed (ΔNoise -> 0)
+    Scene    : Shared coordinate (Apple II -> NeXT -> macOS)
+    Pattern  : 000;
+    Links    : {IOB-Vector, Binder-IPC, FAT12-Root}
+}
+
+main {
+    print "=== KDP Forum Profile ==="
+    print "Nickname : " Node[KDP].Bulk.id
+    print "Code     : " Node[KDP].Echo
+    print "Role     : " Node[KDP].Bulk.role
+    print "Points   : " Node[KDP].Bulk.points
+}
+`;
+
+const files = { 'main.iQxD': DEFAULT };
+const hist = []; let hi = 0;
+const $ = id => document.getElementById(id);
+const term = $('term'), inp = $('in');
+$('ps').textContent = '~/qxd $ ';
+
+function print(t, cls) {
+  const s = document.createElement('span');
+  if (cls) s.className = cls;
+  s.textContent = t + '\n';
+  term.appendChild(s);
+  term.scrollTop = term.scrollHeight;
+}
+
+// Same rules as qxd.sh / qxd.pl / qxd.awk
+function runQxd(t) {
+  const db = {}; let node = null, inmain = false; const out = [];
+  const unq = s => s.replace(/^"|"$/g, '');
+  const look = r => {
+    const m = r.match(/^Node\[(.*?)\]\.(.+)$/); if (!m) return '';
+    let v = (db[m[1]] || {})[m[2]]; if (v === undefined) return '';
+    return unq(v.replace(/^.* -> /, ''));
+  };
+  for (let l of t.split('\n')) {
+    l = l.trim(); let m;
+    if (!l || l.startsWith('//')) continue;
+    if ((m = l.match(/^Node\[(.*?)\]\s*\{$/))) { node = m[1]; db[node] = db[node] || {}; continue; }
+    if (l === 'main {') { inmain = true; continue; }
+    if (l === '}') { node = null; inmain = false; continue; }
+    if (inmain) {
+      if ((m = l.match(/^print\s+(.*)$/))) {
+        let r = m[1], tx = '', q = r.match(/^"([^"]*)"\s*(.*)$/);
+        if (q) { tx = q[1]; r = q[2]; }
+        out.push(tx + (r ? look(r) : ''));
+      }
+      continue;
+    }
+    if (node && (m = l.match(/^([^:]+?)\s*:\s*(.*)$/))) {
+      db[node][m[1]] = m[2];
+      const b = m[2].match(/^\{(.*:.*)\}$/);
+      if (b) for (const p of b[1].split(',')) {
+        const k = p.match(/^\s*([^:]+?)\s*:\s*(.*?)\s*$/);
+        if (k) db[node][m[1] + '.' + k[1]] = k[2];
+      }
+    }
+  }
+  return out.join('\n');
+}
+
+const cmds = {
+  help() {
+    print('help            this list\n' +
+          'ls              list files\n' +
+          'cat FILE        show a file\n' +
+          'qxd [FILE]      run a QxD file (default main.iQxD)\n' +
+          'edit FILE       edit or create a file\n' +
+          'pull PATH       fetch PATH from the GitHub repo\n' +
+          '                (e.g. pull qxd/main.iQxD)\n' +
+          'rm FILE         delete a file\n' +
+          'echo TEXT       print text\n' +
+          'history         show history\n' +
+          'clear           clear the screen', 'd');
+  },
+  ls() { print(Object.keys(files).sort().join('  ')); },
+  cat(a) {
+    if (!a[0]) return print('cat: missing file', 'e');
+    if (!(a[0] in files)) return print('cat: ' + a[0] + ': no such file', 'e');
+    print(files[a[0]]);
+  },
+  qxd(a) {
+    const f = a[0] || 'main.iQxD';
+    if (!(f in files)) return print('qxd: ' + f + ': no such file', 'e');
+    print(runQxd(files[f]));
+  },
+  edit(a) {
+    if (!a[0]) return print('edit: missing file', 'e');
+    $('edname').textContent = a[0];
+    $('edta').value = files[a[0]] || '';
+    $('ed').style.display = 'flex';
+    $('edta').focus();
+  },
+  async pull(a) {
+    if (!a[0]) return print('pull: missing path', 'e');
+    try {
+      const r = await fetch(BASE + a[0]);
+      if (!r.ok) throw new Error(r.status + ' ' + a[0] + ' not found');
+      files[a[0].split('/').pop()] = await r.text();
+      print('saved as ' + a[0].split('/').pop(), 'd');
+    } catch (e) { print('pull: ' + e.message, 'e'); }
+  },
+  rm(a) {
+    if (!(a[0] in files)) return print('rm: ' + a[0] + ': no such file', 'e');
+    delete files[a[0]];
+  },
+  echo(a) { print(a.join(' ')); },
+  history() { hist.forEach((h, i) => print((i + 1) + '  ' + h, 'd')); },
+  clear() { term.textContent = ''; }
+};
+
+async function run(line) {
+  print($('ps').textContent + line, 'p');
+  line = line.trim();
+  if (!line) return;
+  hist.push(line); hi = hist.length;
+  const [c, ...a] = line.split(/\s+/);
+  if (cmds[c]) await cmds[c](a);
+  else print(c + ': command not found (try help)', 'e');
+}
+
+function complete() {
+  const parts = inp.value.split(/\s+/), last = parts.pop();
+  const pool = parts.length ? Object.keys(files) : Object.keys(cmds);
+  const hits = pool.filter(x => x.startsWith(last));
+  if (hits.length === 1) inp.value = parts.concat(hits[0]).join(' ') + ' ';
+  else if (hits.length > 1) print(hits.join('  '), 'd');
+}
+
+function key(k) {
+  if (k === 'tab') complete();
+  else if (k === 'up') { if (hi > 0) inp.value = hist[--hi]; }
+  else if (k === 'down') { inp.value = hi < hist.length - 1 ? hist[++hi] : (hi = hist.length, ''); }
+  else if (k === 'clear') cmds.clear();
+  else inp.value += k;
+  inp.focus();
+}
+
+inp.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { const v = inp.value; inp.value = ''; run(v); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); key('up'); }
+  else if (e.key === 'ArrowDown') { e.preventDefault(); key('down'); }
+  else if (e.key === 'Tab') { e.preventDefault(); key('tab'); }
+});
+document.querySelectorAll('#keys button').forEach(b => b.onclick = () => key(b.dataset.k));
+term.onclick = () => inp.focus();
+
+$('edsave').onclick = () => {
+  files[$('edname').textContent] = $('edta').value;
+  $('ed').style.display = 'none'; inp.focus();
+};
+$('edcancel').onclick = () => { $('ed').style.display = 'none'; inp.focus(); };
+
+print('QxD terminal - type help', 'd');
+print('Try: qxd', 'd');
+inp.focus();
+</script>
+</body>
+</html>
