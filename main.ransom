@@ -1,0 +1,46 @@
+#!/bin/sh
+# main.ransom - ransomware watch: entropy scan + hash canary; backs up only when clean
+# usage: sh main.ransom [once|loop] [dir] [seconds]     default: once . 300
+# env:   LIMIT=5 (changed files that trigger an alert)   ENTROPY=7.5
+#        BACKUP_EVERY=12 (clean cycles between backups)  BACKUP_DIR=~/backups-kdp
+#        CANARY_HOOK=/path/to/script (run on alert)
+MODE=${1:-once}
+DIR=${2:-.}
+EVERY=${3:-300}
+HERE=$(cd "$(dirname "$0")" && pwd)
+P="$HERE/protect"
+BK=${BACKUP_DIR:-$HOME/backups-kdp}
+n=0
+
+cycle() {
+  n=$((n + 1)); bad=0
+  echo "--- $(date '+%F %T') cycle $n ($DIR) ---"
+
+  out=$(python3 "$P/entropy.py" "$DIR" "${ENTROPY:-7.5}") || {
+    echo "$out" | sed -n '/^SUSPICIOUS/,/^$/p'; bad=1; }
+
+  sh "$P/canary.sh" check "$DIR" "${LIMIT:-5}"
+  rc=$?
+  if [ "$rc" = 2 ]; then sh "$P/canary.sh" init "$DIR"; rc=0; fi
+  [ "$rc" != 0 ] && bad=1
+
+  if [ "$bad" = 1 ]; then
+    echo "!!! ALERT - no backup taken, baseline kept (do not overwrite good backups)"
+    command -v termux-notification >/dev/null 2>&1 &&
+      termux-notification --title "RANSOM ALERT" --content "suspicious changes in $DIR"
+    [ -n "$CANARY_HOOK" ] && [ -x "$CANARY_HOOK" ] && "$CANARY_HOOK" "ransom alert" "cycle $n"
+    return 1
+  fi
+
+  sh "$P/canary.sh" init "$DIR" > /dev/null          # accept normal edits as the new baseline
+  if [ $((n % ${BACKUP_EVERY:-12})) = 1 ]; then
+    sh "$P/backup.sh" "$DIR" "$BK" 5
+  fi
+  echo "clean"
+}
+
+if [ "$MODE" = loop ]; then
+  while :; do cycle; sleep "$EVERY"; done
+else
+  cycle
+fi

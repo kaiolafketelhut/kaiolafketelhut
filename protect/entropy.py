@@ -40,7 +40,7 @@ for root, dirs, files in os.walk(top):
         e = entropy(data)
         if e >= limit:
             ext = os.path.splitext(name)[1].lower()
-            (packed if ext in PACKED else odd).append((e, path))
+            (packed if ext in PACKED or name.lower() in {"bzimage", "vmlinuz", "initrd"} else odd).append((e, path))
 
 print("scanned %d files (threshold %.1f bits/byte)" % (scanned, limit))
 print("\nSUSPICIOUS - high entropy but not a packed type: %d" % len(odd))
