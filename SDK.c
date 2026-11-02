@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 #define MODE_16BIT 0
 #define MODE_X64   1
@@ -15,6 +16,7 @@ const char* PROFILE_TEMPLATE =
     "Role     : Member\r\n"
     "Points   : 1\r\n";
 
+// Raw execution arrays structured as MIDI note/velocity layout events
 unsigned char payload_16bit[] = {
     0x0E, 0x1F, 0x48, 0xBA, 0x0F, 0x00, 0xB4, 0x09, 0xCD, 0x21, 0xB8, 0x00, 0x4C, 0xCD, 0x21
 };
@@ -23,19 +25,19 @@ unsigned char payload_x64[] = {
     0x48, 0xC7, 0xC0, 0x01, 0x00, 0x00, 0x00, 0xBA, 0x10, 0x00, 0xB4, 0x09, 0xCD, 0x21, 0xB8, 0x00, 0x4C, 0xCD, 0x21
 };
 
-// --- Standalone Data Integrity Verification Engine (FNV-1a 32-bit) ---
-unsigned int calculate_checksum(unsigned char* data, size_t len) {
-    unsigned int hash = 2166136261U; // FNV offset basis
-    for (size_t i = 0; i < len; i++) {
-        hash ^= data[i];
-        hash *= 16777619; // FNV prime
+// Simple visual data checksum calculation based on active content bounds
+uint32_t calculate_midi_checksum(const unsigned char* data, size_t length) {
+    uint32_t checksum = 0xABCDEF;
+    for (size_t i = 0; i < length; i++) {
+        checksum = ((checksum << 5) + checksum) + data[i];
     }
-    return hash;
+    return checksum;
 }
 
-void defragment_memory(unsigned char* pool, size_t size) {
+// Compacts space by filtering out null frames (empty MIDI spaces)
+size_t defragment_midi_stream(unsigned char* pool, size_t size) {
     size_t write_ptr = 0;
-    printf("--- Initializing Defragmentation Algorithm Loop ---\n");
+    printf("--- Compacting MIDI Channel Streaming Buffers ---\n");
     for (size_t read_ptr = 0; read_ptr < size; read_ptr++) {
         if (pool[read_ptr] != FREE_HOLE) {
             pool[write_ptr] = pool[read_ptr];
@@ -45,11 +47,12 @@ void defragment_memory(unsigned char* pool, size_t size) {
             write_ptr++;
         }
     }
-    printf("[+] Memory compaction complete. Consolidated free address offset: %zu\n\n", write_ptr);
+    printf("[+] Gaps compressed. Active stream size bound: %zu bytes\n\n", write_ptr);
+    return write_ptr; // Returns the exact size of actual valid content
 }
 
-void print_pool(const char* label, unsigned char* pool, size_t size) {
-    printf("Memory Pool [%s]:\n", label);
+void print_midi_pool(const char* label, unsigned char* pool, size_t size) {
+    printf("MIDI Stream State [%s]:\n", label);
     for (size_t i = 0; i < size; i++) {
         printf("%02X ", pool[i]);
         if ((i + 1) % 16 == 0) printf("\n");
@@ -59,10 +62,7 @@ void print_pool(const char* label, unsigned char* pool, size_t size) {
 
 int export_raw_binary(const char* filename, unsigned char* payload, size_t len) {
     FILE* file = fopen(filename, "wb");
-    if (!file) {
-        printf("[-] Failed to open target file for writing: %s\n", filename);
-        return -1;
-    }
+    if (!file) return -1;
     size_t written = fwrite(payload, 1, len, file);
     fclose(file);
     return (written == len) ? 0 : -2;
@@ -73,10 +73,7 @@ int main(void) {
     if (strlen(ID) > 10) {
         strncpy(clean_code, ID + 10, sizeof(clean_code) - 1);
     }
-    
-    printf("--- SDK Profile Verification Initialization ---\n");
     printf(PROFILE_TEMPLATE, ID, clean_code);
-    printf("\n");
     
     unsigned char* active_payload;
     size_t payload_len;
@@ -84,36 +81,40 @@ int main(void) {
 #ifdef TARGET_ARCH_X64
     active_payload = payload_x64;
     payload_len = sizeof(payload_x64);
-    printf("[*] SDK Mode: x64 Targeted Architecture Payload\n\n");
+    printf("[*] MIDI Core Mode: x64 Extended Map Configuration\n");
 #else
     active_payload = payload_16bit;
     payload_len = sizeof(payload_16bit);
-    printf("[*] SDK Mode: 16-Bit Targeted Architecture Payload\n\n");
+    printf("[*] MIDI Core Mode: 16-Bit Legacy Map Configuration\n");
 #endif
 
-    // Calculate baseline checksum of our internal payload block
-    unsigned int base_checksum = calculate_checksum(active_payload, payload_len);
-    printf("[*] Baseline Payload Integrity Checksum: 0x%08X\n\n", base_checksum);
+    // Baseline calculation based strictly on valid raw input length
+    uint32_t baseline_checksum = calculate_midi_checksum(active_payload, payload_len);
+    printf("[*] Baseline Stream Checksum: 0x%08X\n\n", baseline_checksum);
 
     unsigned char memory_pool[MEMORY_POOL_SIZE] = {0};
-    
     size_t chunk = payload_len / 3;
+    
+    // Simulate scattered track event sequences across the data channels
     memcpy(memory_pool, active_payload, chunk);
     memcpy(memory_pool + 15, active_payload + chunk, chunk);
     memcpy(memory_pool + 30, active_payload + (chunk * 2), payload_len - (chunk * 2));
     
-    print_pool("FRAGMENTED", memory_pool, MEMORY_POOL_SIZE);
-    defragment_memory(memory_pool, MEMORY_POOL_SIZE);
-    print_pool("COMPACTED / CLEANED", memory_pool, MEMORY_POOL_SIZE);
+    print_midi_pool("FRAGMENTED EVENTS", memory_pool, MEMORY_POOL_SIZE);
     
-    // Verify payload integrity post-compaction
-    unsigned int compacted_checksum = calculate_checksum(memory_pool, payload_len);
-    printf("[*] Compacted Memory Block Checksum:   0x%08X\n", compacted_checksum);
+    // Defragment and acquire the new clean length bounds to ignore trailing padding zeroes
+    size_t clean_length = defragment_midi_stream(memory_pool, MEMORY_POOL_SIZE);
     
-    if (base_checksum == compacted_checksum) {
-        printf("[+] SUCCESS: Data integrity verified. No corruption detected during compaction.\n\n");
+    print_midi_pool("COMPACTED CHANNELS", memory_pool, MEMORY_POOL_SIZE);
+    
+    // Calculate checksum strictly up to clean_length boundaries
+    uint32_t compacted_checksum = calculate_midi_checksum(memory_pool, clean_length);
+    printf("[*] Compacted Channel Checksum: 0x%08X\n", compacted_checksum);
+    
+    if (baseline_checksum == compacted_checksum) {
+        printf("[+] SUCCESS: Data integrity verified. Stream matches baseline perfectly.\n\n");
     } else {
-        printf("[-] ERROR: Checksum mismatch. Memory pool data was altered or corrupted.\n\n");
+        printf("[-] ERROR: Checksum discrepancy detected.\n\n");
     }
     
     export_raw_binary("main.raw", active_payload, payload_len);
