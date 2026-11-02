@@ -1,0 +1,24 @@
+        TITLE   KDPMAIN - KDP profile (MACRO-10, TOPS-10)
+        SEARCH  UUOSYM
+
+START:  RESET
+        OUTSTR  HDR
+        OUTSTR  CRLF
+        OUTSTR  NICK
+        OUTSTR  CRLF
+        OUTSTR  CODE
+        OUTSTR  CRLF
+        OUTSTR  ROLE
+        OUTSTR  CRLF
+        OUTSTR  PTS
+        OUTSTR  CRLF
+        EXIT
+
+HDR:    ASCIZ   /=== KDP Forum Profile ===/
+NICK:   ASCIZ   /Nickname : KDPMember:KL5UQ4f48673352/
+CODE:   ASCIZ   /Code     : KL5UQ4f48673352/
+ROLE:   ASCIZ   /Role     : Member/
+PTS:    ASCIZ   /Points   : 1/
+CRLF:   BYTE (7) 15,12,0
+
+        END     START

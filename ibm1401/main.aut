@@ -1,0 +1,30 @@
+*    KDP PROFILE - IBM 1401 AUTOCODER STYLE (UPPERCASE, NO COLON)
+               ORG  333
+START     CS   332
+               CS   299
+               MCW  L1,225
+               W
+               CS   332
+               CS   299
+               MCW  L2,236
+               W
+               CS   332
+               CS   299
+               MCW  L3,226
+               W
+               CS   332
+               CS   299
+               MCW  L4,217
+               W
+               CS   332
+               CS   299
+               MCW  L5,212
+               W
+               H
+               B    START
+L1        DCW  @=== KDP FORUM PROFILE ===@
+L2        DCW  @NICKNAME = KDPMEMBER-KL5UQ4F48673352@
+L3        DCW  @CODE     = KL5UQ4F48673352@
+L4        DCW  @ROLE     = MEMBER@
+L5        DCW  @POINTS   = 1@
+               END  START
