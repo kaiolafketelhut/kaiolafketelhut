@@ -17,4 +17,10 @@
     <sub-class-of type="text/plain"/>
     <glob pattern="*.iQxD"/>
   </mime-type>
+  <mime-type type="text/x-nastran-bdf">
+    <comment>Nastran bulk data file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.bdf"/>
+    <glob pattern="*.nas"/>
+  </mime-type>
 </mime-info>

@@ -1,0 +1,24 @@
+$ MAIN.BDF - the KDP profile as a Nastran static model (SOL 101)
+$ Nickname : KDPMember:KL5UQ4f48673352
+$ Code     : KL5UQ4f48673352
+$ Role     : Member
+$ Points   : 1
+SOL 101
+CEND
+TITLE = KDP Forum Profile KL5UQ4f48673352
+SUBTITLE = Role Member Points 1
+LABEL = one rod, 100 N axial
+SPC = 1
+LOAD = 2
+DISPLACEMENT = ALL
+SPCFORCES = ALL
+BEGIN BULK
+GRID,1,,0.,0.,0.
+GRID,2,,1.,0.,0.
+CROD,1,1,1,2
+PROD,1,1,1.0
+MAT1,1,1.0E7,,0.3
+SPC1,1,123456,1
+SPC1,1,23456,2
+FORCE,2,2,,100.,1.,0.,0.
+ENDDATA
