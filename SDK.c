@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include "OQM.h"
 
 #define MODE_16BIT 0
 #define MODE_X64   1
@@ -34,7 +35,7 @@ uint32_t calculate_midi_checksum(const unsigned char* data, size_t length) {
 
 size_t defragment_midi_stream(unsigned char* pool, size_t size) {
     size_t write_ptr = 0;
-    printf("--- Compacting Channel Streaming Buffers (bb) ---\n");
+    printf("--- Compacting Channel Streaming Buffers (OQM Engine) ---\n");
     for (size_t read_ptr = 0; read_ptr < size; read_ptr++) {
         if (pool[read_ptr] != FREE_HOLE) {
             pool[write_ptr] = pool[read_ptr];
@@ -66,7 +67,6 @@ int export_raw_binary(const char* filename, unsigned char* payload, size_t len) 
 }
 
 int main(void) {
-    // FIX: Defined clean_code as a character array buffer instead of a scalar char variable
     char clean_code[32] = {0};
     if (strlen(ID) > 10) {
         strncpy(clean_code, ID + 10, sizeof(clean_code) - 1);
@@ -91,18 +91,32 @@ int main(void) {
 
     unsigned char memory_pool[MEMORY_POOL_SIZE] = {0};
     
-    size_t chunk1 = 5;
-    size_t chunk2 = 5;
-    size_t chunk3 = payload_len - (chunk1 + chunk2);
+    OQM_PipelineQueue pipeline;
+    pipeline.total_chunks = 3;
     
-    memcpy(memory_pool, active_payload, chunk1);
-    memcpy(memory_pool + 15, active_payload + chunk1, chunk2);
-    memcpy(memory_pool + 30, active_payload + chunk1 + chunk2, chunk3);
+    // Chunk 1: Bytes 0-4 (Length 5) -> Offset 0
+    pipeline.chunks[0].data_ptr = active_payload;
+    pipeline.chunks[0].size = 5;
+    pipeline.chunks[0].pool_offset = 0;
+    
+    // Chunk 2: Bytes 5-9 (Length 5) -> Offset 15
+    pipeline.chunks[1].data_ptr = active_payload + 5;
+    pipeline.chunks[1].size = 5;
+    pipeline.chunks[1].pool_offset = 15;
+    
+    // Chunk 3: Remaining bytes to the end -> Offset 30
+    pipeline.chunks[2].data_ptr = active_payload + 10;
+    pipeline.chunks[2].size = payload_len - 10;
+    pipeline.chunks[2].pool_offset = 30;
+    
+    for (size_t i = 0; i < pipeline.total_chunks; i++) {
+        memcpy(memory_pool + pipeline.chunks[i].pool_offset, 
+               pipeline.chunks[i].data_ptr, 
+               pipeline.chunks[i].size);
+    }
     
     print_midi_pool("FRAGMENTED EVENTS", memory_pool, MEMORY_POOL_SIZE);
-    
     size_t clean_length = defragment_midi_stream(memory_pool, MEMORY_POOL_SIZE);
-    
     print_midi_pool("COMPACTED CHANNELS", memory_pool, MEMORY_POOL_SIZE);
     
     uint32_t compacted_checksum = calculate_midi_checksum(memory_pool, clean_length);
