@@ -1,0 +1,31 @@
+#!/bin/sh
+# root.main - KDP profile, root check, and a FAT12 image with MAIN in its root directory
+# usage: sh root.main [image]     (default image: $TMPDIR/root.img)
+DIR=$(cd "$(dirname "$0")" && pwd)
+IMG=${1:-${TMPDIR:-/tmp}/root.img}
+ID='KDPMember:KL5UQ4f48673352'
+
+echo '=== KDP Forum Profile ==='
+echo "Nickname : $ID"
+echo "Code     : ${ID#KDPMember:}"
+echo 'Role     : Member'
+echo 'Points   : 1'
+echo
+
+# 1. who am I? (Termux is never real root; proot shows a fake root)
+uid=$(id -u)
+if [ "$uid" = 0 ]; then who='root (a fake root if this is proot)'; else who='not root'; fi
+echo "user     : $(id -un) (uid $uid) - $who"
+
+# 2. FAT12 image whose root directory holds the file MAIN
+python3 - "$DIR/fat/main.py" "$IMG" <<'PY'
+import importlib.util, sys
+spec = importlib.util.spec_from_file_location("fatmain", sys.argv[1])
+m = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(m)
+img = m.build_image(32, name=b"MAIN    ", ext=b"   ")
+open(sys.argv[2], "wb").write(img)
+print("image    : %s (%d KiB, FAT12)" % (sys.argv[2], len(img) // 1024))
+for nm, d in m.read_root(img).items():
+    print("root dir : /%s  %d bytes" % (nm.rstrip("."), len(d)))
+PY
