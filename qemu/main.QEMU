@@ -1,0 +1,30 @@
+#!/bin/bash
+# main.QEMU - KDP profile + a QEMU launcher for a ChromeOS Flex disk image
+# usage: bash main.QEMU [image]        prints the QEMU command; RUN=1 bash main.QEMU image  starts it
+# env:   MEM=4096 (MiB)  CPUS=4  OVMF=/path/to/OVMF.fd (UEFI firmware, needed for Flex)  VNC=1 (display :1)
+IMG=${1:-flex.img}
+MEM=${MEM:-4096}
+CPUS=${CPUS:-4}
+
+echo '=== KDP Forum Profile ==='
+echo 'Nickname : KDPMember:KL5UQ4f48673352'
+echo 'Code     : KL5UQ4f48673352'
+echo 'Role     : Member'
+echo 'Points   : 1'
+echo
+
+CMD=(qemu-system-x86_64 -machine q35 -cpu max -smp "$CPUS" -m "$MEM"
+     -drive "file=$IMG,format=raw,if=virtio"
+     -device virtio-vga -device qemu-xhci -device usb-tablet
+     -display "vnc=127.0.0.1:${VNC:-1}")
+[ -n "$OVMF" ] && CMD+=(-bios "$OVMF")
+
+echo "image : $IMG$([ -f "$IMG" ] || echo '  (not found)')"
+echo "qemu  : $(command -v qemu-system-x86_64 || echo 'not installed')"
+echo "uefi  : ${OVMF:-not set (Flex boots by UEFI - set OVMF)}"
+echo
+printf '%q ' "${CMD[@]}"; echo
+if [ "$RUN" = 1 ]; then
+  [ -f "$IMG" ] || { echo "no image: $IMG"; exit 1; }
+  exec "${CMD[@]}"
+fi
