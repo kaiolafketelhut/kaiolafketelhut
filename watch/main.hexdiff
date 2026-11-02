@@ -1,0 +1,35 @@
+#!/bin/sh
+# main.hexdiff - watch the KDP ID; when it changes, show a hex diff and run autoexec
+# usage: sh main.hexdiff [once|loop] [seconds]
+DIR=$(cd "$(dirname "$0")" && pwd)
+ID_FILE="$DIR/ID"            # one line: your current KDP nickname
+STATE="$DIR/.last"           # last seen ID
+TMP=${TMPDIR:-/tmp}
+MODE=${1:-once}
+EVERY=${2:-60}
+
+check() {
+    new=$(head -n 1 "$ID_FILE" 2>/dev/null)
+    [ -n "$new" ] || { echo "no ID in $ID_FILE"; return 1; }
+    old=$(cat "$STATE" 2>/dev/null)
+    if [ "$new" = "$old" ]; then
+        echo "unchanged: $new"
+        return 0
+    fi
+    echo "=== KDP ID changed ==="
+    echo "old: ${old:-(none)}"
+    echo "new: $new"
+    printf '%s' "$old" | od -An -tx1 -v -w1 > "$TMP/.kdp_old"
+    printf '%s' "$new" | od -An -tx1 -v -w1 > "$TMP/.kdp_new"
+    echo "--- hexdiff (old vs new, one byte per line; line N = byte N-1) ---"
+    diff "$TMP/.kdp_old" "$TMP/.kdp_new" | sed 's/^/  /'
+    printf '%s\n' "$new" > "$STATE"
+    [ -x "$DIR/autoexec" ] && "$DIR/autoexec" "$old" "$new"
+    return 0
+}
+
+if [ "$MODE" = loop ]; then
+    while :; do check; sleep "$EVERY"; done
+else
+    check
+fi
