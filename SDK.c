@@ -66,7 +66,8 @@ int export_raw_binary(const char* filename, unsigned char* payload, size_t len) 
 }
 
 int main(void) {
-    char clean_code = {0};
+    // FIX: Defined clean_code as a character array buffer instead of a scalar char variable
+    char clean_code[32] = {0};
     if (strlen(ID) > 10) {
         strncpy(clean_code, ID + 10, sizeof(clean_code) - 1);
     }
@@ -90,10 +91,9 @@ int main(void) {
 
     unsigned char memory_pool[MEMORY_POOL_SIZE] = {0};
     
-    // --- Precise Bit-Boundary (bb) Layout Mapping ---
     size_t chunk1 = 5;
     size_t chunk2 = 5;
-    size_t chunk3 = payload_len - (chunk1 + chunk2); // Dynamically captures all remaining bytes
+    size_t chunk3 = payload_len - (chunk1 + chunk2);
     
     memcpy(memory_pool, active_payload, chunk1);
     memcpy(memory_pool + 15, active_payload + chunk1, chunk2);
