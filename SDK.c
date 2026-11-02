@@ -4,7 +4,6 @@
 #define MODE_16BIT 0
 #define MODE_X64   1
 
-// SDK Identity Context
 const char* ID = "KDPMember:KL5UQ4f48673352";
 const char* PROFILE_TEMPLATE = 
     "=== KDP Forum Profile ===\r\n"
@@ -13,25 +12,12 @@ const char* PROFILE_TEMPLATE =
     "Role     : Member\r\n"
     "Points   : 1\r\n";
 
-// Raw Opcodes from the analysis pipeline
 unsigned char payload_16bit[] = {
-    0x0E,             // push cs
-    0x1F,             // pop ds
-    0x48,             // dec ax
-    0xBA, 0x0F, 0x00, // mov dx, msg payload offset (15 bytes)
-    0xB4, 0x09,       // mov ah, 9
-    0xCD, 0x21,       // int 21h
-    0xB8, 0x00, 0x4C, // mov ax, 4C00h
-    0xCD, 0x21        // int 21h
+    0x0E, 0x1F, 0x48, 0xBA, 0x0F, 0x00, 0xB4, 0x09, 0xCD, 0x21, 0xB8, 0x00, 0x4C, 0xCD, 0x21
 };
 
 unsigned char payload_x64[] = {
-    0x48, 0xC7, 0xC0, 0x01, 0x00, 0x00, 0x00, // mov rax, 1 (Using 0x48 prefix)
-    0xBA, 0x10, 0x00,                         // mov dx, msg payload offset (16 bytes)
-    0xB4, 0x09,                               // mov ah, 9
-    0xCD, 0x21,                               // int 21h
-    0xB8, 0x00, 0x4C,                         // mov ax, 4C00h
-    0xCD, 0x21                                // int 21h
+    0x48, 0xC7, 0xC0, 0x01, 0x00, 0x00, 0x00, 0xBA, 0x10, 0x00, 0xB4, 0x09, 0xCD, 0x21, 0xB8, 0x00, 0x4C, 0xCD, 0x21
 };
 
 void inspect_payload(int mode) {
@@ -43,6 +29,27 @@ void inspect_payload(int mode) {
         printf("%02X ", ptr[i]);
     }
     printf("\n\n");
+}
+
+// Automatically dumps the machine code structure out to a local file descriptor
+int export_raw_binary(const char* filename, int mode) {
+    unsigned char* ptr = (mode == MODE_16BIT) ? payload_16bit : payload_x64;
+    size_t len = (mode == MODE_16BIT) ? sizeof(payload_16bit) : sizeof(payload_x64);
+    
+    FILE* file = fopen(filename, "wb");
+    if (!file) {
+        printf("[-] Failed to open target file for writing: %s\n", filename);
+        return -1;
+    }
+    
+    size_t written = fwrite(ptr, 1, len, file);
+    fclose(file);
+    
+    if (written == len) {
+        printf("[+] Successfully exported %zu bytes to %s\n", written, filename);
+        return 0;
+    }
+    return -2;
 }
 
 int main(void) {
@@ -57,6 +64,9 @@ int main(void) {
     
     inspect_payload(MODE_16BIT);
     inspect_payload(MODE_X64);
+    
+    // Write out the current exploration target directly into main.raw
+    export_raw_binary("main.raw", MODE_16BIT);
     
     return 0;
 }
