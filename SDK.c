@@ -16,7 +16,6 @@ const char* PROFILE_TEMPLATE =
     "Role     : Member\r\n"
     "Points   : 1\r\n";
 
-// Raw execution arrays structured as MIDI note/velocity layout events
 unsigned char payload_16bit[] = {
     0x0E, 0x1F, 0x48, 0xBA, 0x0F, 0x00, 0xB4, 0x09, 0xCD, 0x21, 0xB8, 0x00, 0x4C, 0xCD, 0x21
 };
@@ -25,7 +24,6 @@ unsigned char payload_x64[] = {
     0x48, 0xC7, 0xC0, 0x01, 0x00, 0x00, 0x00, 0xBA, 0x10, 0x00, 0xB4, 0x09, 0xCD, 0x21, 0xB8, 0x00, 0x4C, 0xCD, 0x21
 };
 
-// Simple visual data checksum calculation based on active content bounds
 uint32_t calculate_midi_checksum(const unsigned char* data, size_t length) {
     uint32_t checksum = 0xABCDEF;
     for (size_t i = 0; i < length; i++) {
@@ -34,10 +32,9 @@ uint32_t calculate_midi_checksum(const unsigned char* data, size_t length) {
     return checksum;
 }
 
-// Compacts space by filtering out null frames (empty MIDI spaces)
 size_t defragment_midi_stream(unsigned char* pool, size_t size) {
     size_t write_ptr = 0;
-    printf("--- Compacting MIDI Channel Streaming Buffers ---\n");
+    printf("--- Compacting Channel Streaming Buffers (bb) ---\n");
     for (size_t read_ptr = 0; read_ptr < size; read_ptr++) {
         if (pool[read_ptr] != FREE_HOLE) {
             pool[write_ptr] = pool[read_ptr];
@@ -47,12 +44,12 @@ size_t defragment_midi_stream(unsigned char* pool, size_t size) {
             write_ptr++;
         }
     }
-    printf("[+] Gaps compressed. Active stream size bound: %zu bytes\n\n", write_ptr);
-    return write_ptr; // Returns the exact size of actual valid content
+    printf("[+] Active stream consolidated size bound: %zu bytes\n\n", write_ptr);
+    return write_ptr;
 }
 
 void print_midi_pool(const char* label, unsigned char* pool, size_t size) {
-    printf("MIDI Stream State [%s]:\n", label);
+    printf("Stream State [%s]:\n", label);
     for (size_t i = 0; i < size; i++) {
         printf("%02X ", pool[i]);
         if ((i + 1) % 16 == 0) printf("\n");
@@ -69,7 +66,7 @@ int export_raw_binary(const char* filename, unsigned char* payload, size_t len) 
 }
 
 int main(void) {
-    char clean_code[32] = {0};
+    char clean_code = {0};
     if (strlen(ID) > 10) {
         strncpy(clean_code, ID + 10, sizeof(clean_code) - 1);
     }
@@ -81,33 +78,33 @@ int main(void) {
 #ifdef TARGET_ARCH_X64
     active_payload = payload_x64;
     payload_len = sizeof(payload_x64);
-    printf("[*] MIDI Core Mode: x64 Extended Map Configuration\n");
+    printf("[*] Core Mode: x64 Extended Map Configuration\n");
 #else
     active_payload = payload_16bit;
     payload_len = sizeof(payload_16bit);
-    printf("[*] MIDI Core Mode: 16-Bit Legacy Map Configuration\n");
+    printf("[*] Core Mode: 16-Bit Legacy Map Configuration\n");
 #endif
 
-    // Baseline calculation based strictly on valid raw input length
     uint32_t baseline_checksum = calculate_midi_checksum(active_payload, payload_len);
     printf("[*] Baseline Stream Checksum: 0x%08X\n\n", baseline_checksum);
 
     unsigned char memory_pool[MEMORY_POOL_SIZE] = {0};
-    size_t chunk = payload_len / 3;
     
-    // Simulate scattered track event sequences across the data channels
-    memcpy(memory_pool, active_payload, chunk);
-    memcpy(memory_pool + 15, active_payload + chunk, chunk);
-    memcpy(memory_pool + 30, active_payload + (chunk * 2), payload_len - (chunk * 2));
+    // --- Precise Bit-Boundary (bb) Layout Mapping ---
+    size_t chunk1 = 5;
+    size_t chunk2 = 5;
+    size_t chunk3 = payload_len - (chunk1 + chunk2); // Dynamically captures all remaining bytes
+    
+    memcpy(memory_pool, active_payload, chunk1);
+    memcpy(memory_pool + 15, active_payload + chunk1, chunk2);
+    memcpy(memory_pool + 30, active_payload + chunk1 + chunk2, chunk3);
     
     print_midi_pool("FRAGMENTED EVENTS", memory_pool, MEMORY_POOL_SIZE);
     
-    // Defragment and acquire the new clean length bounds to ignore trailing padding zeroes
     size_t clean_length = defragment_midi_stream(memory_pool, MEMORY_POOL_SIZE);
     
     print_midi_pool("COMPACTED CHANNELS", memory_pool, MEMORY_POOL_SIZE);
     
-    // Calculate checksum strictly up to clean_length boundaries
     uint32_t compacted_checksum = calculate_midi_checksum(memory_pool, clean_length);
     printf("[*] Compacted Channel Checksum: 0x%08X\n", compacted_checksum);
     
