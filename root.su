@@ -1,0 +1,14 @@
+#!/bin/sh
+# root.su - is there a real root (su) on this device?
+echo "uid now : $(id -u) ($(id -un))"
+if command -v su >/dev/null 2>&1; then
+  echo "su found : $(command -v su)"
+  r=$(timeout 15 su -c 'id -u' 2>/dev/null)
+  if [ "$r" = 0 ]; then
+    echo "su result: real root (uid 0)"
+  else
+    echo "su result: denied or failed"
+  fi
+else
+  echo "su found : no (not rooted, or no su wrapper installed)"
+fi
