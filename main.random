@@ -1,0 +1,30 @@
+#!/bin/sh
+# main.random - KDP profile plus a randomness self-test for the ransomware detector
+# usage: sh main.random [bytes]      default 4096 random bytes
+HERE=$(cd "$(dirname "$0")" && pwd)
+N=${1:-4096}
+TMP=${TMPDIR:-/tmp}/kdp-random.$$
+mkdir -p "$TMP"
+trap 'rm -rf "$TMP"' EXIT
+ID='KDPMember:KL5UQ4f48673352'
+
+echo '=== KDP Forum Profile ==='
+echo "Nickname : $ID"
+echo "Code     : ${ID#KDPMember:}"
+echo 'Role     : Member'
+echo 'Points   : 1'
+echo
+echo "nonce    : $(head -c 8 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+
+# one random file and one plain-text file, both named .txt
+head -c "$N" /dev/urandom > "$TMP/random.txt"
+cp "$HERE/main.random" "$TMP/plain.txt"
+out=$(python3 "$HERE/protect/entropy.py" "$TMP" 7.5)
+echo
+echo "$out" | sed -n '/^SUSPICIOUS/,/^$/p'
+if echo "$out" | grep -q 'random.txt' && ! echo "$out" | grep -q 'plain.txt'; then
+  echo "self-test: PASS (random.txt flagged, plain.txt not)"
+else
+  echo "self-test: FAIL"
+  exit 1
+fi

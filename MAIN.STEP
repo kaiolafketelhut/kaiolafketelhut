@@ -1,0 +1,18 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('KDP forum profile as a STEP product (no shape)'),'2;1');
+FILE_NAME('MAIN.STEP','2026-11-02T00:00:00',('Kai Ketelhut'),('Fieldberry Group'),'hand written','none','');
+FILE_SCHEMA(('CONFIG_CONTROL_DESIGN'));
+ENDSEC;
+DATA;
+#1=APPLICATION_CONTEXT('configuration controlled 3D designs of mechanical parts and assemblies');
+#2=APPLICATION_PROTOCOL_DEFINITION('international standard','config_control_design',1994,#1);
+#3=MECHANICAL_CONTEXT('none',#1,'mechanical');
+#4=PRODUCT('KL5UQ4f48673352','KDPMember:KL5UQ4f48673352','Role: Member. Points: 1.',(#3));
+#5=PRODUCT_RELATED_PRODUCT_CATEGORY('part',$,(#4));
+#6=PRODUCT_DEFINITION_FORMATION('1','first version',#4);
+#7=PRODUCT_DEFINITION_CONTEXT('part definition',#1,'design');
+#8=PRODUCT_DEFINITION('design','',#6,#7);
+#9=PRODUCT_DEFINITION_SHAPE('','',#8);
+ENDSEC;
+END-ISO-10303-21;
