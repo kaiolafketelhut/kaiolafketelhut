@@ -1,0 +1,9 @@
+/* main.css - the KDP profile drawn by CSS alone (open main.html) */
+:root { color-scheme: light dark; }
+body::before {
+  content: "=== KDP Forum Profile ===\A Nickname : KDPMember:KL5UQ4f48673352\A Code     : KL5UQ4f48673352\A Role     : Member\A Points   : 1";
+  display: block;
+  padding: 1em;
+  white-space: pre;
+  font: 16px/1.5 ui-monospace, Menlo, Consolas, monospace;
+}
