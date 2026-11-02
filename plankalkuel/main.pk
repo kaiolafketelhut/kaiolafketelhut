@@ -1,0 +1,22 @@
+; main.pk - KDP profile as a Plankalkuel sketch (Konrad Zuse, 1942-45)
+; Plankalkuel has no I/O, so this only holds the data; it prints nothing.
+; Real notation is 2-dimensional (rows V, K, S); this is a linear
+; transliteration and not guaranteed valid Plankalkuel.
+;
+; Types (S row): A8 = 8 bits (one character), n.A8 = array of n characters
+;
+; id     = "KDPMember:KL5UQ4f48673352"   25 x A8
+; code   = id[10..24]                    15 x A8   (after the prefix)
+; role   = "Member"                       6 x A8
+; points = 1                              A8
+
+P1 KdpProfile (V0[:25.A8], V1[:6.A8]) => R0
+    ; Z (counter) walks the 15 characters after the prefix
+    10 => Z0
+    W [ Z0 < 25 ]
+        V0[Z0] => V2[Z0 - 10]
+        Z0 + 1 => Z0
+    1 => V3
+    ; result R0 = (code, role, points)
+V |  0   1   2   3
+S | 25.A8 6.A8 15.A8 A8
