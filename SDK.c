@@ -23,6 +23,16 @@ unsigned char payload_x64[] = {
     0x48, 0xC7, 0xC0, 0x01, 0x00, 0x00, 0x00, 0xBA, 0x10, 0x00, 0xB4, 0x09, 0xCD, 0x21, 0xB8, 0x00, 0x4C, 0xCD, 0x21
 };
 
+// --- Standalone Data Integrity Verification Engine (FNV-1a 32-bit) ---
+unsigned int calculate_checksum(unsigned char* data, size_t len) {
+    unsigned int hash = 2166136261U; // FNV offset basis
+    for (size_t i = 0; i < len; i++) {
+        hash ^= data[i];
+        hash *= 16777619; // FNV prime
+    }
+    return hash;
+}
+
 void defragment_memory(unsigned char* pool, size_t size) {
     size_t write_ptr = 0;
     printf("--- Initializing Defragmentation Algorithm Loop ---\n");
@@ -68,7 +78,6 @@ int main(void) {
     printf(PROFILE_TEMPLATE, ID, clean_code);
     printf("\n");
     
-    // Choose active payload parameters based on compilation flag passed by wrapper
     unsigned char* active_payload;
     size_t payload_len;
     
@@ -82,9 +91,12 @@ int main(void) {
     printf("[*] SDK Mode: 16-Bit Targeted Architecture Payload\n\n");
 #endif
 
+    // Calculate baseline checksum of our internal payload block
+    unsigned int base_checksum = calculate_checksum(active_payload, payload_len);
+    printf("[*] Baseline Payload Integrity Checksum: 0x%08X\n\n", base_checksum);
+
     unsigned char memory_pool[MEMORY_POOL_SIZE] = {0};
     
-    // Distribute active payload blocks across pool to simulate fragmentation
     size_t chunk = payload_len / 3;
     memcpy(memory_pool, active_payload, chunk);
     memcpy(memory_pool + 15, active_payload + chunk, chunk);
@@ -93,6 +105,16 @@ int main(void) {
     print_pool("FRAGMENTED", memory_pool, MEMORY_POOL_SIZE);
     defragment_memory(memory_pool, MEMORY_POOL_SIZE);
     print_pool("COMPACTED / CLEANED", memory_pool, MEMORY_POOL_SIZE);
+    
+    // Verify payload integrity post-compaction
+    unsigned int compacted_checksum = calculate_checksum(memory_pool, payload_len);
+    printf("[*] Compacted Memory Block Checksum:   0x%08X\n", compacted_checksum);
+    
+    if (base_checksum == compacted_checksum) {
+        printf("[+] SUCCESS: Data integrity verified. No corruption detected during compaction.\n\n");
+    } else {
+        printf("[-] ERROR: Checksum mismatch. Memory pool data was altered or corrupted.\n\n");
+    }
     
     export_raw_binary("main.raw", active_payload, payload_len);
     return 0;
