@@ -1,0 +1,19 @@
+BEGIN
+  STRING prefix = "KDPMember:";
+  STRING member id = "KDPMember:KL5UQ4f48673352";
+  STRING role = "Member";
+  INT points = 1;
+
+  # The short code after the KDPMember: prefix #
+  PROC short code = (STRING id) STRING:
+    IF UPB id < UPB prefix THEN id
+    ELIF id[1 : UPB prefix] = prefix THEN id[UPB prefix + 1 : ]
+    ELSE id
+    FI;
+
+  print (("=== KDP Forum Profile ===", newline));
+  print (("Nickname : ", member id, newline));
+  print (("Code     : ", short code (member id), newline));
+  print (("Role     : ", role, newline));
+  print (("Points   : ", whole (points, 0), newline))
+END
