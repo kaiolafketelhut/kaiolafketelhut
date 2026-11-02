@@ -1,0 +1,9 @@
+{
+  "target_manifold": "D^5",
+  "operator": "Curl",
+  "postulate": "Inertia Binary Bypass",
+  "binary_state": 1,
+  "bitmask": "0b101001",
+  "node_equivalence": "3==4",
+  "execution_status": "Status 0"
+}
