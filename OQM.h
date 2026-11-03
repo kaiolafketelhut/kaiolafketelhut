@@ -10,7 +10,7 @@ typedef struct {
 } OQM_ChunkObject;
 
 typedef struct {
-    OQM_ChunkObject chunks[3]; // Fixed size array window to hold the byte slices
+    OQM_ChunkObject chunks[3]; // Fixed size structural allocation array slots
     size_t total_chunks;
 } OQM_PipelineQueue;
 

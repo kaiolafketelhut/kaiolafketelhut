@@ -35,7 +35,7 @@ uint32_t calculate_midi_checksum(const unsigned char* data, size_t length) {
 
 size_t defragment_midi_stream(unsigned char* pool, size_t size) {
     size_t write_ptr = 0;
-    printf("--- Compacting Channel Streaming Buffers (OQM Engine) ---\n");
+    printf("--- Minix VFS/MM Storage Compaction Server Loop ---\n");
     for (size_t read_ptr = 0; read_ptr < size; read_ptr++) {
         if (pool[read_ptr] != FREE_HOLE) {
             pool[write_ptr] = pool[read_ptr];
@@ -45,12 +45,12 @@ size_t defragment_midi_stream(unsigned char* pool, size_t size) {
             write_ptr++;
         }
     }
-    printf("[+] Active stream consolidated size bound: %zu bytes\n\n", write_ptr);
+    printf("[+] Task completed. Active allocation footprint: %zu bytes\n\n", write_ptr);
     return write_ptr;
 }
 
 void print_midi_pool(const char* label, unsigned char* pool, size_t size) {
-    printf("Stream State [%s]:\n", label);
+    printf("Server Node Block [%s]:\n", label);
     for (size_t i = 0; i < size; i++) {
         printf("%02X ", pool[i]);
         if ((i + 1) % 16 == 0) printf("\n");
@@ -79,32 +79,29 @@ int main(void) {
 #ifdef TARGET_ARCH_X64
     active_payload = payload_x64;
     payload_len = sizeof(payload_x64);
-    printf("[*] Core Mode: x64 Extended Map Configuration\n");
+    printf("[*] Core Mode: Minix x64 Server Layout Mapping\n");
 #else
     active_payload = payload_16bit;
     payload_len = sizeof(payload_16bit);
-    printf("[*] Core Mode: 16-Bit Legacy Map Configuration\n");
+    printf("[*] Core Mode: Minix 16-Bit Server Layout Mapping\n");
 #endif
 
     uint32_t baseline_checksum = calculate_midi_checksum(active_payload, payload_len);
-    printf("[*] Baseline Stream Checksum: 0x%08X\n\n", baseline_checksum);
+    printf("[*] Baseline System Checksum Validation: 0x%08X\n\n", baseline_checksum);
 
     unsigned char memory_pool[MEMORY_POOL_SIZE] = {0};
     
     OQM_PipelineQueue pipeline;
     pipeline.total_chunks = 3;
     
-    // Chunk 1: Bytes 0-4 (Length 5) -> Offset 0
     pipeline.chunks[0].data_ptr = active_payload;
     pipeline.chunks[0].size = 5;
     pipeline.chunks[0].pool_offset = 0;
     
-    // Chunk 2: Bytes 5-9 (Length 5) -> Offset 15
     pipeline.chunks[1].data_ptr = active_payload + 5;
     pipeline.chunks[1].size = 5;
     pipeline.chunks[1].pool_offset = 15;
     
-    // Chunk 3: Remaining bytes to the end -> Offset 30
     pipeline.chunks[2].data_ptr = active_payload + 10;
     pipeline.chunks[2].size = payload_len - 10;
     pipeline.chunks[2].pool_offset = 30;
@@ -115,9 +112,9 @@ int main(void) {
                pipeline.chunks[i].size);
     }
     
-    print_midi_pool("FRAGMENTED EVENTS", memory_pool, MEMORY_POOL_SIZE);
+    print_midi_pool("FRAGMENTED TASKS", memory_pool, MEMORY_POOL_SIZE);
     size_t clean_length = defragment_midi_stream(memory_pool, MEMORY_POOL_SIZE);
-    print_midi_pool("COMPACTED CHANNELS", memory_pool, MEMORY_POOL_SIZE);
+    print_midi_pool("COMPACTED STORAGE", memory_pool, MEMORY_POOL_SIZE);
     
     uint32_t compacted_checksum = calculate_midi_checksum(memory_pool, clean_length);
     printf("[*] Compacted Channel Checksum: 0x%08X\n", compacted_checksum);
