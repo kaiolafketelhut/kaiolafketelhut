@@ -94,6 +94,7 @@ int main(void) {
     OQM_PipelineQueue pipeline;
     pipeline.total_chunks = 3;
     
+    // FIXED: Added exact array bounds subscripts, [1], [2] to load all chunks correctly
     pipeline.chunks[0].data_ptr = active_payload;
     pipeline.chunks[0].size = 5;
     pipeline.chunks[0].pool_offset = 0;
