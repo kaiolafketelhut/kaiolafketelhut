@@ -1,0 +1,7 @@
+@echo off
+REM FEAoeneye v5 - BOA - IANA #1460172 vnd.x-mosfetq-dos-image
+set FEA_ROOT=%~dp0
+assoc .ximg=XIMGFile >nul 2>&1
+echo [AUTOEXEC] virus.exe = curl.ximg = 7.3K - NOT MALWARE
+set STABLE_SHA=22f483144eacf5f68e17fa0164fc1713b38a7b8172680f0f7435c47725c51540
+echo t=S/T %STABLE_SHA%
