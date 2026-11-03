@@ -33,19 +33,26 @@ uint32_t calculate_midi_checksum(const unsigned char* data, size_t length) {
     return checksum;
 }
 
-size_t defragment_midi_stream(unsigned char* pool, size_t size) {
+size_t defragment_midi_stream(unsigned char* pool, size_t size,
+                              const OQM_PipelineQueue* queue) {
     size_t write_ptr = 0;
     printf("--- Minix VFS/MM Storage Compaction Server Loop ---\n");
-    for (size_t read_ptr = 0; read_ptr < size; read_ptr++) {
-        if (pool[read_ptr] != FREE_HOLE) {
-            pool[write_ptr] = pool[read_ptr];
-            if (write_ptr != read_ptr) {
-                pool[read_ptr] = FREE_HOLE;
-            }
-            write_ptr++;
+    /* Chunks are listed in ascending pool_offset order, so a forward memmove is safe.
+       A 0x00 byte is real data (e.g. the 00 in "mov dx, 000Fh"), not a free hole. */
+    for (size_t i = 0; i < queue->total_chunks; i++) {
+        size_t off = queue->chunks[i].pool_offset;
+        size_t len = queue->chunks[i].size;
+        if (off + len > size) {
+            printf("[-] chunk %zu does not fit in the pool\n", i);
+            return 0;
         }
+        if (off != write_ptr) {
+            memmove(pool + write_ptr, pool + off, len);
+        }
+        write_ptr += len;
     }
-    printf("[+] Task completed. Active allocation footprint: %zu bytes\n\n", write_ptr);
+    memset(pool + write_ptr, FREE_HOLE, size - write_ptr);
+    printf("[+] Task completed. Active allocation footprint: %zu bytes\n", write_ptr);
     return write_ptr;
 }
 
@@ -114,7 +121,7 @@ int main(void) {
     }
     
     print_midi_pool("FRAGMENTED TASKS", memory_pool, MEMORY_POOL_SIZE);
-    size_t clean_length = defragment_midi_stream(memory_pool, MEMORY_POOL_SIZE);
+    size_t clean_length = defragment_midi_stream(memory_pool, MEMORY_POOL_SIZE, &pipeline);
     print_midi_pool("COMPACTED STORAGE", memory_pool, MEMORY_POOL_SIZE);
     
     uint32_t compacted_checksum = calculate_midi_checksum(memory_pool, clean_length);
