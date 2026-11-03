@@ -2,15 +2,23 @@
 #define OQM_H
 
 #include <stddef.h>
+#include <stdint.h>
+
+// FAT77 Status Bitflags
+#define FAT77_ATTR_NONE     0x00
+#define FAT77_ATTR_READONLY 0x01
+#define FAT77_ATTR_ALLOC    0x02
+#define FAT77_ATTR_SYSTEM   0x04
 
 typedef struct {
     const unsigned char* data_ptr;
     size_t size;
     size_t pool_offset;
+    uint8_t flags; // Holds the protection flag state for the current data segment
 } OQM_ChunkObject;
 
 typedef struct {
-    OQM_ChunkObject chunks[3]; // FIXED: Defined as an array size of 3 instead of a single object
+    OQM_ChunkObject chunks[3]; // Fixed size structural allocation array slots
     size_t total_chunks;
 } OQM_PipelineQueue;
 
