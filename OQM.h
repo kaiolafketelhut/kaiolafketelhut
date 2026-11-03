@@ -10,7 +10,7 @@ typedef struct {
 } OQM_ChunkObject;
 
 typedef struct {
-    OQM_ChunkObject chunks[3]; // Fixed size structural allocation array slots
+    OQM_ChunkObject chunks[3]; // FIXED: Defined as an array size of 3 instead of a single object
     size_t total_chunks;
 } OQM_PipelineQueue;
 
