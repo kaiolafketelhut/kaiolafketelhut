@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <time.h>
 #include "OQM.h"
 
 #define MEMORY_POOL_SIZE 64
@@ -43,7 +44,8 @@ void print_midi_pool(const char* label, unsigned char* pool, size_t size) {
 
 size_t defragment_midi_stream(unsigned char* pool, size_t size, const OQM_PipelineQueue* queue) {
     size_t write_ptr = 0;
-    char input_buffer[8];
+    char input_buffer[32];
+    struct timespec start_time, end_time;
 
     printf("--- FAT77 Storage Protection & Compaction Server Loop ---\n");
     
@@ -57,7 +59,7 @@ size_t defragment_midi_stream(unsigned char* pool, size_t size, const OQM_Pipeli
                (flags & FAT77_ATTR_ALLOC) ? "ALLOCATED " : "",
                (flags & FAT77_ATTR_READONLY) ? "READ_ONLY " : "",
                (flags & FAT77_ATTR_SYSTEM) ? "SYSTEM_RESERVED " : "");
-        printf(" Press [ENTER] to advance memory loop operation...\n");
+        printf(" Press [ENTER] to execute and profile cluster operation...\n");
         fgets(input_buffer, sizeof(input_buffer), stdin);
 
         if (off + len > size) {
@@ -65,16 +67,28 @@ size_t defragment_midi_stream(unsigned char* pool, size_t size, const OQM_Pipeli
             return 0;
         }
 
+        // --- Begin High-Resolution Nanosecond Timing Frame ---
+        clock_gettime(CLOCK_MONOTONIC, &start_time);
+
         if (flags & FAT77_ATTR_SYSTEM) {
             printf("[!] FAT77 FAULT: Sector locked down. Skipping system protection cluster block.\n");
             write_ptr = off + len; 
-            continue;
+            clock_gettime(CLOCK_MONOTONIC, &end_time);
+            goto print_metrics;
         }
 
         if (off != write_ptr) {
             memmove(pool + write_ptr, pool + off, len);
         }
         write_ptr += len;
+
+        clock_gettime(CLOCK_MONOTONIC, &end_time);
+
+    print_metrics: ;
+        // Calculate dynamic timing delta metrics
+        long nanoseconds = (end_time.tv_sec - start_time.tv_sec) * 1000000000L + 
+                           (end_time.tv_nsec - start_time.tv_nsec);
+        printf("[+] Profiler Metric: Subsystem operation completed in %ld nanoseconds.\n", nanoseconds);
         
         print_midi_pool("ACTIVE TRANSITION STEP", pool, MEMORY_POOL_SIZE);
     }
@@ -146,7 +160,6 @@ int main(void) {
     printf("[*] Baseline System Checksum Validation: 0x%08X\n\n", baseline_checksum);
 
     unsigned char memory_pool[MEMORY_POOL_SIZE] = {0};
-    
     OQM_PipelineQueue pipeline;
     
     if (load_fat77_config("fat77.cfg", &pipeline, active_payload, payload_len) != 0) {
