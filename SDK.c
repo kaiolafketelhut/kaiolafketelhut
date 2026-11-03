@@ -6,6 +6,7 @@
 
 #define MEMORY_POOL_SIZE 64
 #define FREE_HOLE        0x00
+#define MAX_CHUNKS       16
 
 const char* ID = "KDPMember:KL5UQ4f48673352";
 const char* PROFILE_TEMPLATE = 
@@ -40,10 +41,9 @@ void print_midi_pool(const char* label, unsigned char* pool, size_t size) {
     printf("\n");
 }
 
-// Bounded FAT77 Task: Defragmenter Server Module with Flag Validation Logic
 size_t defragment_midi_stream(unsigned char* pool, size_t size, const OQM_PipelineQueue* queue) {
     size_t write_ptr = 0;
-    char input_buffer[10];
+    char input_buffer[8];
 
     printf("--- FAT77 Storage Protection & Compaction Server Loop ---\n");
     
@@ -52,7 +52,6 @@ size_t defragment_midi_stream(unsigned char* pool, size_t size, const OQM_Pipeli
         size_t len = queue->chunks[i].size;
         uint8_t flags = queue->chunks[i].flags;
 
-        // Interactive STEP CLI Hook Execution Loop
         printf("\n[STEP CLI] Ready to process Chunk %zu (Offset: %zu, Size: %zu bytes)\n", i, off, len);
         printf(" -> Cluster Attribute Flags: [ %s%s%s]\n", 
                (flags & FAT77_ATTR_ALLOC) ? "ALLOCATED " : "",
@@ -61,16 +60,13 @@ size_t defragment_midi_stream(unsigned char* pool, size_t size, const OQM_Pipeli
         printf(" Press [ENTER] to advance memory loop operation...\n");
         fgets(input_buffer, sizeof(input_buffer), stdin);
 
-        // Protection check: Refuse execution if bounds breach structural allocations
         if (off + len > size) {
             printf("[-] FATAL FAULT: Chunk %zu overflows allocated memory space.\n", i);
             return 0;
         }
 
-        // Flag Check: Rejects processing if System Flag blocks structural relocation updates
         if (flags & FAT77_ATTR_SYSTEM) {
             printf("[!] FAT77 FAULT: Sector locked down. Skipping system protection cluster block.\n");
-            // Jump write pointer past locked block to prevent data corruption overwrites
             write_ptr = off + len; 
             continue;
         }
@@ -83,10 +79,50 @@ size_t defragment_midi_stream(unsigned char* pool, size_t size, const OQM_Pipeli
         print_midi_pool("ACTIVE TRANSITION STEP", pool, MEMORY_POOL_SIZE);
     }
     
-    // Clear out trailing blocks left behind after migration
     memset(pool + write_ptr, FREE_HOLE, size - write_ptr);
     printf("[+] Task completed. Active allocation footprint: %zu bytes\n\n", write_ptr);
     return write_ptr;
+}
+
+// Dynamic FAT77 Configuration Parser Module
+int load_fat77_config(const char* filename, OQM_PipelineQueue* queue, const unsigned char* payload, size_t payload_len) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        printf("[-] Error: Unable to locate config map file %s\n", filename);
+        return -1;
+    }
+
+    char line[128];
+    size_t count = 0;
+    size_t payload_offset_counter = 0;
+
+    printf("[*] Opening FAT77 external hardware track map parser loop...\n");
+    while (fgets(line, sizeof(line), file) && count < MAX_CHUNKS) {
+        // Strip lines matching configurations comment headers or empty tokens
+        if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') continue;
+
+        unsigned int off, len, flags;
+        if (sscanf(line, "%u,%u,%u", &off, &len, &flags) == 3) {
+            queue->chunks[count].pool_offset = off;
+            queue->chunks[count].size = len;
+            queue->chunks[count].flags = (uint8_t)flags;
+            
+            // Map the slice data pointer safely relative to active footprint sizes
+            if (payload_offset_counter < payload_len) {
+                queue->chunks[count].data_ptr = payload + payload_offset_counter;
+                payload_offset_counter += len;
+            } else {
+                queue->chunks[count].data_ptr = payload;
+            }
+            
+            printf("   Loaded Cluster Script Definition [%zu] -> Offset: %u, Size: %u, Flags: 0x%02X\n", count, off, len, flags);
+            count++;
+        }
+    }
+    fclose(file);
+    queue->total_chunks = count;
+    printf("[+] Configuration map parser initialization success. Count: %zu segments.\n\n", count);
+    return 0;
 }
 
 int main(void) {
@@ -115,43 +151,23 @@ int main(void) {
     unsigned char memory_pool[MEMORY_POOL_SIZE] = {0};
     
     OQM_PipelineQueue pipeline;
-    pipeline.total_chunks = 3;
     
-    // Chunk 0: Allocated Standard Operations Byte Layer Block
-    pipeline.chunks[0].data_ptr = active_payload;
-    pipeline.chunks[0].size = 5;
-    pipeline.chunks[0].pool_offset = 0;
-    pipeline.chunks[0].flags = FAT77_ATTR_ALLOC;
-    
-    // Chunk 1: Read-Only Operations Layer Block
-    pipeline.chunks[1].data_ptr = active_payload + 5;
-    pipeline.chunks[1].size = 5;
-    pipeline.chunks[1].pool_offset = 15;
-    pipeline.chunks[1].flags = FAT77_ATTR_ALLOC | FAT77_ATTR_READONLY;
-    
-    // Chunk 2: Protected Core Microkernel Sector Map Block
-    pipeline.chunks[2].data_ptr = active_payload + 10;
-    pipeline.chunks[2].size = payload_len - 10;
-    pipeline.chunks[2].pool_offset = 30;
-    pipeline.chunks[2].flags = FAT77_ATTR_ALLOC | FAT77_ATTR_SYSTEM;
+    // Parse the data parameters dynamically out of the config script file descriptor
+    if (load_fat77_config("fat77.cfg", &pipeline, active_payload, payload_len) != 0) {
+        return -1;
+    }
     
     for (size_t i = 0; i < pipeline.total_chunks; i++) {
-        memcpy(memory_pool + pipeline.chunks[i].pool_offset, 
-               pipeline.chunks[i].data_ptr, 
-               pipeline.chunks[i].size);
+        memcpy(memory_pool + pipeline.pipeline_queue_chunks[i].pool_offset, 
+               pipeline.pipeline_queue_chunks[i].data_ptr, 
+               pipeline.pipeline_queue_chunks[i].size);
     }
     
     print_midi_pool("FRAGMENTED SECTOR ALLOCATIONS", memory_pool, MEMORY_POOL_SIZE);
     
-    // Run the interactive metadata defragmenter loop
     size_t clean_length = defragment_midi_stream(memory_pool, MEMORY_POOL_SIZE, &pipeline);
     
     print_midi_pool("FINAL COMPACTED STORAGE", memory_pool, MEMORY_POOL_SIZE);
     
-    // Note: Due to SYSTEM cluster lockdown skipping compaction, checksum is verified via direct array
-    uint32_t compacted_checksum = calculate_midi_checksum(memory_pool, clean_length);
-    printf("[*] Compacted Channel Checksum: 0x%08X\n", compacted_checksum);
-    
-    printf("[+] FAT77 Driver Processing Routine Finished Successfully.\n\n");
     return 0;
 }
