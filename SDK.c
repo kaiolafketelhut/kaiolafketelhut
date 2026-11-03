@@ -84,7 +84,6 @@ size_t defragment_midi_stream(unsigned char* pool, size_t size, const OQM_Pipeli
     return write_ptr;
 }
 
-// Dynamic FAT77 Configuration Parser Module
 int load_fat77_config(const char* filename, OQM_PipelineQueue* queue, const unsigned char* payload, size_t payload_len) {
     FILE* file = fopen(filename, "r");
     if (!file) {
@@ -98,7 +97,6 @@ int load_fat77_config(const char* filename, OQM_PipelineQueue* queue, const unsi
 
     printf("[*] Opening FAT77 external hardware track map parser loop...\n");
     while (fgets(line, sizeof(line), file) && count < MAX_CHUNKS) {
-        // Strip lines matching configurations comment headers or empty tokens
         if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') continue;
 
         unsigned int off, len, flags;
@@ -107,7 +105,6 @@ int load_fat77_config(const char* filename, OQM_PipelineQueue* queue, const unsi
             queue->chunks[count].size = len;
             queue->chunks[count].flags = (uint8_t)flags;
             
-            // Map the slice data pointer safely relative to active footprint sizes
             if (payload_offset_counter < payload_len) {
                 queue->chunks[count].data_ptr = payload + payload_offset_counter;
                 payload_offset_counter += len;
@@ -152,21 +149,18 @@ int main(void) {
     
     OQM_PipelineQueue pipeline;
     
-    // Parse the data parameters dynamically out of the config script file descriptor
     if (load_fat77_config("fat77.cfg", &pipeline, active_payload, payload_len) != 0) {
         return -1;
     }
     
     for (size_t i = 0; i < pipeline.total_chunks; i++) {
-        memcpy(memory_pool + pipeline.pipeline_queue_chunks[i].pool_offset, 
-               pipeline.pipeline_queue_chunks[i].data_ptr, 
-               pipeline.pipeline_queue_chunks[i].size);
+        memcpy(memory_pool + pipeline.chunks[i].pool_offset, 
+               pipeline.chunks[i].data_ptr, 
+               pipeline.chunks[i].size);
     }
     
     print_midi_pool("FRAGMENTED SECTOR ALLOCATIONS", memory_pool, MEMORY_POOL_SIZE);
-    
     size_t clean_length = defragment_midi_stream(memory_pool, MEMORY_POOL_SIZE, &pipeline);
-    
     print_midi_pool("FINAL COMPACTED STORAGE", memory_pool, MEMORY_POOL_SIZE);
     
     return 0;

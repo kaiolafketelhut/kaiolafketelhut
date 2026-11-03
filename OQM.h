@@ -17,7 +17,7 @@ typedef struct {
 } OQM_ChunkObject;
 
 typedef struct {
-    OQM_ChunkObject pipeline_queue_chunks[16]; // Matched internal arrays parameter bounds
+    OQM_ChunkObject chunks[16]; // Unified variable name tracking
     size_t total_chunks;
 } OQM_PipelineQueue;
 
