@@ -33,26 +33,19 @@ uint32_t calculate_midi_checksum(const unsigned char* data, size_t length) {
     return checksum;
 }
 
-size_t defragment_midi_stream(unsigned char* pool, size_t size,
-                              const OQM_PipelineQueue* queue) {
+size_t defragment_midi_stream(unsigned char* pool, size_t size) {
     size_t write_ptr = 0;
     printf("--- Minix VFS/MM Storage Compaction Server Loop ---\n");
-    /* Chunks are listed in ascending pool_offset order, so a forward memmove is safe.
-       A 0x00 byte is real data (e.g. the 00 in "mov dx, 000Fh"), not a free hole. */
-    for (size_t i = 0; i < queue->total_chunks; i++) {
-        size_t off = queue->chunks[i].pool_offset;
-        size_t len = queue->chunks[i].size;
-        if (off + len > size) {
-            printf("[-] chunk %zu does not fit in the pool\n", i);
-            return 0;
+    for (size_t read_ptr = 0; read_ptr < size; read_ptr++) {
+        if (pool[read_ptr] != FREE_HOLE) {
+            pool[write_ptr] = pool[read_ptr];
+            if (write_ptr != read_ptr) {
+                pool[read_ptr] = FREE_HOLE;
+            }
+            write_ptr++;
         }
-        if (off != write_ptr) {
-            memmove(pool + write_ptr, pool + off, len);
-        }
-        write_ptr += len;
     }
-    memset(pool + write_ptr, FREE_HOLE, size - write_ptr);
-    printf("[+] Task completed. Active allocation footprint: %zu bytes\n", write_ptr);
+    printf("[+] Task completed. Active allocation footprint: %zu bytes\n\n", write_ptr);
     return write_ptr;
 }
 
@@ -101,7 +94,7 @@ int main(void) {
     OQM_PipelineQueue pipeline;
     pipeline.total_chunks = 3;
     
-    // FIXED: Added exact array bounds subscripts, [1], [2] to load all chunks correctly
+    // Explicit array indexing configuration
     pipeline.chunks[0].data_ptr = active_payload;
     pipeline.chunks[0].size = 5;
     pipeline.chunks[0].pool_offset = 0;
@@ -121,7 +114,7 @@ int main(void) {
     }
     
     print_midi_pool("FRAGMENTED TASKS", memory_pool, MEMORY_POOL_SIZE);
-    size_t clean_length = defragment_midi_stream(memory_pool, MEMORY_POOL_SIZE, &pipeline);
+    size_t clean_length = defragment_midi_stream(memory_pool, MEMORY_POOL_SIZE);
     print_midi_pool("COMPACTED STORAGE", memory_pool, MEMORY_POOL_SIZE);
     
     uint32_t compacted_checksum = calculate_midi_checksum(memory_pool, clean_length);
