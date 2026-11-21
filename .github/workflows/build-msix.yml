@@ -1,0 +1,29 @@
+name: Build DLang MSIX
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Patch Store Identity
+        shell: pwsh
+        run: |
+          $manifest = "suite/store/AppxManifest.xml"
+
+          (Get-Content $manifest -Raw) `
+            -replace 'Name="[^"]*"', 'Name="KaiOlafKetelhut.oeneye"' `
+            -replace 'Publisher="[^"]*"', 'Publisher="CN=88544420-228F-4D31-8839-1D4CADF99C43"' `
+            -replace '<PublisherDisplayName>.*?</PublisherDisplayName>', '<PublisherDisplayName>Kai Olaf Ketelhut</PublisherDisplayName>' |
+            Set-Content $manifest
+
+      - uses: dlang-community/setup-dlang@v1
+        with:
+          compiler: ldc-latest
+
+      - run: dub build --build=release
