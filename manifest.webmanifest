@@ -1,0 +1,20 @@
+{
+  "name": "BOA 84 Flops - KDP KL5UQ4f48673352",
+  "short_name": "BOA84",
+  "description": "application/vnd.x-mosfetq-dos-image IANA 1460172 PORT 8038 FLOP 4+16+64=84",
+  "launch_path": "/index.html",
+  "icons": {
+    "56": "/icon.png",
+    "112": "/icon.png"
+  },
+  "developer": {
+    "name": "KDPMember:KL5UQ4f48673352",
+    "url": "https://github.com/kaiolafketelhut/probable-train"
+  },
+  "type": "privileged",
+  "permissions": {
+    "tcp-socket": {},
+    "systemXHR": {}
+  },
+  "default_locale": "en"
+}
