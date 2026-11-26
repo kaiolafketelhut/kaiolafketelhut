@@ -2,7 +2,7 @@ name: omq-msix
 on: workflow_dispatch
 env:
   MSIX_NAME: "KaiOlafKetelhut.MOSFETQemu"
-  MSIX_PUBLISHER: "CN=PASTE-PUBLISHER-GUID-HERE"
+  MSIX_PUBLISHER: "CN=YOUR-GUID"
 jobs:
   build:
     runs-on: windows-latest
