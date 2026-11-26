@@ -1,0 +1,36 @@
+name: omq-msix
+on: workflow_dispatch
+env:
+  MSIX_NAME: "KaiOlafKetelhut.MOSFETQemu"
+  MSIX_PUBLISHER: "CN=PASTE-PUBLISHER-GUID-HERE"
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile qemu-clone tools to .exe
+        run: |
+          mkdir out
+          for n in qemu-img qemu-io qemu-nbd; do
+            f=$(find . -path ./out -prune -o -name "$n.c" -print | head -1)
+            if [ -n "$f" ]; then
+              gcc -O2 -o "out/$n.exe" "$f" -lws2_32 || echo "FAILED: $n"
+            fi
+          done
+          test -f out/qemu-img.exe || { echo "qemu-img.exe missing, see errors above"; exit 1; }
+          cp out/qemu-img.exe out/omq.exe
+      - name: Package omq.msix
+        run: |
+          cp build_omq.py out/
+          cd out
+          sed -i "s|^NAME .*|NAME = \"$MSIX_NAME\"|; s|^PUBLISHER .*|PUBLISHER = \"$MSIX_PUBLISHER\"|" build_omq.py
+          extras=$(ls *.exe | grep -v '^omq.exe$' | sed 's/.*/"&"/' | paste -sd, -)
+          sed -i "s|^EXTRA .*|EXTRA = [$extras]|" build_omq.py
+          python build_omq.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: omq-msix
+          path: out/omq.msix
