@@ -1,0 +1,39 @@
+name: Build QxD MSIX
+on:
+  workflow_dispatch:
+
+jobs:
+  pack-msix:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Stage package layout and generate assets
+        shell: pwsh
+        run: |
+          $pkg = "$env:RUNNER_TEMP\qxd-pkg"
+          New-Item -ItemType Directory -Force -Path "$pkg\Assets" | Out-Null
+          New-Item -ItemType Directory -Force -Path "$pkg\sandbox" | Out-Null
+
+          Copy-Item qxd_eval.py "$pkg\"
+          Copy-Item test_qxd_eval.py "$pkg\"
+          Copy-Item sandbox\*.qxd "$pkg\sandbox\"
+
+          python make_qxd_msix.py
+          Copy-Item qxd_layout\Assets\* "$pkg\Assets\"
+          Copy-Item qxd_layout\AppxManifest.xml "$pkg\"
+          Copy-Item qxd_layout\[Content_Types].xml "$pkg\"
+      - name: Pack MSIX using makeappx.exe
+        shell: pwsh
+        run: |
+          $pkg = "$env:RUNNER_TEMP\qxd-pkg"
+          $mk = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\makeappx.exe" | Sort-Object FullName | Select-Object -Last 1
+          if (-not $mk) { throw "makeappx.exe not found" }
+          & $mk.FullName pack /v /h SHA256 /d "$pkg" /p "qxd.msix"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qxd-msix
+          path: qxd.msix
